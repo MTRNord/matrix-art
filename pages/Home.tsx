@@ -141,7 +141,7 @@ export default class Home extends Component<Props, State>{
         } else {
             return (
                 <>
-                    <header className='flex fixed top-0 left-0 right-0 bottom-0 h-[54px] z-20'>
+                    <header className='flex fixed top-0 left-0 right-0 bottom-0 h-[54px] z-2 items-center'>
                         <span className='flex items-center h-full mx-10 text-gray-900 dark:text-gray-200 font-bold'><Link href="/">Matrix Art</Link></span>
                         <div className='flex flex-1 items-center'>
                             <div className='flex flex-grow-1 h-full relative items-center'>
@@ -151,8 +151,18 @@ export default class Home extends Component<Props, State>{
                                     </div>
                                 </form>
                             </div>
+
+                            <nav className='flex-shrink-0 relative mr-0 flex h-full'>
+                                <span className='px-4 h-auto w-min-[24px] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span>
+                                <span className='px-4 h-auto w-min-[24px] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span>
+                            </nav>
                         </div>
-                        <nav></nav>
+                        <span className='inline-block bg-gray-900 dark:bg-gray-200 w-[1px] h-[27px]'></span>
+                        <div className='h-full relative'>
+                            <div className='flex'>
+                                <button className='text-teal-400 bg-transparent relative h-[54px] min-w-[150px] z-2 cursor-auto font-semibold'>Submit</button>
+                            </div>
+                        </div>
                     </header>
                     <main className='pt-[54px] z-0'>
                         <div className='z-1 sticky top-[54px] bg-[#fefefe] dark:bg-[#14181E]'>
