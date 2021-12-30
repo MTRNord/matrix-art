@@ -203,14 +203,7 @@ export default class Home extends Component<Props, State>{
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
         return event.content['m.image_gallery'].map(image => {
-            return (
-                <li className='flex-grow-1 h-[270px]' key={event.event_id + image['m.file'].url}>
-                    <div className='relative max-h-[270px]'>
-                        <img className='relative max-w-full object-cover align-bottom z-0 max-h-[270px]' src={this.props.client?.thumbnailLink(image['m.thumbnail'][0].url, "scale", 270, 270)}></img>
-                        <p className="max-w-full max-h-[270px] opacity-0 object-cover hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-start items-end text-base text-white font-semibold p-4">{caption_text}</p>
-                    </div>
-                </li>
-            );
+            return this.render_image_box(image['m.thumbnail'][0].url, event.event_id + image['m.file'].url, event.event_id, event.sender, caption_text);
         });
     }
 
@@ -224,16 +217,23 @@ export default class Home extends Component<Props, State>{
         if (caption.length != 0) {
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
-        // TODO append creators display name and make avatar show up
+        return this.render_image_box(event.content['m.thumbnail'][0].url, event.event_id, event.event_id, event.sender, caption_text);
+    }
+
+    render_image_box(thumbnail_url: string, id: string, post_id: string, sender: string, caption: string) {
+        // TODO show creators display name instead of mxid and show avatar image
+        const direct_link = `/post/${id}`;
         return (
-            <li className='flex-grow-1 h-[270px]' key={event.event_id}>
-                <div className='relative h-[270px]'>
-                    <img className='relative max-w-full h-[270px] object-cover align-bottom z-0' src={this.props.client?.thumbnailLink(event.content['m.thumbnail'][0].url, "scale", 270, 270)}></img>
-                    <div className="flex-col max-w-full h-[270px] object-cover opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
-                        <h2 className='truncate max-w-full text-base font-semibold'>{caption_text}</h2>
-                        <p className='truncate max-w-full text-sm'>{event.sender}</p>
+            <li className='flex-grow-1 h-[270px]' key={post_id}>
+                <Link href={direct_link}>
+                    <div className='relative h-[270px] cursor-pointer'>
+                        <img className='relative max-w-full h-[270px] object-cover align-bottom z-0' src={this.props.client?.thumbnailLink(thumbnail_url, "scale", 270, 270)}></img>
+                        <div className="flex-col max-w-full h-[270px] object-cover opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
+                            <h2 className='truncate max-w-full text-base font-semibold'>{caption}</h2>
+                            <p className='truncate max-w-full text-sm'>{sender}</p>
+                        </div>
                     </div>
-                </div>
+                </Link>
             </li>
         );
     }
