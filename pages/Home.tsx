@@ -3,6 +3,7 @@ import Client from "../helpers/matrix_client";
 import { RingLoader } from 'react-spinners';
 import { ImageEvent, ImageGalleryEvent } from '../helpers/event_types';
 import Link from 'next/link';
+import Head from 'next/head';
 
 type ImageEvents = ImageEvent | ImageGalleryEvent;
 
@@ -141,6 +142,9 @@ export default class Home extends Component<Props, State>{
         } else {
             return (
                 <>
+                    <Head>
+                        <title key="title">Matrix Art | Home</title>
+                    </Head>
                     <header className='flex fixed top-0 left-0 right-0 bottom-0 h-[54px] z-2 items-center'>
                         <span className='flex items-center h-full mx-10 text-gray-900 dark:text-gray-200 font-bold'><Link href="/">Matrix Art</Link></span>
                         <div className='flex flex-1 items-center'>
