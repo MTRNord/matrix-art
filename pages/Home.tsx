@@ -205,9 +205,9 @@ export default class Home extends Component<Props, State>{
         return event.content['m.image_gallery'].map(image => {
             return (
                 <li className='flex-grow-1 h-[270px]' key={event.event_id + image['m.file'].url}>
-                    <div className='relative'>
-                        <img className='relative max-w-full max-h-full object-cover align-bottom z-0' src={this.props.client?.thumbnailLink(image['m.thumbnail'][0].url, "scale", 270, 270)}></img>
-                        <p className="max-w-full max-h-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-start items-end text-base text-white font-semibold p-4">{caption_text}</p>
+                    <div className='relative max-h-[270px]'>
+                        <img className='relative max-w-full object-cover align-bottom z-0 max-h-[270px]' src={this.props.client?.thumbnailLink(image['m.thumbnail'][0].url, "scale", 270, 270)}></img>
+                        <p className="max-w-full max-h-[270px] opacity-0 object-cover hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-start items-end text-base text-white font-semibold p-4">{caption_text}</p>
                     </div>
                 </li>
             );
@@ -227,11 +227,11 @@ export default class Home extends Component<Props, State>{
         // TODO append creators display name and make avatar show up
         return (
             <li className='flex-grow-1 h-[270px]' key={event.event_id}>
-                <div className='relative'>
-                    <img className='relative max-w-full max-h-full object-cover align-bottom z-0' src={this.props.client?.thumbnailLink(event.content['m.thumbnail'][0].url, "scale", 270, 270)}></img>
-                    <div className="flex-col max-w-full max-h-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
-                        <h2 className='text-base font-semibold'>{caption_text}</h2>
-                        <p className='text-sm'>{event.sender}</p>
+                <div className='relative h-[270px]'>
+                    <img className='relative max-w-full h-[270px] object-cover align-bottom z-0' src={this.props.client?.thumbnailLink(event.content['m.thumbnail'][0].url, "scale", 270, 270)}></img>
+                    <div className="flex-col max-w-full h-[270px] object-cover opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
+                        <h2 className='truncate max-w-full text-base font-semibold'>{caption_text}</h2>
+                        <p className='truncate max-w-full text-sm'>{event.sender}</p>
                     </div>
                 </div>
             </li>
