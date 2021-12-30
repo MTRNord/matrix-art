@@ -59,13 +59,12 @@ export default class Home extends Component<Props, State>{
                 fetch('/api/directory')
                     .then((res) => res.json())
                     .then(
-                        (data) => this.setState({ ...this.state, directory_data: data.data, directoryIsLoaded: true }),
+                        (data) => this.setState({ directory_data: data.data, directoryIsLoaded: true }),
                         // Note: it's important to handle errors here
                         // instead of a catch() block so that we don't swallow
                         // exceptions from actual bugs in components.
                         (error) => {
                             this.setState({
-                                ...this.state,
                                 hasFullyLoaded: true,
                                 error
                             });
@@ -94,7 +93,6 @@ export default class Home extends Component<Props, State>{
             return;
         }
         this.setState({
-            ...this.state,
             isLoadingImages: true,
         });
         try {
@@ -106,7 +104,6 @@ export default class Home extends Component<Props, State>{
                     const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image");
                     console.log("Adding ", image_events.length, " items");
                     this.setState({
-                        ...this.state,
                         image_events: [...this.state.image_events, ...image_events],
                     });
                 });
@@ -117,7 +114,6 @@ export default class Home extends Component<Props, State>{
             });
         } finally {
             this.setState({
-                ...this.state,
                 hasFullyLoaded: true,
                 isLoadingImages: false
             });
