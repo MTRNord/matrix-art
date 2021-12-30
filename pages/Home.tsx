@@ -155,7 +155,7 @@ export default class Home extends Component<Props, State>{
                         <nav></nav>
                     </header>
                     <main className='pt-[54px] z-0'>
-                        <div className='z-1 sticky top-[54px] bg-white dark:bg-[#14181E]'>
+                        <div className='z-1 sticky top-[54px] bg-[#fefefe] dark:bg-[#14181E]'>
                             <div className='h-[72px] px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
                                 <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Home</h1>
                             </div>

@@ -7,5 +7,5 @@ html, body {
 }
 
 body {
-    @apply bg-slate-300 dark:bg-[#06070D];
+    @apply bg-[#f8f8f8] dark:bg-[#06070D];
 }
