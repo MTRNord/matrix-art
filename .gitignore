@@ -35,3 +35,10 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+#pouchdb
+/matrix-art-db
+
+#nextjs
+.env.*.local
+.env.local
