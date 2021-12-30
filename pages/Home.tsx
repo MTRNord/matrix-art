@@ -205,7 +205,6 @@ export default class Home extends Component<Props, State>{
 
 
     render_image(event: ImageEvent) {
-        console.log(event);
         const caption = event.content['m.caption'].filter((cap) => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
             return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
@@ -237,6 +236,7 @@ export default class Home extends Component<Props, State>{
 
 }
 
+// TODO also render the edits properly later on
 function isImageGalleryEvent(event: ImageEvents): event is ImageGalleryEvent {
     return event.type === "m.image_gallery" && event.redacted_because === undefined;
 }
