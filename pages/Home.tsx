@@ -194,13 +194,24 @@ export default class Home extends Component<Props, State>{
 
 
     render_gallery(event: ImageGalleryEvent) {
-        return event.content['m.image_gallery'].map(image =>
-        (
-            <li className='flex-grow-1 h-[270px]' key={event.event_id + image['m.file'].url}>
-                <img className='object-cover align-bottom max-w-full max-h-full' src={this.props.client?.thumbnailLink(image['m.thumbnail'][0].url, "scale", 270, 270)}></img>
-            </li>
-        )
-        );
+        const caption = event.content['m.caption'].filter((cap) => {
+            const possible_html_caption = (cap as { body: string; mimetype: string; });
+            return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
+        });
+        let caption_text = "";
+        if (caption.length != 0) {
+            caption_text = (caption[0] as { body: string; mimetype: string; }).body;
+        }
+        return event.content['m.image_gallery'].map(image => {
+            return (
+                <li className='flex-grow-1 h-[270px]' key={event.event_id + image['m.file'].url}>
+                    <div className='relative'>
+                        <img className='relative max-w-full max-h-full object-cover align-bottom z-0' src={this.props.client?.thumbnailLink(image['m.thumbnail'][0].url, "scale", 270, 270)}></img>
+                        <p className="max-w-full max-h-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-start items-end text-base text-white font-semibold p-4">{caption_text}</p>
+                    </div>
+                </li>
+            );
+        });
     }
 
 
@@ -218,7 +229,10 @@ export default class Home extends Component<Props, State>{
             <li className='flex-grow-1 h-[270px]' key={event.event_id}>
                 <div className='relative'>
                     <img className='relative max-w-full max-h-full object-cover align-bottom z-0' src={this.props.client?.thumbnailLink(event.content['m.thumbnail'][0].url, "scale", 270, 270)}></img>
-                    <p className="max-w-full max-h-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-start items-end text-base text-white font-semibold p-4">{caption_text}</p>
+                    <div className="flex-col max-w-full max-h-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
+                        <h2 className='text-base font-semibold'>{caption_text}</h2>
+                        <p className='text-sm'>{event.sender}</p>
+                    </div>
                 </div>
             </li>
         );

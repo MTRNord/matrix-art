@@ -2,6 +2,7 @@ export type MatrixEventBase = {
     type: string;
     event_id: string;
     room_id: string;
+    sender: string;
 };
 
 export type FileEvent = {
