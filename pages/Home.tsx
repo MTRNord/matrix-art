@@ -145,9 +145,9 @@ export default class Home extends Component<Props, State>{
                     <Head>
                         <title key="title">Matrix Art | Home</title>
                     </Head>
-                    <header className='flex fixed top-0 left-0 right-0 bottom-0 h-[54px] z-2 items-center'>
-                        <span className='flex items-center h-full mx-10 text-gray-900 dark:text-gray-200 font-bold'><Link href="/">Matrix Art</Link></span>
-                        <div className='flex flex-1 items-center'>
+                    <header className='flex fixed top-0 left-0 right-0 bottom-0 lg:h-[108px] h-[216px] z-[100] items-center lg:flex-row flex-col'>
+                        <span className='flex items-center h-full lg:mx-10 my-4 text-gray-900 dark:text-gray-200 font-bold'><Link href="/">Matrix Art</Link></span>
+                        <div className='flex flex-1 items-center lg:flex-row flex-col'>
                             <div className='flex grow-[1] h-full relative items-center'>
                                 <form className='w-[200px] text-gray-900 dark:text-gray-200'>
                                     <div className='duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400'>
@@ -161,15 +161,15 @@ export default class Home extends Component<Props, State>{
                                 <span className='px-4 h-auto w-min-[24px] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span>
                             </nav>
                         </div>
-                        <span className='inline-block bg-gray-900 dark:bg-gray-200 w-[1px] h-[27px]'></span>
-                        <div className='h-full relative'>
+                        <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] h-[27px]'></span>
+                        <div className='relative lg:m-0 mt-4'>
                             <div className='flex'>
-                                <button className='text-teal-400 bg-transparent relative h-[54px] min-w-[150px] z-2 cursor-auto font-semibold   '>Submit</button>
+                                <button className='text-teal-400 bg-transparent relative h-[54px] min-w-[150px] z-[2] cursor-auto font-semibold'>Submit</button>
                             </div>
                         </div>
                     </header>
-                    <main className='pt-[54px] z-0'>
-                        <div className='z-1 sticky top-[54px] bg-[#fefefe] dark:bg-[#14181E]'>
+                    <main className='lg:pt-[108px] pt-[216px] z-0'>
+                        <div className='z-[100] sticky lg:top-[108px] top-[216px] bg-[#fefefe] dark:bg-[#14181E]'>
                             <div className='h-[72px] px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
                                 <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Home</h1>
                             </div>
