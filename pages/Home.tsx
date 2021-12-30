@@ -144,7 +144,7 @@ export default class Home extends Component<Props, State>{
                     <header className='flex fixed top-0 left-0 right-0 bottom-0 h-[54px] z-2 items-center'>
                         <span className='flex items-center h-full mx-10 text-gray-900 dark:text-gray-200 font-bold'><Link href="/">Matrix Art</Link></span>
                         <div className='flex flex-1 items-center'>
-                            <div className='flex flex-grow-1 h-full relative items-center'>
+                            <div className='flex grow-[1] h-full relative items-center'>
                                 <form className='w-[200px] text-gray-900 dark:text-gray-200'>
                                     <div className='duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400'>
                                         <input className='bg-transparent w-min-[20px] focus:outline-none' type="text" placeholder='Search & Discover' />
@@ -152,7 +152,7 @@ export default class Home extends Component<Props, State>{
                                 </form>
                             </div>
 
-                            <nav className='flex-shrink-0 relative mr-0 flex h-full'>
+                            <nav className='flex flex-shrink-0 relative mr-0 h-full'>
                                 <span className='px-4 h-auto w-min-[24px] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span>
                                 <span className='px-4 h-auto w-min-[24px] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span>
                             </nav>
@@ -160,7 +160,7 @@ export default class Home extends Component<Props, State>{
                         <span className='inline-block bg-gray-900 dark:bg-gray-200 w-[1px] h-[27px]'></span>
                         <div className='h-full relative'>
                             <div className='flex'>
-                                <button className='text-teal-400 bg-transparent relative h-[54px] min-w-[150px] z-2 cursor-auto font-semibold'>Submit</button>
+                                <button className='text-teal-400 bg-transparent relative h-[54px] min-w-[150px] z-2 cursor-auto font-semibold   '>Submit</button>
                             </div>
                         </div>
                     </header>
