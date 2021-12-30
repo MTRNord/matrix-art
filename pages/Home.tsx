@@ -175,7 +175,7 @@ export default class Home extends Component<Props, State>{
                         </div>
                         <div className='m-10'>
                             <ul className='flex flex-wrap gap-1'>
-                                {image_events.map(event => isImageGalleryEvent(event) ? this.render_gallery(event) : this.render_image(event))}
+                                {image_events.map(event => isImageGalleryEvent(event) ? this.render_gallery(event) : isImageEvent(event) ? this.render_image(event) : <></>)}
                                 <li className='flex-grow-10'></li>
                             </ul>
                         </div>
@@ -205,6 +205,7 @@ export default class Home extends Component<Props, State>{
 
 
     render_image(event: ImageEvent) {
+        console.log(event);
         const caption = event.content['m.caption'].filter((cap) => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
             return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
@@ -237,5 +238,10 @@ export default class Home extends Component<Props, State>{
 }
 
 function isImageGalleryEvent(event: ImageEvents): event is ImageGalleryEvent {
-    return event.type === "m.image_gallery";
+    return event.type === "m.image_gallery" && event.redacted_because === undefined;
+}
+
+
+function isImageEvent(event: ImageEvents): event is ImageEvent {
+    return event.type === "m.image" && event.redacted_because === undefined;
 }

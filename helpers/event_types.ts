@@ -3,6 +3,7 @@ export type MatrixEventBase = {
     event_id: string;
     room_id: string;
     sender: string;
+    redacted_because: any | undefined;
 };
 
 export type FileEvent = {
@@ -29,6 +30,7 @@ export type ImageEventContent = {
     "m.file": FileEvent;
     "m.image": ImageFields;
     "m.thumbnail": ThumbnailFileEvent[];
+    "matrixart.tags": string[];
 };
 
 export type MessageAlike = { "m.text": string; } | { body: string; mimetype: string; };
