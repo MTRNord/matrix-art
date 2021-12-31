@@ -47,7 +47,11 @@ export default class MatrixClient {
     async registerAsGuest(serverUrl: string) {
         function generateToken(len: number) {
             var arr = new Uint8Array(len / 2);
-            window.crypto.getRandomValues(arr);
+            if (typeof window !== "undefined") {
+                window.crypto.getRandomValues(arr);
+            } else {
+                require("crypto").randomFillSync(arr);
+            }
             return Array.from(arr, (num) => {
                 return num.toString(16).padStart(2, "0");
             }).join("");

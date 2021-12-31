@@ -2,6 +2,7 @@
   "name": "matrix-art",
   "private": true,
   "scripts": {
+    "dev-inspect": "cross-env NODE_OPTIONS='--inspect' next dev",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -26,6 +27,7 @@
     "@types/pouchdb": "^6.4.0",
     "@types/react": "17.0.38",
     "autoprefixer": "^10.4.0",
+    "cross-env": "^7.0.3",
     "eslint": "8.5.0",
     "eslint-config-next": "12.0.7",
     "postcss": "^8.4.5",

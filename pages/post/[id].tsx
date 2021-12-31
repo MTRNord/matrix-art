@@ -1,3 +1,4 @@
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { Component, ReactNode } from "react";
@@ -5,7 +6,8 @@ import { RingLoader } from "react-spinners";
 import { ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
-import { constMatrixArtServer } from "../../helpers/matrix_client";
+import MatrixClient, { constMatrixArtServer } from "../../helpers/matrix_client";
+import Storage from "../../helpers/storage";
 import { get_data } from "../api/directory";
 import { isImageEvent, isImageGalleryEvent } from "../Home";
 
@@ -16,16 +18,13 @@ const centerSpinner = `
     transform: translate(-50%, -50%);
 `;
 
-interface Props {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
-}
+};
 
 type State = {
-    directory_data: { _id: string; user_id: string; user_room: string; }[];
-    event_id?: string;
     hasFullyLoaded: boolean;
     isLoadingImages: boolean;
-    directoryIsLoaded: boolean;
     image_event: MatrixImageEvents;
     error?: any;
 };
@@ -38,87 +37,13 @@ class Post extends Component<Props, State> {
 
         this.state = {
             hasFullyLoaded: false,
-            directoryIsLoaded: false,
             isLoadingImages: false
         } as State;
     }
 
-    async componentDidUpdate() {
-        if (this.state.event_id && this.state.event_id.startsWith("$")) {
-            await this.loadEvent(this.state.event_id);
-        }
-    }
-
-    async getStaticPaths() {
-        const directory_data = await get_data();
-        let paths: { params: { id: string; }; }[] = [];
-        for (let user of directory_data) {
-            // We dont need many events
-            const roomId = await this.context.client?.followUser(user.user_room);
-            await this.context.client?.getTimeline(roomId, 100, (events) => {
-                // Filter events by type
-                const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image");
-                for (let event of image_events) {
-                    const path_non_encoded = { params: { id: event.event_id } };
-                    const path = { params: { id: encodeURIComponent(event.event_id) } };
-                    paths.push(path);
-                }
-            });
-        }
-        return {
-            paths: paths,
-            fallback: 'blocking'
-        };
-    }
-
-
     async componentDidMount() {
-        const { id } = this.props.router.query;
-        console.log(`id: ${id}`);
-        console.log(`is ready: ${this.props.router.isReady}`);
-        const event_id = decodeURIComponent(id as string);
-
-        if (event_id && event_id.startsWith("$")) {
-            // auto-register as a guest if not logged in
-            if (!this.context.client?.accessToken) {
-                this.registerAsGuest();
-            } else {
-                console.log("Already logged in");
-                try {
-                    const data = await (await fetch('/api/directory')).json();
-                    this.setState({ event_id: event_id, directory_data: data.data, directoryIsLoaded: true });
-                } catch (error) {
-                    this.setState({
-                        hasFullyLoaded: true,
-                        error
-                    });
-                }
-            }
-        }
-    }
-
-    async componentWillUnmount() {
-        const { id } = this.props.router.query;
-        console.log(`id: ${id}`);
-        console.log(`is ready: ${this.props.router.isReady}`);
-        const event_id = decodeURIComponent(id as string);
-
-        if (event_id && event_id.startsWith("$")) {
-            // auto-register as a guest if not logged in
-            if (!this.context.client?.accessToken) {
-                this.registerAsGuest();
-            } else {
-                console.log("Already logged in");
-                try {
-                    const data = await (await fetch('/api/directory')).json();
-                    this.setState({ event_id: event_id, directory_data: data.data, directoryIsLoaded: true });
-                } catch (error) {
-                    this.setState({
-                        hasFullyLoaded: true,
-                        error
-                    });
-                }
-            }
+        if (this.props.directory_data && this.props.event_id && this.props.event_id.startsWith("$")) {
+            await this.loadEvent(this.props.event_id);
         }
     }
 
@@ -138,8 +63,8 @@ class Post extends Component<Props, State> {
     }
 
     async loadEvent(event_id: string) {
-        const { directoryIsLoaded, directory_data, hasFullyLoaded, isLoadingImages } = this.state;
-        if (!directoryIsLoaded || isLoadingImages || hasFullyLoaded) {
+        const { hasFullyLoaded, isLoadingImages } = this.state;
+        if (isLoadingImages || hasFullyLoaded || !this.props.directory_data) {
             return;
         }
         this.setState({
@@ -147,7 +72,7 @@ class Post extends Component<Props, State> {
         });
         try {
             // TODO fix this. It is super inefficent.
-            for (let user of directory_data) {
+            for (let user of this.props.directory_data) {
                 // We dont need many events
                 const roomId = await this.context.client?.followUser(user.user_room);
                 await this.context.client?.getTimeline(roomId, 100, (events) => {
@@ -171,7 +96,7 @@ class Post extends Component<Props, State> {
     }
 
     render() {
-        const { error, event_id, hasFullyLoaded, image_event } = this.state;
+        const { error, hasFullyLoaded, image_event } = this.state;
 
         if (!hasFullyLoaded) {
             return (
@@ -183,7 +108,7 @@ class Post extends Component<Props, State> {
             );
         }
 
-        if (!event_id || !event_id?.startsWith("$")) {
+        if (!this.props.event_id || !this.props.event_id?.startsWith("$")) {
             return (
                 <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
@@ -295,4 +220,37 @@ class Post extends Component<Props, State> {
 }
 
 Post.contextType = ClientContext;
+
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+    const { query } = context;
+    const event_id = decodeURIComponent(query.id as string);
+
+    if (event_id && event_id.startsWith("$")) {
+        // auto-register as a guest if not logged in
+        const client = new MatrixClient(new Storage());
+        if (!client.accessToken) {
+            try {
+                let serverUrl = constMatrixArtServer + "/_matrix/client";
+                await client.registerAsGuest(serverUrl);
+            } catch (err) {
+                console.error("Failed to register as guest:", err);
+            }
+        } else {
+            console.log("Already logged in");
+        }
+        try {
+            const data = await get_data();
+
+            return {
+                props: {
+                    directory_data: data, event_id: event_id
+                }
+            };
+        } catch (error) {
+            return { notFound: true, props: {} };
+        }
+    }
+    return { notFound: true, props: {} };
+
+};
 export default withRouter(Post);
