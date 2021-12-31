@@ -50,10 +50,7 @@ export default class Home extends Component<Props, State>{
     async componentDidMount() {
         // auto-register as a guest if not logged in
         if (!this.context.client?.accessToken) {
-            // Client-side-only code
-            if (typeof window !== "undefined") {
-                this.registerAsGuest();
-            }
+            this.registerAsGuest();
         } else {
             console.log("Already logged in");
             try {
@@ -72,7 +69,9 @@ export default class Home extends Component<Props, State>{
         try {
             let serverUrl = constMatrixArtServer + "/_matrix/client";
             await this.context.client?.registerAsGuest(serverUrl);
-            window.location.reload();
+            if (typeof window !== "undefined") {
+                window.location.reload();
+            }
         } catch (err) {
             console.error("Failed to register as guest:", err);
             this.setState({

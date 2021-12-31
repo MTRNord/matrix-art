@@ -6,6 +6,7 @@ import { ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import { constMatrixArtServer } from "../../helpers/matrix_client";
+import { get_data } from "../api/directory";
 import { isImageEvent, isImageGalleryEvent } from "../Home";
 
 const centerSpinner = `
@@ -48,8 +49,30 @@ class Post extends Component<Props, State> {
         }
     }
 
-    // TODO make getStaticPaths and get this properly prerendered. (Needs to make the client not use localstorage. Aka figure out pouchdb)
-    async handleRouteChangeComplete(url: string, { shallow }: any) {
+    async getStaticPaths() {
+        const directory_data = await get_data();
+        let paths: { params: { id: string; }; }[] = [];
+        for (let user of directory_data) {
+            // We dont need many events
+            const roomId = await this.context.client?.followUser(user.user_room);
+            await this.context.client?.getTimeline(roomId, 100, (events) => {
+                // Filter events by type
+                const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image");
+                for (let event of image_events) {
+                    const path_non_encoded = { params: { id: event.event_id } };
+                    const path = { params: { id: encodeURIComponent(event.event_id) } };
+                    paths.push(path);
+                }
+            });
+        }
+        return {
+            paths: paths,
+            fallback: 'blocking'
+        };
+    }
+
+
+    async componentDidMount() {
         const { id } = this.props.router.query;
         console.log(`id: ${id}`);
         console.log(`is ready: ${this.props.router.isReady}`);
@@ -58,10 +81,7 @@ class Post extends Component<Props, State> {
         if (event_id && event_id.startsWith("$")) {
             // auto-register as a guest if not logged in
             if (!this.context.client?.accessToken) {
-                // Client-side-only code
-                if (typeof window !== "undefined") {
-                    this.registerAsGuest();
-                }
+                this.registerAsGuest();
             } else {
                 console.log("Already logged in");
                 try {
@@ -77,20 +97,38 @@ class Post extends Component<Props, State> {
         }
     }
 
-    componentDidMount() {
-        // Hack due to SSR
-        this.props.router.events.on("routeChangeComplete", this.handleRouteChangeComplete.bind(this));
-    }
+    async componentWillUnmount() {
+        const { id } = this.props.router.query;
+        console.log(`id: ${id}`);
+        console.log(`is ready: ${this.props.router.isReady}`);
+        const event_id = decodeURIComponent(id as string);
 
-    componentWillUnmount() {
-        this.props.router.events.off("routeChangeComplete", this.handleRouteChangeComplete.bind(this));
+        if (event_id && event_id.startsWith("$")) {
+            // auto-register as a guest if not logged in
+            if (!this.context.client?.accessToken) {
+                this.registerAsGuest();
+            } else {
+                console.log("Already logged in");
+                try {
+                    const data = await (await fetch('/api/directory')).json();
+                    this.setState({ event_id: event_id, directory_data: data.data, directoryIsLoaded: true });
+                } catch (error) {
+                    this.setState({
+                        hasFullyLoaded: true,
+                        error
+                    });
+                }
+            }
+        }
     }
 
     async registerAsGuest() {
         try {
             let serverUrl = constMatrixArtServer + "/_matrix/client";
             await this.context.client?.registerAsGuest(serverUrl);
-            window.location.reload();
+            if (typeof window !== "undefined") {
+                window.location.reload();
+            }
         } catch (err) {
             console.error("Failed to register as guest:", err);
             this.setState({

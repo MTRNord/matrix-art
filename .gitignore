@@ -38,7 +38,7 @@ yarn-error.log*
 
 #pouchdb
 /matrix-art-db
-
+/localstorage
 #nextjs
 .env.*.local
 .env.local
