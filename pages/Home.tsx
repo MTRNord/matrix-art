@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Client from "../helpers/matrix_client";
 import { RingLoader } from 'react-spinners';
-import { ImageEvent, ImageGalleryEvent } from '../helpers/event_types';
+import { ImageEvent, ImageGalleryEvent, MatrixEvent, MatrixEventBase } from '../helpers/event_types';
 import Link from 'next/link';
 import Head from 'next/head';
 import Header from '../components/Header';
@@ -138,7 +138,7 @@ export default class Home extends Component<Props, State>{
             );
         } else {
             return (
-                <>
+                <div className='h-full bg-[#f8f8f8] dark:bg-[#06070D]'>
                     <Head>
                         <title key="title">Matrix Art | Home</title>
                     </Head>
@@ -151,14 +151,14 @@ export default class Home extends Component<Props, State>{
                         </div>
                         <div className='m-10'>
                             <ul className='flex flex-wrap gap-1'>
-                                {image_events.map(event => isImageGalleryEvent(event) ? this.render_gallery(event) : isImageEvent(event) ? this.render_image(event) : <></>)}
+                                {image_events.map(event => isImageGalleryEvent(event) ? this.render_gallery(event) : isImageEvent(event) ? this.render_image(event) : <div key={(event as MatrixEventBase).event_id}></div>)}
                                 <li className='flex-grow-10'></li>
                             </ul>
                         </div>
 
                     </main>
                     <footer></footer>
-                </>
+                </div>
             );
         };
     }

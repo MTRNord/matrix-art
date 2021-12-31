@@ -2,10 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
+html, body, #__next {
     margin: 0;
-}
-
-body {
-    @apply bg-[#f8f8f8] dark:bg-[#06070D];
+    @apply h-full;
 }
