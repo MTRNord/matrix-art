@@ -2,8 +2,9 @@ import Cors from 'cors';
 import initMiddleware from '../../helpers/init-middleware';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import PouchDB from 'pouchdb';
+import path from 'path';
 
-const db = new PouchDB('matrix-art-db');
+const db = new PouchDB(path.join(process.cwd(), "matrix-art-db"));
 
 // Initialize the cors middleware
 const cors = initMiddleware(
