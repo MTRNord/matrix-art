@@ -151,6 +151,8 @@ class Post extends Component<Props, State> {
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
+                        <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
+                        <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
                     </Head>
                     <Header></Header>
                     <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>
@@ -174,6 +176,8 @@ class Post extends Component<Props, State> {
                     <Head>
                         <title key="title">Matrix Art | {post_title}</title>
                         <meta property="og:title" content={`Matrix Art | ${post_title}`} key="og-title" />
+                        <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
+                        <meta name="twitter:title" content={`Matrix Art | ${post_title}`} key="og-twitter-title" />
                     </Head>
                     <Header></Header>
 
@@ -196,6 +200,8 @@ class Post extends Component<Props, State> {
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
+                        <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
+                        <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
                     </Head>
                     <Header></Header>
                     <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>
@@ -237,6 +243,7 @@ class Post extends Component<Props, State> {
                     <meta property="og:image:alt" content={caption} key="og-image-alt" />
                     <meta property="og:image:width" content={w.toString()} key="og-image-width" />
                     <meta property="og:image:height" content={h.toString()} key="og-image-height" />
+                    <meta name="twitter:image" content={src} key="og-twitter-image" />
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <img alt={caption} title={caption} className="shadow-2xl max-w-3xl max-h-[871px] shadow-black cursor-zoom-in" src={src} key={id}></img>
