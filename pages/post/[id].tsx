@@ -217,10 +217,11 @@ class Post extends Component<Props, State> {
         return <div></div>;
     }
 
+    // TODO make full size on click
     renderImage(id: string, src: string) {
         return (
             <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
-                <img className="shadow-2xl max-w-3xl shadow-black" src={src} key={id}></img>
+                <img className="shadow-2xl max-w-3xl max-h-[871px] shadow-black cursor-zoom-in" src={src} key={id}></img>
             </div>
         );
     }
