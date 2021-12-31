@@ -4,5 +4,5 @@
 
 html, body, #__next {
     margin: 0;
-    @apply h-full;
+    @apply h-full bg-[#f8f8f8] dark:bg-[#06070D];
 }

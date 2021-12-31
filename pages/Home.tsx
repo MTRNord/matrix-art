@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
-import Client from "../helpers/matrix_client";
 import { RingLoader } from 'react-spinners';
 import { ImageEvent, ImageGalleryEvent, MatrixEvent, MatrixEventBase } from '../helpers/event_types';
 import Link from 'next/link';
 import Head from 'next/head';
 import Header from '../components/Header';
+import { ClientContext } from '../components/ClientContext';
+import { constMatrixArtServer } from '../helpers/matrix_client';
 
 type ImageEvents = ImageEvent | ImageGalleryEvent;
 
 type Props = {
-    client: Client | undefined;
 };
 
 type State = {
     directory_data: { _id: string; user_id: string; user_room: string; }[];
-    viewingUserId?: string;
     error?: any;
     directoryIsLoaded: boolean;
     isLoadingImages: boolean;
@@ -30,14 +29,13 @@ const centerSpinner = `
     transform: translate(-50%, -50%);
 `;
 
-const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL;
-
 export default class Home extends Component<Props, State>{
+    declare context: React.ContextType<typeof ClientContext>;
+
     constructor(props: Props) {
         super(props);
 
         this.state = {
-            viewingUserId: this.props.client?.userId,
             isLoadingImages: false,
             directoryIsLoaded: false,
             hasFullyLoaded: false,
@@ -49,37 +47,31 @@ export default class Home extends Component<Props, State>{
         await this.loadEvents();
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // auto-register as a guest if not logged in
-        if (typeof window !== "undefined") {
+        if (!this.context.client?.accessToken) {
             // Client-side-only code
-            if (!this.props.client?.accessToken) {
+            if (typeof window !== "undefined") {
                 this.registerAsGuest();
-            } else {
-                console.log("Already logged in");
-                fetch('/api/directory')
-                    .then((res) => res.json())
-                    .then(
-                        (data) => this.setState({ directory_data: data.data, directoryIsLoaded: true }),
-                        // Note: it's important to handle errors here
-                        // instead of a catch() block so that we don't swallow
-                        // exceptions from actual bugs in components.
-                        (error) => {
-                            this.setState({
-                                hasFullyLoaded: true,
-                                error
-                            });
-                        }
-                    );
+            }
+        } else {
+            console.log("Already logged in");
+            try {
+                const data = await (await fetch('/api/directory')).json();
+                this.setState({ directory_data: data.data, directoryIsLoaded: true });
+            } catch (error) {
+                this.setState({
+                    hasFullyLoaded: true,
+                    error
+                });
             }
         }
-
     }
 
     async registerAsGuest() {
         try {
             let serverUrl = constMatrixArtServer + "/_matrix/client";
-            await this.props.client?.registerAsGuest(serverUrl);
+            await this.context.client?.registerAsGuest(serverUrl);
             window.location.reload();
         } catch (err) {
             console.error("Failed to register as guest:", err);
@@ -88,6 +80,7 @@ export default class Home extends Component<Props, State>{
             });
         }
     }
+
     async loadEvents() {
         const { directoryIsLoaded, directory_data, isLoadingImages, hasFullyLoaded } = this.state;
         if (!directoryIsLoaded || isLoadingImages || hasFullyLoaded) {
@@ -99,13 +92,13 @@ export default class Home extends Component<Props, State>{
         try {
             for (let user of directory_data) {
                 // We dont need many events
-                const roomId = await this.props.client?.followUser(user.user_room);
-                await this.props.client?.getTimeline(roomId, 100, (events) => {
+                const roomId = await this.context.client?.followUser(user.user_room);
+                await this.context.client?.getTimeline(roomId, 100, (events) => {
                     // Filter events by type
                     const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image");
                     console.log("Adding ", image_events.length, " items");
                     this.setState({
-                        image_events: [...this.state.image_events, ...image_events],
+                        image_events: image_events,
                     });
                 });
             }
@@ -194,12 +187,12 @@ export default class Home extends Component<Props, State>{
 
     render_image_box(thumbnail_url: string, id: string, post_id: string, sender: string, caption: string) {
         // TODO show creators display name instead of mxid and show avatar image
-        const direct_link = `/post/${post_id}`;
+        const direct_link = `/post/${encodeURIComponent(post_id)}`;
         return (
             <li className='flex-grow-1 h-[270px]' key={id}>
                 <Link href={direct_link}>
                     <div className='relative h-[270px] cursor-pointer'>
-                        <img className='relative max-w-full h-[270px] object-cover align-bottom z-0' src={this.props.client?.thumbnailLink(thumbnail_url, "scale", 270, 270)}></img>
+                        <img className='relative max-w-full h-[270px] object-cover align-bottom z-0' src={this.context.client?.thumbnailLink(thumbnail_url, "scale", 270, 270)}></img>
                         <div className="flex-col max-w-full h-[270px] object-cover opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
                             <h2 className='truncate max-w-full text-base font-semibold'>{caption}</h2>
                             <p className='truncate max-w-full text-sm'>{sender}</p>
@@ -211,6 +204,7 @@ export default class Home extends Component<Props, State>{
     }
 
 }
+Home.contextType = ClientContext;
 
 // TODO also render the edits properly later on
 function isImageGalleryEvent(event: ImageEvents): event is ImageGalleryEvent {

@@ -17,7 +17,7 @@ const App: NextPage = () => {
             client: client,
           }}
         >
-          <Home client={client} />
+          <Home />
         </ClientContext.Provider>
       </React.StrictMode>
     </>

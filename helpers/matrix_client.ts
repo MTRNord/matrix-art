@@ -2,6 +2,8 @@
 import { MatrixEvent } from './event_types';
 import Storage from './storage';
 
+export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL;
+
 export default class MatrixClient {
     private joinedRooms: Map<any, any>;
     private userProfileCache: Map<any, any>;

@@ -52,4 +52,5 @@ export type ImageGalleryEvent = MatrixEventBase & {
     content: ImageGalleryContent;
 };
 
-export type MatrixEvent = ImageEvent | ImageGalleryEvent;
+export type MatrixImageEvents = ImageEvent | ImageGalleryEvent;
+export type MatrixEvent = MatrixImageEvents;

@@ -3,6 +3,12 @@
         "next/babel"
     ],
     "plugins": [
-        "@emotion"
+        "@emotion",
+        [
+            "@babel/plugin-transform-typescript",
+            {
+                "allowDeclareFields": true
+            }
+        ]
     ]
 }
