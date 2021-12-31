@@ -5,7 +5,7 @@ import { RingLoader } from "react-spinners";
 import { ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
-import Client, { constMatrixArtServer } from "../../helpers/matrix_client";
+import { constMatrixArtServer } from "../../helpers/matrix_client";
 import { isImageEvent, isImageGalleryEvent } from "../Home";
 
 const centerSpinner = `
