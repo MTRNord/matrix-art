@@ -145,7 +145,7 @@ export default class Home extends Component<Props, State>{
                         <div className='m-10'>
                             <ul className='flex flex-wrap gap-1'>
                                 {image_events.map(event => isImageGalleryEvent(event) ? this.render_gallery(event) : isImageEvent(event) ? this.render_image(event) : <div key={(event as MatrixEventBase).event_id}></div>)}
-                                <li className='flex-grow-10'></li>
+                                <li className='grow-[10]'></li>
                             </ul>
                         </div>
 
@@ -189,11 +189,11 @@ export default class Home extends Component<Props, State>{
         // TODO show creators display name instead of mxid and show avatar image
         const direct_link = `/post/${encodeURIComponent(post_id)}`;
         return (
-            <li className='flex-grow-1 h-[270px]' key={id}>
+            <li className='h-[270px]' key={id}>
                 <Link href={direct_link}>
                     <div className='relative h-[270px] cursor-pointer'>
                         <img className='relative max-w-full h-[270px] object-cover align-bottom z-0' src={this.context.client?.thumbnailLink(thumbnail_url, "scale", 270, 270)}></img>
-                        <div className="flex-col max-w-full h-[270px] object-cover opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
+                        <div className="flex-col max-w-full h-[270px] opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
                             <h2 className='truncate max-w-full text-base font-semibold'>{caption}</h2>
                             <p className='truncate max-w-full text-sm'>{sender}</p>
                         </div>
@@ -207,11 +207,11 @@ export default class Home extends Component<Props, State>{
 Home.contextType = ClientContext;
 
 // TODO also render the edits properly later on
-function isImageGalleryEvent(event: ImageEvents): event is ImageGalleryEvent {
+export function isImageGalleryEvent(event: ImageEvents): event is ImageGalleryEvent {
     return event.type === "m.image_gallery" && event.redacted_because === undefined;
 }
 
 
-function isImageEvent(event: ImageEvents): event is ImageEvent {
+export function isImageEvent(event: ImageEvents): event is ImageEvent {
     return event.type === "m.image" && event.redacted_because === undefined;
 };

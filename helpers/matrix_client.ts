@@ -210,12 +210,12 @@ export default class MatrixClient {
         return userId.split(":")[0].substr(1);
     }
 
-    downloadLink(mxcUri: string) {
+    downloadLink(mxcUri: string): string | null {
         if (!mxcUri) {
-            return;
+            return null;
         }
         if (mxcUri.indexOf("mxc://") !== 0) {
-            return;
+            return null;
         }
         const mediaUrl = this.serverUrl?.slice(0, -1 * "/client".length);
         return mediaUrl + "/media/r0/download/" + mxcUri.split("mxc://")[1];

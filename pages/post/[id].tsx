@@ -4,8 +4,9 @@ import { Component, ReactNode } from "react";
 import { RingLoader } from "react-spinners";
 import { ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
-import { MatrixImageEvents } from "../../helpers/event_types";
+import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import Client, { constMatrixArtServer } from "../../helpers/matrix_client";
+import { isImageEvent, isImageGalleryEvent } from "../Home";
 
 const centerSpinner = `
     position: fixed;
@@ -15,7 +16,6 @@ const centerSpinner = `
 `;
 
 interface Props {
-    client: Client | undefined;
     router: NextRouter;
 }
 
@@ -132,7 +132,7 @@ class Post extends Component<Props, State> {
     }
 
     render() {
-        const { error, event_id, hasFullyLoaded } = this.state;
+        const { error, event_id, hasFullyLoaded, image_event } = this.state;
 
         if (!hasFullyLoaded) {
             return (
@@ -158,8 +158,15 @@ class Post extends Component<Props, State> {
             );
         }
 
-        if (hasFullyLoaded) {
-            const post_title = "";
+        if (hasFullyLoaded && image_event) {
+            let post_title = "";
+            const caption = image_event.content['m.caption'].filter((cap) => {
+                const possible_html_caption = (cap as { body: string; mimetype: string; });
+                return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
+            });
+            if (caption.length != 0) {
+                post_title = (caption[0] as { body: string; mimetype: string; }).body;
+            }
             return (
                 <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
@@ -167,8 +174,12 @@ class Post extends Component<Props, State> {
                     </Head>
                     <Header></Header>
 
-                    <main className='lg:pt-[108px] pt-[216px] z-0'>
-
+                    <main className='flex-col h-full flex lg:pt-[108px] pt-[216px] z-0'>
+                        {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event) : isImageEvent(image_event) ? this.renderSingleImageEvent(image_event) : <div key={(image_event as MatrixEventBase).event_id}></div>}
+                        <div className="grow bg-[#f8f8f8] dark:bg-[#06070D]">
+                            <h1 className="mx-16 my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
+                            <h3 className="mx-16 my-4 text-l text-gray-900 dark:text-gray-200 font-normal">{image_event.sender}</h3>
+                        </div>
                     </main>
                 </div>
             );
@@ -177,9 +188,40 @@ class Post extends Component<Props, State> {
                 <div>Error: {error.message}</div>
             );
         } else {
-            return <></>;
+            return (
+                <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                    <Head>
+                        <title key="title">Matrix Art | Post not Found</title>
+                    </Head>
+                    <Header></Header>
+                    <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>
+                        <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The Post you wanted does not exist!</h1>
+                    </main>
+                </div>
+            );
         }
 
+    }
+
+    renderSingleImageEvent(imageEvent: ImageEvent) {
+        const url = this.context.client?.downloadLink(imageEvent.content["m.file"].url);
+
+        if (!url) {
+            return <></>;
+        }
+        return this.renderImage(imageEvent.event_id, url);
+    }
+
+    renderImageGalleryEvent(imageEvent: ImageGalleryEvent) {
+        return <div></div>;
+    }
+
+    renderImage(id: string, src: string) {
+        return (
+            <div className="flex justify-center p-10">
+                <img className="shadow-2xl max-w-3xl shadow-black" src={src} key={id}></img>
+            </div>
+        );
     }
 }
 
