@@ -206,7 +206,7 @@ class Post extends Component<Props, State> {
                     <meta name="twitter:image" content={src} key="og-twitter-image" />
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
-                    <img alt={caption} title={caption} className="shadow-2xl max-w-3xl max-h-[871px] shadow-black cursor-zoom-in" src={src} key={id}></img>
+                    <img alt={caption} title={caption} className="shadow-2xl max-w-full lg:max-w-3xl max-h-[871px] shadow-black cursor-zoom-in" src={src} key={id}></img>
                 </div>
             </>
         );
