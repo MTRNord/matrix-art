@@ -153,6 +153,7 @@ class Post extends Component<Props, State> {
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
                         <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                         <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
+                        <meta property="og:type" content="website" key="og-type" />
                     </Head>
                     <Header></Header>
                     <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>
@@ -178,6 +179,7 @@ class Post extends Component<Props, State> {
                         <meta property="og:title" content={`Matrix Art | ${post_title}`} key="og-title" />
                         <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                         <meta name="twitter:title" content={`Matrix Art | ${post_title}`} key="og-twitter-title" />
+                        <meta property="og:type" content="website" key="og-type" />
                     </Head>
                     <Header></Header>
 
@@ -202,6 +204,7 @@ class Post extends Component<Props, State> {
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
                         <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                         <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
+                        <meta property="og:type" content="website" key="og-type" />
                     </Head>
                     <Header></Header>
                     <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>

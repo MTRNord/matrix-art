@@ -135,6 +135,7 @@ export default class Home extends Component<Props, State>{
                     <Head>
                         <title key="title">Matrix Art | Home</title>
                         <meta property="og:title" content="Matrix Art | Home" key="og-title" />
+                        <meta property="og:type" content="website" key="og-type" />
                     </Head>
                     <Header></Header>
                     <main className='lg:pt-[108px] pt-[216px] z-0'>
