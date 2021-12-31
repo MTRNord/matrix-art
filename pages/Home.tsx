@@ -217,8 +217,3 @@ export function isImageGalleryEvent(event: ImageEvents): event is ImageGalleryEv
 export function isImageEvent(event: ImageEvents): event is ImageEvent {
     return event.type === "m.image" && event.redacted_because === undefined;
 };
-
-export const getServerSideProps = async (context: any) => {
-    console.log("getServerSideProps");
-    return { props: {} };
-};

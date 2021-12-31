@@ -1,13 +1,12 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
-import { Component, ReactNode } from "react";
+import { Component } from "react";
 import { RingLoader } from "react-spinners";
 import { ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
-import MatrixClient, { constMatrixArtServer } from "../../helpers/matrix_client";
-import Storage from "../../helpers/storage";
+import { constMatrixArtServer } from "../../helpers/matrix_client";
 import { get_data } from "../api/directory";
 import { isImageEvent, isImageGalleryEvent } from "../Home";
 
@@ -42,23 +41,18 @@ class Post extends Component<Props, State> {
     }
 
     async componentDidMount() {
+        if (!this.context.client?.accessToken) {
+            try {
+                let serverUrl = constMatrixArtServer + "/_matrix/client";
+                await this.context.client?.registerAsGuest(serverUrl);
+            } catch (err) {
+                console.error("Failed to register as guest:", err);
+            }
+        } else {
+            console.log("Already logged in");
+        }
         if (this.props.directory_data && this.props.event_id && this.props.event_id.startsWith("$")) {
             await this.loadEvent(this.props.event_id);
-        }
-    }
-
-    async registerAsGuest() {
-        try {
-            let serverUrl = constMatrixArtServer + "/_matrix/client";
-            await this.context.client?.registerAsGuest(serverUrl);
-            if (typeof window !== "undefined") {
-                window.location.reload();
-            }
-        } catch (err) {
-            console.error("Failed to register as guest:", err);
-            this.setState({
-                error: "Failed to register as guest: " + JSON.stringify(err),
-            });
         }
     }
 
@@ -221,23 +215,11 @@ class Post extends Component<Props, State> {
 
 Post.contextType = ClientContext;
 
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
     const { query } = context;
     const event_id = decodeURIComponent(query.id as string);
 
     if (event_id && event_id.startsWith("$")) {
-        // auto-register as a guest if not logged in
-        const client = new MatrixClient(new Storage());
-        if (!client.accessToken) {
-            try {
-                let serverUrl = constMatrixArtServer + "/_matrix/client";
-                await client.registerAsGuest(serverUrl);
-            } catch (err) {
-                console.error("Failed to register as guest:", err);
-            }
-        } else {
-            console.log("Already logged in");
-        }
         try {
             const data = await get_data();
 
