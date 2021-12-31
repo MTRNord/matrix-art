@@ -216,12 +216,17 @@ class Post extends Component<Props, State> {
 Post.contextType = ClientContext;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { query } = context;
+    const { query, res } = context;
     const event_id = decodeURIComponent(query.id as string);
 
+    res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+    );
     if (event_id && event_id.startsWith("$")) {
         try {
             const data = await get_data();
+
 
             return {
                 props: {
