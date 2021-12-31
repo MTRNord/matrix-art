@@ -1,4 +1,4 @@
-import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { Component } from "react";
