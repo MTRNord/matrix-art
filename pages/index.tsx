@@ -9,6 +9,7 @@ const App: NextPage = () => {
     <>
       <Head>
         <title key="title">Matrix Art</title>
+        <meta property="og:title" content="Matrix Art" key="og-title" />
         <meta key="viewport" name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <React.StrictMode>

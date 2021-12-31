@@ -150,6 +150,7 @@ class Post extends Component<Props, State> {
                 <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
+                        <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
                     </Head>
                     <Header></Header>
                     <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>
@@ -172,11 +173,12 @@ class Post extends Component<Props, State> {
                 <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | {post_title}</title>
+                        <meta property="og:title" content={`Matrix Art | ${post_title}`} key="og-title" />
                     </Head>
                     <Header></Header>
 
                     <main className='flex-col h-full flex lg:pt-[108px] pt-[216px] z-0'>
-                        {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event) : isImageEvent(image_event) ? this.renderSingleImageEvent(image_event) : <div key={(image_event as MatrixEventBase).event_id}></div>}
+                        {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>}
                         <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[400px]">
                             <h1 className="mx-16 my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
                             <h3 className="mx-16 my-4 text-l text-gray-900 dark:text-gray-200 font-normal">{image_event.sender}</h3>
@@ -193,6 +195,7 @@ class Post extends Component<Props, State> {
                 <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
+                        <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
                     </Head>
                     <Header></Header>
                     <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>
@@ -204,25 +207,41 @@ class Post extends Component<Props, State> {
 
     }
 
-    renderSingleImageEvent(imageEvent: ImageEvent) {
+    renderSingleImageEvent(imageEvent: ImageEvent, caption: string) {
         const url = this.context.client?.downloadLink(imageEvent.content["m.file"].url);
 
         if (!url) {
             return <></>;
         }
-        return this.renderImage(imageEvent.event_id, url);
+        return this.renderImage(imageEvent.event_id,
+            url,
+            caption,
+            imageEvent.content["m.file"].mimetype,
+            imageEvent.content["m.image"].width,
+            imageEvent.content["m.image"].height
+        );
     }
 
-    renderImageGalleryEvent(imageEvent: ImageGalleryEvent) {
+    renderImageGalleryEvent(imageEvent: ImageGalleryEvent, caption: string) {
         return <div></div>;
     }
 
     // TODO make full size on click
-    renderImage(id: string, src: string) {
+    renderImage(id: string, src: string, caption: string, mime: string, w: number, h: number) {
+        // TODO proper alt
         return (
-            <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
-                <img className="shadow-2xl max-w-3xl max-h-[871px] shadow-black cursor-zoom-in" src={src} key={id}></img>
-            </div>
+            <>
+                <Head>
+                    <meta property="og:image" content={src} key="og-image" />
+                    <meta property="og:image:type" content={mime} key="og-image-type" />
+                    <meta property="og:image:alt" content={caption} key="og-image-alt" />
+                    <meta property="og:image:width" content={w.toString()} key="og-image-width" />
+                    <meta property="og:image:height" content={h.toString()} key="og-image-height" />
+                </Head>
+                <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                    <img alt={caption} title={caption} className="shadow-2xl max-w-3xl max-h-[871px] shadow-black cursor-zoom-in" src={src} key={id}></img>
+                </div>
+            </>
         );
     }
 }

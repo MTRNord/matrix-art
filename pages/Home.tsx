@@ -134,6 +134,7 @@ export default class Home extends Component<Props, State>{
                 <div className='h-full bg-[#f8f8f8] dark:bg-[#06070D]'>
                     <Head>
                         <title key="title">Matrix Art | Home</title>
+                        <meta property="og:title" content="Matrix Art | Home" key="og-title" />
                     </Head>
                     <Header></Header>
                     <main className='lg:pt-[108px] pt-[216px] z-0'>
