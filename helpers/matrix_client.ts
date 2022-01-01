@@ -195,6 +195,14 @@ export default class MatrixClient {
                             room_alias_name: "@" + MatrixClient.localpart(this.userId!),
                             creation_content: {
                                 type: "matrixart.profile"
+                            },
+                            power_level_content_override: {
+                                state_default: 100,
+                                events_default: 100,
+                                kick: 100,
+                                invite: 100,
+                                ban: 100,
+                                redact: 100,
                             }
                         }),
                         headers: {
