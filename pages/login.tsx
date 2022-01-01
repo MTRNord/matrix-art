@@ -96,7 +96,7 @@ class Login extends Component<Props, State> {
                                     <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Log In</h1>
                                 </div>
                             </div>
-                            // TODO fix loader
+                            {/* TODO fix loader */}
                         </main>
                     </div>
                 </>
