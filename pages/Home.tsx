@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { RingLoader } from 'react-spinners';
-import { ImageEvent, ImageGalleryEvent, MatrixEvent, MatrixEventBase } from '../helpers/event_types';
+import { ImageEvent, ImageGalleryEvent,  MatrixEventBase } from '../helpers/event_types';
 import Link from 'next/link';
 import Head from 'next/head';
 import Header from '../components/Header';

@@ -120,7 +120,7 @@ class Post extends Component<Props, State> {
             );
         }
 
-        if (hasFullyLoaded && image_event) {
+        if (image_event) {
             let post_title = "";
             const caption = image_event.content['m.caption'].filter((cap) => {
                 const possible_html_caption = (cap as { body: string; mimetype: string; });
