@@ -3,6 +3,7 @@ import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/css/lg-zoom.css';
 import 'lightgallery/css/lg-thumbnail.css';
 import lgZoom from 'lightgallery/plugins/zoom';
+import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
@@ -219,9 +220,10 @@ class Post extends Component<Props, State> {
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <LightGallery
-                        plugins={[lgZoom]}
+                        plugins={[lgThumbnail, lgZoom]}
                         elementClassNames="shadow-2xl max-w-full lg:max-w-3xl max-h-[871px] shadow-black cursor-zoom-in"
                         key={imageEvent.event_id}
+                        thumbnail={true}
                     >
                         <a href={url} title={caption} data-src={url}>
                             <img alt={caption} title={caption} src={thumbnail_url} />
@@ -257,9 +259,10 @@ class Post extends Component<Props, State> {
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <LightGallery
-                        plugins={[lgZoom]}
+                        plugins={[lgThumbnail, lgZoom]}
                         elementClassNames="shadow-2xl max-w-full lg:max-w-3xl max-h-[871px] shadow-black cursor-zoom-in"
                         key={imageEvent.event_id}
+                        thumbnail={true}
                     >
                         {images}
                     </LightGallery>
