@@ -2,7 +2,7 @@
 import { MatrixEvent } from './event_types';
 import Storage from './storage';
 
-export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL;
+export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL as string;
 
 export default class MatrixClient {
     private joinedRooms: Map<any, any>;
@@ -110,6 +110,28 @@ export default class MatrixClient {
             throw data;
         }
         return data;
+    }
+
+    async login(serverUrl: string, username: any, password: any, saveToStorage: any) {
+        const data = await this.fetchJson(`${serverUrl}/r0/login`, {
+            method: "POST",
+            body: JSON.stringify({
+                type: "m.login.password",
+                identifier: {
+                    type: "m.id.user",
+                    user: username,
+                },
+                password: password,
+            }),
+        });
+        this.serverUrl = serverUrl;
+        this._userId = data.user_id;
+        this._accessToken = data.access_token;
+        this.isGuest = false;
+        this.serverName = data.home_server;
+        if (saveToStorage) {
+            this.saveAuthState();
+        }
     }
 
     async register(serverUrl: string, username: string, password: string) {
