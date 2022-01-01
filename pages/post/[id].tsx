@@ -242,7 +242,7 @@ class Post extends Component<Props, State> {
                 return <></>;
             }
             return (
-                <a href={url} title={caption} data-src={url}>
+                <a key={url} href={url} title={caption} data-src={url}>
                     <img alt={caption} title={caption} src={thumbnail_url} />
                 </a>
             );
