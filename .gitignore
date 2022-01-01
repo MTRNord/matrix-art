@@ -42,3 +42,5 @@ yarn-error.log*
 #nextjs
 .env.*.local
 .env.local
+test-results/
+playwright-report/

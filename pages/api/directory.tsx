@@ -16,6 +16,16 @@ const cors = initMiddleware(
 );
 
 export const get_data = async () => {
+    if (process.env.PLAYWRIGHT === '1') {
+        console.log("Running in tests!");
+        return [
+            {
+                "user_id": "@MTRNord:art.midnightthoughts.space",
+                "user_room": "#@MTRNord:art.midnightthoughts.space",
+                "_id": "@MTRNord:art.midnightthoughts.space"
+            }
+        ];
+    }
     const db_data: { _id: string; user_id: string; user_room: string; _rev?: string; }[] = (await db.allDocs({ include_docs: true })).rows.map(x => x.doc) as unknown as { _id: string; user_id: string; user_room: string; _rev?: string; }[];
     db_data.forEach(x => delete x?._rev);
     return db_data;
