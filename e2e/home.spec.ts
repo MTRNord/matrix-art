@@ -16,4 +16,8 @@ test('test navigation to details', async ({ page }) => {
     page.waitForNavigation(/*{ url: 'http://localhost:3000/post/%24ugLG5srr5AyYCIhL1CnD6KikH8QYsDVMUHQ9jQRn990' }*/),
     page.click('text=Flowers@mtrnord:art.midnightthoughts.space')
   ]);
+
+  await page.locator('a:text("Matrix Art")').waitFor();
+  await page.click('a:text("Matrix Art")');
+  await expect(page).toHaveURL('http://localhost:3000/');
 });
