@@ -143,8 +143,11 @@ class Post extends Component<Props, State> {
                     <main className='flex-col h-full flex lg:pt-[108px] pt-[216px] z-0'>
                         {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>}
                         <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[400px]">
-                            <h1 className="mx-16 my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
-                            <h3 className="mx-16 my-4 text-l text-gray-900 dark:text-gray-200 font-normal">{image_event.sender}</h3>
+                            <div className="mx-16">
+                                <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
+                                <h3 className="my-4 text-l text-gray-900 dark:text-gray-200 font-normal">{image_event.sender}</h3>
+                                {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "text"}></div>}
+                            </div>
                         </div>
                     </main>
                 </div>
@@ -171,6 +174,19 @@ class Post extends Component<Props, State> {
             );
         }
 
+    }
+    renderSingleImageTags(image_event: ImageEvent): import("react").ReactNode {
+        const tags = image_event.content["matrixart.tags"].map((tag) => {
+            console.log(tag);
+            return <div className="mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm cursor-default">{tag}</div>;
+        });
+        return (
+            <div className="flex flex-row items-center text-gray-900 dark:text-gray-200 font-medium" key={(image_event as MatrixEventBase).event_id + "text"}>{tags}</div>
+        );
+    }
+
+    renderImageGalleryTags(image_event: ImageGalleryEvent): import("react").ReactNode {
+        return <></>;
     }
 
     renderSingleImageEvent(imageEvent: ImageEvent, caption: string) {

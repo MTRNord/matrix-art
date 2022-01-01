@@ -8,16 +8,19 @@ export default class MatrixClient {
     private joinedRooms: Map<any, any>;
     private userProfileCache: Map<any, any>;
     private storage!: Storage;
-    private serverUrl: string | undefined;
-    private _userId: string | undefined;
-    private _accessToken: string | undefined;
-    private isGuest: boolean | undefined;
-    private serverName: string | undefined;
+    private serverUrl?: string;
+    private _userId?: string;
+    private _accessToken?: string;
+    private _isGuest?: boolean;
+    private serverName?: string;
     get userId(): string | undefined {
         return this._userId;
     }
     get accessToken(): string | undefined {
         return this._accessToken;
+    }
+    get isGuest(): boolean | undefined {
+        return this._isGuest;
     }
 
     constructor(storage: Storage) {
@@ -30,7 +33,7 @@ export default class MatrixClient {
         this.serverUrl = storage.getItem("serverUrl");
         this._userId = storage.getItem("userId");
         this._accessToken = storage.getItem("accessToken");
-        this.isGuest = (this.userId || "").indexOf("@matrix_art_guest_") === 0;
+        this._isGuest = (this.userId || "").indexOf("@matrix_art_guest_") === 0;
         this.serverName = storage.getItem("serverName");
     }
 
@@ -73,7 +76,7 @@ export default class MatrixClient {
         this._userId = data.user_id;
         this._accessToken = data.access_token;
         this.serverName = data.home_server;
-        this.isGuest = true;
+        this._isGuest = true;
         this.saveAuthState();
         console.log("Registered as guest ", username);
     }
@@ -92,7 +95,7 @@ export default class MatrixClient {
             this.serverUrl = undefined;
             this._userId = undefined;
             this._accessToken = undefined;
-            this.isGuest = undefined;
+            this._isGuest = undefined;
             this.serverName = undefined;
             this.saveAuthState();
         }
@@ -127,7 +130,7 @@ export default class MatrixClient {
         this.serverUrl = serverUrl;
         this._userId = data.user_id;
         this._accessToken = data.access_token;
-        this.isGuest = false;
+        this._isGuest = false;
         this.serverName = data.home_server;
         if (saveToStorage) {
             this.saveAuthState();
@@ -148,7 +151,7 @@ export default class MatrixClient {
         this.serverUrl = serverUrl;
         this._userId = data.user_id;
         this._accessToken = data.access_token;
-        this.isGuest = false;
+        this._isGuest = false;
         this.serverName = data.home_server;
         this.saveAuthState();
 

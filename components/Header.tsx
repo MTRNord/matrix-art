@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Component } from "react";
+import { ClientContext } from "./ClientContext";
 
 export default class Header extends Component {
+    declare context: React.ContextType<typeof ClientContext>;
     render() {
         return (
             <>
@@ -22,6 +24,7 @@ export default class Header extends Component {
                         <nav className='flex flex-shrink-0 relative mr-0 h-full'>
                             <span className='px-4 h-auto min-w-[24px] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span>
                             <span className='px-4 h-auto min-w-[24px] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span>
+                            {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[24px] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/profile">Profile</Link></span> : null}
                         </nav>
                     </div>
                     <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] h-[27px]'></span>
@@ -35,3 +38,4 @@ export default class Header extends Component {
         );
     }
 }
+Header.contextType = ClientContext;
