@@ -1,7 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
-import { Component } from "react";
+import { Component, ReactNode } from "react";
 import { RingLoader } from "react-spinners";
 import { ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
@@ -142,8 +142,8 @@ class Post extends Component<Props, State> {
 
                     <main className='flex-col h-full flex lg:pt-[108px] pt-[216px] z-0'>
                         {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>}
-                        <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[400px]">
-                            <div className="mx-16">
+                        <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[400px] flex flex-col items-center">
+                            <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
                                 <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
                                 <h3 className="my-4 text-l text-gray-900 dark:text-gray-200 font-normal">{image_event.sender}</h3>
                                 {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>}
@@ -175,7 +175,7 @@ class Post extends Component<Props, State> {
         }
 
     }
-    renderSingleImageTags(image_event: ImageEvent): import("react").ReactNode {
+    renderSingleImageTags(image_event: ImageEvent): ReactNode {
         const tags = image_event.content["matrixart.tags"].map((tag) => {
             return <div className="mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm cursor-default" key={(image_event as MatrixEventBase).event_id + "tags" + tag}>{tag}</div>;
         });
@@ -184,7 +184,7 @@ class Post extends Component<Props, State> {
         );
     }
 
-    renderImageGalleryTags(image_event: ImageGalleryEvent): import("react").ReactNode {
+    renderImageGalleryTags(image_event: ImageGalleryEvent): ReactNode {
         return <></>;
     }
 
