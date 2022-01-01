@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import React from 'react';
-import { client, ClientContext } from '../components/ClientContext';
+import { guest_client, client, ClientContext } from '../components/ClientContext';
 import Home from './Home';
 
 const App: NextPage = () => {
@@ -17,6 +17,7 @@ const App: NextPage = () => {
         <ClientContext.Provider
           value={{
             client: client,
+            guest_client: guest_client,
           }}
         >
           <Home />

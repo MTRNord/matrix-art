@@ -85,14 +85,15 @@ export default class Home extends Component<Props, State>{
         if (!directoryIsLoaded || isLoadingImages || hasFullyLoaded) {
             return;
         }
+        const client = this.context.client.isGuest ? this.context.client : this.context.guest_client;
         this.setState({
             isLoadingImages: true,
         });
         try {
             for (let user of directory_data) {
                 // We dont need many events
-                const roomId = await this.context.client?.followUser(user.user_room);
-                await this.context.client?.getTimeline(roomId, 100, (events) => {
+                const roomId = await client?.followUser(user.user_room);
+                await client?.getTimeline(roomId, 100, (events) => {
                     // Filter events by type
                     const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image");
                     console.log("Adding ", image_events.length, " items");
