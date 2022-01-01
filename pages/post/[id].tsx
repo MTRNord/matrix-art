@@ -1,3 +1,8 @@
+import LightGallery from 'lightgallery/react';
+import 'lightgallery/css/lightgallery.css';
+import 'lightgallery/css/lg-zoom.css';
+import 'lightgallery/css/lg-thumbnail.css';
+import lgZoom from 'lightgallery/plugins/zoom';
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
@@ -175,57 +180,94 @@ class Post extends Component<Props, State> {
         }
 
     }
-    renderSingleImageTags(image_event: ImageEvent): ReactNode {
-        const tags = image_event.content["matrixart.tags"].map((tag) => {
-            return <div className="mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm cursor-default" key={(image_event as MatrixEventBase).event_id + "tags" + tag}>{tag}</div>;
+    renderSingleImageTags(imageEvent: ImageEvent): ReactNode {
+        const tags = imageEvent.content["matrixart.tags"].map((tag) => {
+            return <div className="mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm cursor-default" key={(imageEvent as MatrixEventBase).event_id + "tags" + tag}>{tag}</div>;
         });
         return (
-            <div className="flex flex-row items-center text-gray-900 dark:text-gray-200 font-medium" key={(image_event as MatrixEventBase).event_id + "tags"}>{tags}</div>
+            <div className="flex flex-row items-center text-gray-900 dark:text-gray-200 font-medium" key={(imageEvent as MatrixEventBase).event_id + "tags"}>{tags}</div>
         );
     }
 
-    renderImageGalleryTags(image_event: ImageGalleryEvent): ReactNode {
-        return <></>;
+    renderImageGalleryTags(imageEvent: ImageGalleryEvent): ReactNode {
+        const tags = imageEvent.content['m.image_gallery'].flatMap(image => {
+            return image['matrixart.tags'].map((tag) => {
+                return <div className="mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm cursor-default" key={(imageEvent as MatrixEventBase).event_id + "tags" + tag}>{tag}</div>;
+            });
+        });
+        return (
+            <div className="flex flex-row items-center text-gray-900 dark:text-gray-200 font-medium" key={(imageEvent as MatrixEventBase).event_id + "tags"}>{tags}</div>
+        );
     }
 
     renderSingleImageEvent(imageEvent: ImageEvent, caption: string) {
         const url = this.context.client?.downloadLink(imageEvent.content["m.file"].url);
+        const thumbnail_url = this.context.client?.downloadLink(imageEvent.content['m.thumbnail'][0].url);
 
-        if (!url) {
+        if (!url || !thumbnail_url) {
             return <></>;
         }
-        return this.renderImage(imageEvent.event_id,
-            url,
-            caption,
-            imageEvent.content["m.file"].mimetype,
-            imageEvent.content["m.image"].width,
-            imageEvent.content["m.image"].height
-        );
-    }
-
-    renderImageGalleryEvent(imageEvent: ImageGalleryEvent, caption: string) {
-        return <div></div>;
-    }
-
-    // TODO make full size on click
-    renderImage(id: string, src: string, caption: string, mime: string, w: number, h: number) {
-        // TODO proper alt
         return (
             <>
                 <Head>
-                    <meta property="og:image" content={src} key="og-image" />
-                    <meta property="og:image:type" content={mime} key="og-image-type" />
+                    <meta property="og:image" content={url} key="og-image" />
+                    <meta property="og:image:type" content={imageEvent.content["m.file"].mimetype} key="og-image-type" />
                     <meta property="og:image:alt" content={caption} key="og-image-alt" />
-                    <meta property="og:image:width" content={w.toString()} key="og-image-width" />
-                    <meta property="og:image:height" content={h.toString()} key="og-image-height" />
-                    <meta name="twitter:image" content={src} key="og-twitter-image" />
+                    <meta property="og:image:width" content={imageEvent.content["m.image"].width.toString()} key="og-image-width" />
+                    <meta property="og:image:height" content={imageEvent.content["m.image"].height.toString()} key="og-image-height" />
+                    <meta name="twitter:image" content={url} key="og-twitter-image" />
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
-                    <img alt={caption} title={caption} className="shadow-2xl max-w-full lg:max-w-3xl max-h-[871px] shadow-black cursor-zoom-in" src={src} key={id}></img>
+                    <LightGallery
+                        plugins={[lgZoom]}
+                        elementClassNames="shadow-2xl max-w-full lg:max-w-3xl max-h-[871px] shadow-black cursor-zoom-in"
+                        key={imageEvent.event_id}
+                    >
+                        <a href={url} title={caption} data-src={url}>
+                            <img alt={caption} title={caption} src={thumbnail_url} />
+                        </a>
+                    </LightGallery>
                 </div>
             </>
         );
     }
+
+    renderImageGalleryEvent(imageEvent: ImageGalleryEvent, caption: string) {
+        const images = imageEvent.content['m.image_gallery'].map(image => {
+            const url = this.context.client?.downloadLink(image["m.file"].url);
+            const thumbnail_url = this.context.client?.downloadLink(image['m.thumbnail'][0].url);
+            if (!url || !thumbnail_url) {
+                return <></>;
+            }
+            return (
+                <a href={url} title={caption} data-src={url}>
+                    <img alt={caption} title={caption} src={thumbnail_url} />
+                </a>
+            );
+        });
+        return (
+            <>
+                <Head>
+                    <meta property="og:image" content={imageEvent.content["m.image_gallery"][0]["m.file"].url} key="og-image" />
+                    <meta property="og:image:type" content={imageEvent.content["m.image_gallery"][0]["m.file"].mimetype} key="og-image-type" />
+                    <meta property="og:image:alt" content={caption} key="og-image-alt" />
+                    <meta property="og:image:width" content={imageEvent.content["m.image_gallery"][0]["m.image"].width.toString()} key="og-image-width" />
+                    <meta property="og:image:height" content={imageEvent.content["m.image_gallery"][0]["m.image"].height.toString()} key="og-image-height" />
+                    <meta name="twitter:image" content={imageEvent.content["m.image_gallery"][0]["m.file"].url} key="og-twitter-image" />
+                </Head>
+                <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                    <LightGallery
+                        plugins={[lgZoom]}
+                        elementClassNames="shadow-2xl max-w-full lg:max-w-3xl max-h-[871px] shadow-black cursor-zoom-in"
+                        key={imageEvent.event_id}
+                    >
+                        {images}
+                    </LightGallery>
+                </div>
+            </>
+        );
+    }
+
 }
 
 Post.contextType = ClientContext;
