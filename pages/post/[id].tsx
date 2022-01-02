@@ -186,7 +186,7 @@ class Post extends Component<Props, State> {
             return <div className="mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm cursor-default" key={(imageEvent as MatrixEventBase).event_id + "tags" + tag}>{tag}</div>;
         });
         return (
-            <div className="flex flex-row items-center text-gray-900 dark:text-gray-200 font-medium" key={(imageEvent as MatrixEventBase).event_id + "tags"}>{tags}</div>
+            <div className="flex flex-row items-center text-gray-200 font-medium" key={(imageEvent as MatrixEventBase).event_id + "tags"}>{tags}</div>
         );
     }
 
@@ -197,7 +197,7 @@ class Post extends Component<Props, State> {
             });
         });
         return (
-            <div className="flex flex-row items-center text-gray-900 dark:text-gray-200 font-medium" key={(imageEvent as MatrixEventBase).event_id + "tags"}>{tags}</div>
+            <div className="flex flex-row items-center text-gray-200 font-medium" key={(imageEvent as MatrixEventBase).event_id + "tags"}>{tags}</div>
         );
     }
 
