@@ -193,10 +193,15 @@ class Post extends Component<Props, State> {
         }
 
     }
-    renderSingleImageTags(imageEvent: ImageEvent): ReactNode {
-        const tags = imageEvent.content["matrixart.tags"].map((tag) => {
-            return <div className="mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm cursor-default" key={(imageEvent as MatrixEventBase).event_id + "tags" + tag}>{tag}</div>;
+
+    renderTags(tags: string[], event_id: string) {
+        return tags.map((tag) => {
+            return <div className="cursor-pointer mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm" key={event_id + "tags" + tag}>{tag}</div>;
         });
+    }
+
+    renderSingleImageTags(imageEvent: ImageEvent): ReactNode {
+        const tags = this.renderTags(imageEvent.content["matrixart.tags"], (imageEvent as MatrixEventBase).event_id);
         return (
             <div className="flex flex-row items-center text-gray-200 font-medium" key={(imageEvent as MatrixEventBase).event_id + "tags"}>{tags}</div>
         );
@@ -204,9 +209,7 @@ class Post extends Component<Props, State> {
 
     renderImageGalleryTags(imageEvent: ImageGalleryEvent): ReactNode {
         const tags = imageEvent.content['m.image_gallery'].flatMap(image => {
-            return image['matrixart.tags'].map((tag) => {
-                return <div className="mr-2 bg-slate-800 hover:bg-slate-600 p-2 rounded-sm cursor-default" key={(imageEvent as MatrixEventBase).event_id + "tags" + tag}>{tag}</div>;
-            });
+            return this.renderTags(image["matrixart.tags"], (imageEvent as MatrixEventBase).event_id);
         });
         return (
             <div className="flex flex-row items-center text-gray-200 font-medium" key={(imageEvent as MatrixEventBase).event_id + "tags"}>{tags}</div>
