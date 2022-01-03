@@ -362,7 +362,7 @@ export default class MatrixClient {
         return info;
     }
 
-    async getTimeline(roomId: string, limit: number, callback: (arg0: MatrixEvent[]) => void) {
+    async getTimeline(roomId: string, limit: number, callback: (arg0: MatrixEvent[]) => void | Promise<void>) {
         if (!this.accessToken) {
             console.error("No access token");
             return [];
@@ -386,7 +386,7 @@ export default class MatrixClient {
             data.chunk.forEach((ev: any) => {
                 msgs.push(ev);
             });
-            callback(msgs);
+            Promise.resolve(callback(msgs));
             seenEvents += msgs.length;
             if (data.chunk.length < limit) {
                 break;

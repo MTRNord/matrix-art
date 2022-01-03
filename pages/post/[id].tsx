@@ -14,7 +14,8 @@ import Header from "../../components/Header";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import { constMatrixArtServer } from "../../helpers/matrix_client";
 import { get_data } from "../api/directory";
-import { isImageEvent, isImageGalleryEvent } from "../Home";
+import { isImageEvent, isImageGalleryEvent } from '../../components/FrontPageImage';
+import Link from 'next/link';
 
 const centerSpinner = `
     position: fixed;
@@ -30,7 +31,8 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
 type State = {
     hasFullyLoaded: boolean;
     isLoadingImages: boolean;
-    image_event: MatrixImageEvents;
+    image_event?: MatrixImageEvents;
+    displayname?: string;
     error?: any;
 };
 
@@ -43,7 +45,7 @@ class Post extends Component<Props, State> {
         this.state = {
             hasFullyLoaded: false,
             isLoadingImages: false
-        } as State;
+        };
     }
 
     async componentDidMount() {
@@ -75,12 +77,22 @@ class Post extends Component<Props, State> {
             for (let user of this.props.directory_data) {
                 // We dont need many events
                 const roomId = await this.context.client?.followUser(user.user_room);
-                await this.context.client?.getTimeline(roomId, 100, (events) => {
+                await this.context.client?.getTimeline(roomId, 100, async (events) => {
                     // Filter events by type
                     const image_event = events.filter((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
-                    this.setState({
-                        image_event: image_event[0],
-                    });
+                    try {
+                        const profile = await this.context.client.getProfile(image_event[0].sender);
+                        this.setState({
+                            image_event: image_event[0],
+                            displayname: profile.displayname,
+                        });
+                    } catch (ex) {
+                        console.debug(`Failed to fetch profile for user ${image_event[0].sender}:`, ex);
+                        this.setState({
+                            image_event: image_event[0],
+                            displayname: image_event[0].sender,
+                        });
+                    }
                 });
             }
         } catch (err) {
@@ -151,7 +163,7 @@ class Post extends Component<Props, State> {
                         <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[400px] flex flex-col items-center">
                             <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
                                 <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
-                                <h3 className="my-4 text-l text-gray-900 dark:text-gray-200 font-normal">{image_event.sender}</h3>
+                                <Link href={"/profile/" + encodeURIComponent(image_event.sender)}><h3 className="cursor-pointer mt-0 mb-4 text-l text-gray-900 dark:text-gray-200 font-normal">{this.state.displayname}</h3></Link>
                                 {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>}
                             </div>
                         </div>
