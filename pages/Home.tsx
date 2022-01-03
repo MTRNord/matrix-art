@@ -145,7 +145,7 @@ export default class Home extends Component<Props, State>{
                         </div>
                         <div className='m-10'>
                             <ul className='flex flex-wrap gap-1'>
-                                {image_events.map(event => <FrontPageImage event={event} />)}
+                                {image_events.map(event => <FrontPageImage event={event} key={(event as MatrixEventBase).event_id} />)}
                                 <li className='grow-[10]'></li>
                             </ul>
                         </div>
