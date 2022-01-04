@@ -30,7 +30,7 @@ export default class Header extends Component {
                     <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] h-[27px]'></span>
                     <div className='relative lg:m-0 mt-4'>
                         <div className='flex'>
-                            <button className='text-teal-400 bg-transparent relative h-[54px] min-w-[150px] z-[2] cursor-auto font-semibold'>Submit</button>
+                            <button className='text-teal-400 bg-transparent relative h-[54px] min-w-[150px] z-[2] cursor-auto font-bold'>Submit</button>
                         </div>
                     </div>
                 </header>

@@ -25,3 +25,28 @@ html, body, #__next {
     clip: rect(1px,1px,1px,1px);
     white-space: nowrap;
 }
+
+#reflection:before {
+    position: absolute;
+    content: "";
+    display: block;
+    pointer-events: none;
+    transition: all .1s linear;
+    transform-origin: 0 0;
+    background-image: radial-gradient(ellipse at 110% 130%,#fff,hsla(0,0%,100%,0) 80%);
+    background-position-y: 0;
+    background-repeat: no-repeat;
+    top: -50px;
+    left: 40%;
+    margin-left: -80px;
+    width: 100px;
+    height: 100px;
+    transform: rotate(-68deg) translateX(-50%);
+    opacity: .8;
+    z-index: -1;
+}
+
+#reflection:hover::before {
+    left: 50%;
+    opacity: .5;
+}
