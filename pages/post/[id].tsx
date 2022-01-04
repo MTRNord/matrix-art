@@ -53,6 +53,7 @@ class Post extends Component<Props, State> {
             try {
                 let serverUrl = constMatrixArtServer + "/_matrix/client";
                 await this.context.client?.registerAsGuest(serverUrl);
+                await this.context.guest_client?.registerAsGuest(serverUrl);
             } catch (err) {
                 console.error("Failed to register as guest:", err);
             }
@@ -83,13 +84,13 @@ class Post extends Component<Props, State> {
                     try {
                         const profile = await this.context.client.getProfile(image_event[0].sender);
                         this.setState({
-                            image_event: image_event[0],
+                            image_event: image_event[0] as MatrixImageEvents,
                             displayname: profile.displayname,
                         });
                     } catch (ex) {
                         console.debug(`Failed to fetch profile for user ${image_event[0].sender}:`, ex);
                         this.setState({
-                            image_event: image_event[0],
+                            image_event: image_event[0] as MatrixImageEvents,
                             displayname: image_event[0].sender,
                         });
                     }
@@ -163,7 +164,7 @@ class Post extends Component<Props, State> {
                         <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[400px] flex flex-col items-center">
                             <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
                                 <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
-                                <Link href={"/profile/" + encodeURIComponent(image_event.sender)}><h3 className="cursor-pointer mt-0 mb-4 text-l text-gray-900 dark:text-gray-200 font-normal">{this.state.displayname}</h3></Link>
+                                <h3 className="cursor-pointer mt-0 mb-4 text-l text-gray-900 dark:text-gray-200 font-normal"><Link href={"/profile/" + encodeURIComponent(image_event.sender)}>{this.state.displayname}</Link></h3>
                                 {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>}
                             </div>
                         </div>

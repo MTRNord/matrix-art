@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { RingLoader } from 'react-spinners';
-import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from '../helpers/event_types';
-import Link from 'next/link';
+import { MatrixEventBase, MatrixImageEvents } from '../helpers/event_types';
 import Head from 'next/head';
 import Header from '../components/Header';
 import { ClientContext } from '../components/ClientContext';
@@ -68,6 +67,7 @@ export default class Home extends Component<Props, State>{
         try {
             let serverUrl = constMatrixArtServer + "/_matrix/client";
             await this.context.client?.registerAsGuest(serverUrl);
+            await this.context.guest_client?.registerAsGuest(serverUrl);
             if (typeof window !== "undefined") {
                 window.location.reload();
             }

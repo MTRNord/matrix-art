@@ -52,5 +52,15 @@ export type ImageGalleryEvent = MatrixEventBase & {
     content: ImageGalleryContent;
 };
 
+export type BannerEventContent = {
+    "m.text": string;
+    "m.file": FileEvent;
+    "m.image": ImageFields;
+};
+
+export type BannerEvent = MatrixEventBase & {
+    content: BannerEventContent;
+};
+
 export type MatrixImageEvents = ImageEvent | ImageGalleryEvent;
-export type MatrixEvent = MatrixImageEvents;
+export type MatrixEvent = MatrixImageEvents | BannerEvent;

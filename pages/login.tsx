@@ -1,11 +1,9 @@
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { Component, ReactNode } from "react";
-import { RingLoader } from "react-spinners";
 import { ClientContext } from "../components/ClientContext";
 import Header from "../components/Header";
 import { constMatrixArtServer } from "../helpers/matrix_client";
-import { centerSpinner } from "./Home";
 
 type Props = {
     router: NextRouter;

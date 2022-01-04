@@ -20,9 +20,9 @@ export const get_data = async () => {
         console.log("Running in tests!");
         return [
             {
-                "user_id": "@MTRNord:art.midnightthoughts.space",
-                "user_room": "#@MTRNord:art.midnightthoughts.space",
-                "_id": "@MTRNord:art.midnightthoughts.space"
+                "user_id": "@mtrnord:art.midnightthoughts.space",
+                "user_room": "#@mtrnord:art.midnightthoughts.space",
+                "_id": "@mtrnord:art.midnightthoughts.space"
             }
         ];
     }
@@ -33,10 +33,6 @@ export const get_data = async () => {
 
 // TODO this is fully insecured. Make sure to use OpenID or something to verify the user of this.
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-
-    db.info().then(function (info) {
-        console.log(info);
-    });
 
     // Run cors
     await cors(req, res);
@@ -71,6 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const data: {
             user_id: string;
         } = req.body;
+        console.log(data.user_id);
         try {
             const db_data = await db.get(data.user_id);
             await db.remove(db_data);
