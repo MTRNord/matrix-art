@@ -386,7 +386,7 @@ export default class MatrixClient {
             data.chunk.forEach((ev: any) => {
                 msgs.push(ev);
             });
-            Promise.resolve(callback(msgs));
+            await Promise.resolve(callback(msgs));
             seenEvents += msgs.length;
             if (data.chunk.length < limit) {
                 break;
