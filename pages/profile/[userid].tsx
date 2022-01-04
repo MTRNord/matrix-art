@@ -4,8 +4,9 @@ import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
 import { Component } from "react";
 import { ClientContext } from "../../components/ClientContext";
+import FrontPageImage from "../../components/FrontPageImage";
 import Header from "../../components/Header";
-import { BannerEvent, MatrixEvent } from "../../helpers/event_types";
+import { BannerEvent, MatrixEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import { constMatrixArtServer } from "../../helpers/matrix_client";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
@@ -126,6 +127,7 @@ class Profile extends Component<Props, State> {
 
         const banner_event = this.state.events.filter(event => event.type === "matrixart.profile_banner")[0];
         const avatar_url = this.state.avatar_url;
+        const image_events = this.state.events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
         // TODO opengraph shows mxid instead of displayname
         return (
             <div className="h-full bg-[#f8f8f8] dark:bg-[#06070D]">
@@ -137,7 +139,7 @@ class Profile extends Component<Props, State> {
                     <meta property="og:type" content="website" key="og-type" />
                 </Head>
                 <Header></Header>
-                <main className='lg:pt-[108px] pt-[216px] z-0'>
+                <main className='lg:pt-[108px] pt-[216px] z-0 bg-[#f8f8f8] dark:bg-[#06070D]'>
                     {banner_event ? <div style={{
                         backgroundImage: `url(${this.context.client.downloadLink((banner_event as BannerEvent).content["m.file"].url)})`
                     }}
@@ -145,7 +147,7 @@ class Profile extends Component<Props, State> {
                     ></div> : null}
                     <div className="relative">
                         <div className="relative mb-0 min-h-[700px]">
-                            <div id="transparent_gradient" className="absolute left-0 right-0 top-[626px] bottom-0"></div>
+                            <div id="transparent_gradient" className="absolute left-0 right-0 top-[626px] bottom-0 bg-[#f8f8f8] dark:bg-[#06070D]"></div>
                             <div className="px-[60px] relative pt-[250px]">
                                 <div className="relative mt-0">
                                     <div className="relative inline-flex z-[1] mb-[40px]">
@@ -156,19 +158,18 @@ class Profile extends Component<Props, State> {
                                             </div>
                                         </span>
                                         <div className="ml-[20px] flex flex-col justify-center">
-                                            <h1 className="font-extrabold text-5xl text-gray-900 dark:text-gray-200 mt-[-17px] flex items-[flex-end]">{this.state.displayname}</h1>
+                                            <h1 className="font-extrabold text-5xl text-gray-900 dark:text-gray-200 mt-[-17px] flex items-end">{this.state.displayname}</h1>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="h-[54px] relative w-full">
+                                <div className="h-[52px] relative w-full">
                                     <div className="min-h-0">
                                         <nav className="w-full h-[52px] box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D]">
                                             <span id="magic-spacer"></span>
                                             <div className="flex items-center w-full h-full overflow-hidden whitespace-nowrap box-border min-w-fit">
                                                 <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-[8px] px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Home</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Gallery</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Favourites</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>About</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Gallery</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>About</a></Link>
                                             </div>
                                             <div className="pr-[15px]">
                                                 {/*TODO Share menu here*/}
@@ -179,8 +180,67 @@ class Profile extends Component<Props, State> {
                                         </nav>
                                     </div>
                                 </div>
+                                <div className="w-full bg-transparent">
+                                    <div className="pt-[20px]">
+                                        <div className="flex">
+                                            <div className="mr-[60px] overflow-hidden pb-4 flex-[auto]">
+                                                <div>
+                                                    <section className="pb-[15px] block">
+                                                        <div className="w-full flex items-center mt-[30px] mb-[15px]">
+                                                            <h2 className="font-bold text-lg tracking-[.3px] leading-[1.22] text-gray-900 dark:text-gray-200">Gallery</h2>
+                                                            <div className="ml-4 flex flex-[1] items-center relative justify-end">
+                                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}/gallery`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-[22px] uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>See All</a></Link>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <ul className='flex flex-wrap gap-1'>{image_events.map(event => <FrontPageImage event={event} imageHeight="286px" key={(event as MatrixEventBase).event_id} />)}
+                                                                <li className='grow-[10]'></li>
+                                                            </ul>
+                                                        </div>
+                                                    </section>
+                                                </div>
+                                            </div>
+                                            <div className="w-[600px] flex-none">
+                                                <div>
+                                                    <section className="pb-[15px] block">
+                                                        <div className="w-full flex items-center mt-[30px] mb-[15px]">
+                                                            <h2 className="font-bold text-gray-900 dark:text-gray-200 text-lg tracking--[.3px] leading-[1.22] max-w-[90%] mr-auto overflow-hidden text-ellipsis whitespace-nowrap">{`About ${this.state.displayname} (Currently Hardcoded)`}</h2>
+                                                            <div className="ml-[16px] flex flex-[1] items-center relative justify-end">
+                                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}/about`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-[22px] uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>More</a></Link>
+                                                            </div>
+                                                        </div>
+                                                        <div className="bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95] pt-[27px] w-ull flex flex-col box-border tracking--[.3px] text-gray-900 dark:text-gray-200">
+                                                            <div className="px-[32px]">
+                                                                <div className="mb-[32px] font-regular text-base leading-[1.22] whitespace-pre-wrap">
+                                                                    Coder // Photographer // Student
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-[32px]">
+                                                                <div className="mb-[32px] flex items-start justify-between flex-wrap w-full">
+                                                                    <div className="h-[44px] mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">Pronouns</div>
+                                                                    <div className="w-full justify-items-end">They/Them</div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-[32px]">
+                                                                <div className="mb-[32px] flex items-start justify-between flex-wrap w-full">
+                                                                    <div className="h-[44px] mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">Follow me on</div>
+                                                                    <div className="w-full max-w-[344px] grid gap-4 auto-cols-[44px] auto-rows-[44px] grid-flow-col justify-items-end">{/*TODO Social Icons */}</div>
+                                                                </div>
+                                                            </div>
+                                                            <div className="px-[32px]">
+                                                                <div className="mb-[32px] font-regular text-base leading-[1.22] whitespace-pre-wrap">
+                                                                    <div className="h-[44px] mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">My Bio</div>
+                                                                    <div className="text-base font-regular">Hi! I am MTRNord :) I like to photograph since quite a while. A lot of different things like Flowers or architecture but also nature.<br /><br />I also very much like doing things in 3D in blender that I may share here :)</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </section>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
                     </div>
                 </main>

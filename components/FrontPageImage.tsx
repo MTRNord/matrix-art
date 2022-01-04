@@ -6,21 +6,24 @@ import { ClientContext } from "./ClientContext";
 
 type Props = {
     event: MatrixImageEvents;
+    imageHeight?: string;
 };
 
 type State = {
     displayname: string;
+    imageHeight?: string;
     error: any;
 };
 
 export default class FrontPageImage extends Component<Props, State> {
     declare context: React.ContextType<typeof ClientContext>;
 
-    constructor(props: Props | Readonly<Props>) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
-            displayname: this.props.event.sender
+            displayname: this.props.event.sender,
+            imageHeight: this.props.imageHeight ? this.props.imageHeight : "270px"
         } as State;
     }
 
@@ -42,7 +45,7 @@ export default class FrontPageImage extends Component<Props, State> {
                 console.debug(`Failed to fetch profile for user ${this.props.event.sender}:`, ex);
             }
         }
-        
+
     }
 
     async registerAsGuest() {
@@ -102,7 +105,7 @@ export default class FrontPageImage extends Component<Props, State> {
         // TODO proper alt text
         const direct_link = `/post/${encodeURIComponent(post_id)}`;
         return (
-            <li className='h-[270px]' key={id}>
+            <li className={`h-[${this.props.imageHeight}]`} key={id}>
                 <Link href={direct_link} passHref>
                     <div className='relative h-[270px] cursor-pointer'>
                         <img alt={caption} title={caption} className='relative max-w-full h-[270px] object-cover align-bottom z-0' src={this.context.client?.thumbnailLink(thumbnail_url, "scale", 270, 270)}></img>
