@@ -105,11 +105,11 @@ export default class FrontPageImage extends Component<Props, State> {
         // TODO proper alt text
         const direct_link = `/post/${encodeURIComponent(post_id)}`;
         return (
-            <li className={`h-[${this.props.imageHeight}]`} key={id}>
+            <li style={{ height: this.props.imageHeight }} key={id}>
                 <Link href={direct_link} passHref>
-                    <div className='relative h-[270px] cursor-pointer'>
-                        <img alt={caption} title={caption} className='relative max-w-full h-[270px] object-cover align-bottom z-0' src={this.context.client?.thumbnailLink(thumbnail_url, "scale", 270, 270)}></img>
-                        <div className="flex-col max-w-full h-[270px] opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4">
+                    <div style={{height: this.props.imageHeight}} className={`relative cursor-pointer`}>
+                        <img alt={caption} title={caption} style={{ height: this.props.imageHeight }} className={`relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", parseInt(this.state.imageHeight?.replace("px", "")!), parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+                        <div style={{ height: this.props.imageHeight }} className={`flex-col max-w-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4`}>
                             <h2 className='truncate max-w-full text-base font-semibold'>{caption}</h2>
                             <p className='truncate max-w-full text-sm'>{this.state.displayname}</p>
                         </div>
