@@ -1,5 +1,6 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
 import { Component } from "react";
 import { ClientContext } from "../../components/ClientContext";
@@ -150,15 +151,29 @@ class Profile extends Component<Props, State> {
                                         <span>
                                             <div className="block relative">
                                                 {/* TODO fallback*/}
-                                                <img className="block object-cover rounded-[4px]" src={avatar_url} alt={this.state.displayname} title={this.state.displayname} />
+                                                <img className="block object-cover rounded-[4px]" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={this.state.displayname} title={this.state.displayname} />
                                             </div>
                                         </span>
                                         <div className="ml-[20px] flex flex-col justify-center">
-                                            <h1 className="text-bold text-5xl text-gray-900 dark:text-gray-200 mt-[-17px] flex items-[flex-end]">{this.state.displayname}</h1>
+                                            <h1 className="font-medium text-5xl text-gray-900 dark:text-gray-200 mt-[-17px] flex items-[flex-end]">{this.state.displayname}</h1>
                                         </div>
                                     </div>
                                 </div>
+                                <div className="h-[54px] relative w-full">
+                                    <div className="min-h-0">
+                                        <nav className="w-full h-[52px] box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D]">
+                                            <span id="magic-spacer"></span>
+                                            <div className="flex items-center w-full h-full overflow-hidden whitespace-nowrap box-border min-w-fit">
+                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-[8px] px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Home</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-medium text-gray-900 dark:text-[#b1b1b9] capitalize px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Gallery</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-medium text-gray-900 dark:text-[#b1b1b9] capitalize px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Favourites</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-medium text-gray-900 dark:text-[#b1b1b9] capitalize px-[32px] relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>About</a></Link>
+                                            </div>
+                                        </nav>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </main>
