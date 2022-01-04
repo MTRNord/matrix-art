@@ -94,7 +94,7 @@ export default class Home extends Component<Props, State>{
                 const roomId = await client?.followUser(user.user_room);
                 await client?.getTimeline(roomId, 100, (events) => {
                     // Filter events by type
-                    const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image");
+                    const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
                     console.log("Adding ", image_events.length, " items");
                     this.setState({
                         image_events: image_events,
