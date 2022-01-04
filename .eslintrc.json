@@ -1,3 +1,12 @@
 {
-  "extends": "next/core-web-vitals"
+  "plugins": [
+    "jsx-a11y"
+  ],
+  "extends": [
+    "next/core-web-vitals",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "rules": {
+    "@next/next/no-img-element": "off"
+  }
 }
