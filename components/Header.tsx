@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { Component } from "react";
+import { PureComponent } from "react";
 import { ClientContext } from "./ClientContext";
 
-export default class Header extends Component {
+export default class Header extends PureComponent {
     declare context: React.ContextType<typeof ClientContext>;
     render() {
         return (

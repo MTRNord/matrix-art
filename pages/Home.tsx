@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { RingLoader } from 'react-spinners';
 import { MatrixEventBase, MatrixImageEvents } from '../helpers/event_types';
 import Head from 'next/head';
@@ -28,7 +28,7 @@ export const centerSpinner = `
     transform: translate(-50%, -50%);
 `;
 
-export default class Home extends Component<Props, State>{
+export default class Home extends PureComponent<Props, State>{
     declare context: React.ContextType<typeof ClientContext>;
 
     constructor(props: Props) {

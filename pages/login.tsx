@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
-import { Component, ReactNode } from "react";
+import { PureComponent, ReactNode } from "react";
 import { ClientContext } from "../components/ClientContext";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -19,7 +19,7 @@ type State = {
     loading: boolean;
 };
 
-class Login extends Component<Props, State> {
+class Login extends PureComponent<Props, State> {
     declare context: React.ContextType<typeof ClientContext>;
 
     constructor(props: Props | Readonly<Props>) {

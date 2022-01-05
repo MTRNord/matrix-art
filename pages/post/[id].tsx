@@ -7,7 +7,7 @@ import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
-import { Component, ReactNode } from "react";
+import { PureComponent, ReactNode } from "react";
 import { RingLoader } from "react-spinners";
 import { ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
@@ -37,7 +37,7 @@ type State = {
     error?: any;
 };
 
-class Post extends Component<Props, State> {
+class Post extends PureComponent<Props, State> {
     declare context: React.ContextType<typeof ClientContext>;
 
     constructor(props: Props) {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Component } from "react";
+import { PureComponent } from "react";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../helpers/event_types";
 import { constMatrixArtServer } from "../helpers/matrix_client";
 import { ClientContext } from "./ClientContext";
@@ -15,7 +15,7 @@ type State = {
     error: any;
 };
 
-export default class FrontPageImage extends Component<Props, State> {
+export default class FrontPageImage extends PureComponent<Props, State> {
     declare context: React.ContextType<typeof ClientContext>;
 
     constructor(props: Props) {

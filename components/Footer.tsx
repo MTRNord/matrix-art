@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Component } from "react";
+import { PureComponent } from "react";
 
-export default class Footer extends Component {
+export default class Footer extends PureComponent {
     render() {
         return (
             <footer className="relative left-0 right-0 bottom-0 h-[25rem] bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95] flex justify-center items-center">

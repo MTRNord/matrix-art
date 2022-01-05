@@ -2,7 +2,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
-import { Component } from "react";
+import { PureComponent } from "react";
 import { ClientContext } from "../../components/ClientContext";
 import Footer from "../../components/Footer";
 import FrontPageImage from "../../components/FrontPageImage";
@@ -23,7 +23,7 @@ type State = {
     hasFullyLoaded: boolean;
 };
 
-class Profile extends Component<Props, State> {
+class Profile extends PureComponent<Props, State> {
     declare context: React.ContextType<typeof ClientContext>;
 
     constructor(props: Props | Readonly<Props>) {
