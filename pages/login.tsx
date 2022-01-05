@@ -2,6 +2,7 @@ import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { Component, ReactNode } from "react";
 import { ClientContext } from "../components/ClientContext";
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import { constMatrixArtServer } from "../helpers/matrix_client";
 
@@ -158,6 +159,7 @@ class Login extends Component<Props, State> {
                             </form>
                         </div>
                     </main>
+                    <Footer></Footer>
                 </div>
             </>
         );

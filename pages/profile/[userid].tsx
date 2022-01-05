@@ -4,6 +4,7 @@ import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
 import { Component } from "react";
 import { ClientContext } from "../../components/ClientContext";
+import Footer from "../../components/Footer";
 import FrontPageImage from "../../components/FrontPageImage";
 import Header from "../../components/Header";
 import { BannerEvent, MatrixEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
@@ -148,7 +149,7 @@ class Profile extends Component<Props, State> {
                     <div className="relative">
                         <div className="relative mb-0 min-h-[700px]">
                             <div id="transparent_gradient" className="absolute left-0 right-0 top-[626px] bottom-0 bg-[#f8f8f8] dark:bg-[#06070D]"></div>
-                            <div className="px-[60px] relative pt-[250px]">
+                            <div className="px-[60px] relative pt-[250px] pb-96 ">
                                 <div className="relative mt-0">
                                     <div className="relative inline-flex z-[1] mb-[40px]">
                                         <span>
@@ -244,6 +245,7 @@ class Profile extends Component<Props, State> {
                         </div>
                     </div>
                 </main>
+                <Footer></Footer>
             </div>
         );
     }

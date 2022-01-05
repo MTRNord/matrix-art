@@ -16,6 +16,7 @@ import { constMatrixArtServer } from "../../helpers/matrix_client";
 import { get_data } from "../api/directory";
 import { isImageEvent, isImageGalleryEvent } from '../../components/FrontPageImage';
 import Link from 'next/link';
+import Footer from '../../components/Footer';
 
 const centerSpinner = `
     position: fixed;
@@ -135,6 +136,7 @@ class Post extends Component<Props, State> {
                     <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>
                         <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The Post you wanted does not exist!</h1>
                     </main>
+                    <Footer></Footer>
                 </div>
             );
         }
@@ -169,6 +171,7 @@ class Post extends Component<Props, State> {
                             </div>
                         </div>
                     </main>
+                    <Footer></Footer>
                 </div>
             );
         } else if (error) {
@@ -189,6 +192,7 @@ class Post extends Component<Props, State> {
                     <main className='h-full lg:pt-[108px] pt-[216px] z-0 flex items-center justify-center'>
                         <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The Post you wanted does not exist!</h1>
                     </main>
+                    <Footer></Footer>
                 </div>
             );
         }

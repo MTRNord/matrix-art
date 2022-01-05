@@ -6,6 +6,7 @@ import Header from '../components/Header';
 import { ClientContext } from '../components/ClientContext';
 import { constMatrixArtServer } from '../helpers/matrix_client';
 import FrontPageImage from '../components/FrontPageImage';
+import Footer from '../components/Footer';
 
 type Props = {
 };
@@ -137,7 +138,7 @@ export default class Home extends Component<Props, State>{
                         <meta property="og:type" content="website" key="og-type" />
                     </Head>
                     <Header></Header>
-                    <main className='lg:pt-[108px] pt-[216px] z-0'>
+                    <main className='h-full lg:pt-[108px] pt-[216px] z-0'>
                         <div className='z-[100] sticky lg:top-[108px] top-[216px] bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
                             <div className='h-[72px] px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
                                 <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Home</h1>
@@ -151,7 +152,7 @@ export default class Home extends Component<Props, State>{
                         </div>
 
                     </main>
-                    <footer></footer>
+                    <Footer></Footer>
                 </div>
             );
         };
