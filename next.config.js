@@ -33,4 +33,7 @@ module.exports = {
       },
     ]
   },
+  eslint: {
+    dirs: ['pages', 'components', "helpers", "e2e"],
+  },
 }

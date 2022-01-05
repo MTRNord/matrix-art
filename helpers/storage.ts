@@ -4,8 +4,8 @@ export default class Storage {
     constructor(prefix: string) {
         this.prefix = prefix;
         if (typeof window === "undefined") {
-            var LocalStorage = require('node-localstorage').LocalStorage;
-            var path = require('path');
+            var LocalStorage = require('node-localstorage').LocalStorage; // eslint-disable-line unicorn/prefer-module
+            var path = require('path'); // eslint-disable-line unicorn/prefer-module
             this.nodeLocalStorage = new LocalStorage(path.join(process.cwd(), "localstorage"));
         }
     }

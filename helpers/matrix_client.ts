@@ -47,20 +47,23 @@ export default class MatrixClient {
         this.storage.setOrDelete("serverName", this.serverName);
     }
 
-    async registerAsGuest(serverUrl: string) {
-        function generateToken(len: number) {
-            var arr = new Uint8Array(len / 2);
-            if (typeof window !== "undefined") {
-                window.crypto.getRandomValues(arr);
-            } else {
-                require("crypto").randomFillSync(arr);
-            }
-            return Array.from(arr, (num) => {
-                return num.toString(16).padStart(2, "0");
-            }).join("");
+    generateToken(len: number) {
+        var arr = new Uint8Array(len / 2);
+        if (typeof window !== "undefined") {
+            window.crypto.getRandomValues(arr);
+        } else {
+            require("crypto").randomFillSync(arr); // eslint-disable-line unicorn/prefer-module
         }
+        /* eslint-disable unicorn/prefer-spread */
+        return Array.from(arr, (num) => {
+            return num.toString(16).padStart(2, "0");
+        }).join("");
+        /* eslint-enable unicorn/prefer-spread */
+    }
+
+    async registerAsGuest(serverUrl: string) {
         let username = "matrix_art_guest_" + Date.now();
-        let password = generateToken(32);
+        let password = this.generateToken(32);
 
         const data = await this.fetchJson(`${serverUrl}/r0/register`, {
             method: "POST",
@@ -78,7 +81,7 @@ export default class MatrixClient {
         this.serverName = data.home_server;
         this._isGuest = true;
         this.saveAuthState();
-        console.log("Registered as guest ", username);
+        console.log("Registered as guest", username);
     }
 
     async logout(suppressLogout: boolean) {
@@ -106,7 +109,7 @@ export default class MatrixClient {
         const data = await response.json();
         if (!response.ok) {
             if (data.errcode === "M_UNKNOWN_TOKEN") {
-                console.log("unknown token, logging user out: ", data);
+                console.log("unknown token, logging user out:", data);
                 // suppressLogout so we don't recursively call fetchJson
                 await this.logout(true);
             }
@@ -193,7 +196,7 @@ export default class MatrixClient {
         if (roomId) {
             return roomId;
         }
-        const isMyself = roomAlias.substr(1) === this.userId;
+        const isMyself = roomAlias.slice(1) === this.userId;
 
         try {
             let data = await this.fetchJson(
@@ -206,7 +209,7 @@ export default class MatrixClient {
             );
             this.joinedRooms.set(roomAlias, data.room_id);
             return data.room_id;
-        } catch (err) {
+        } catch (error) {
             // try to make our Profile room
             if (isMyself) {
                 let data = await this.fetchJson(
@@ -238,21 +241,21 @@ export default class MatrixClient {
                 this.joinedRooms.set(roomAlias, data.room_id);
                 return data.room_id;
             } else {
-                throw err;
+                throw error;
             }
         }
     }
 
     private static localpart(userId: string) {
-        return userId.split(":")[0].substr(1);
+        return userId.split(":")[0].slice(1);
     }
 
-    downloadLink(mxcUri: string): string | null {
+    downloadLink(mxcUri: string): string | undefined {
         if (!mxcUri) {
-            return null;
+            return undefined;
         }
         if (mxcUri.indexOf("mxc://") !== 0) {
-            return null;
+            return undefined;
         }
         const mediaUrl = this.serverUrl?.slice(0, -1 * "/client".length);
         return mediaUrl + "/media/r0/download/" + mxcUri.split("mxc://")[1];
@@ -300,10 +303,10 @@ export default class MatrixClient {
     async getAggregatedTimeline() {
         let info: {
             timeline: any[],
-            from: string | null;
+            from: string | undefined;
         } = {
             timeline: [],
-            from: null,
+            from: undefined,
         };
         if (!this.accessToken) {
             console.error("No access token");
@@ -383,9 +386,9 @@ export default class MatrixClient {
             );
             from = data.end;
             let msgs: MatrixEvent[] = [];
-            data.chunk.forEach((ev: any) => {
+            for (const ev of data.chunk) {
                 msgs.push(ev);
-            });
+            }
             await Promise.resolve(callback(msgs));
             seenEvents += msgs.length;
             if (data.chunk.length < limit) {
