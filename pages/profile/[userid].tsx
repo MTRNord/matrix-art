@@ -50,8 +50,8 @@ class Profile extends Component<Props, State> {
                     displayname: profile.displayname,
                     avatar_url: profile.avatar_url,
                 });
-            } catch (ex) {
-                console.debug(`Failed to fetch profile for user ${this.props.mxid}:`, ex);
+            } catch (error) {
+                console.debug(`Failed to fetch profile for user ${this.props.mxid}:`, error);
             }
             await this.loadEvents();
         }
@@ -65,10 +65,10 @@ class Profile extends Component<Props, State> {
             if (typeof window !== "undefined") {
                 window.location.reload();
             }
-        } catch (err) {
-            console.error("Failed to register as guest:", err);
+        } catch (error) {
+            console.error("Failed to register as guest:", error);
             this.setState({
-                error: "Failed to register as guest: " + JSON.stringify(err),
+                error: "Failed to register as guest: " + JSON.stringify(error),
             });
         }
     }
@@ -86,14 +86,14 @@ class Profile extends Component<Props, State> {
             const roomId = await client?.followUser("#" + this.props.mxid);
             await client?.getTimeline(roomId, 100, (events) => {
                 const filtered_events = events.filter(event => event.type !== "m.room.member" && event.type !== "m.room.topic" && event.type !== "m.room.name" && event.type !== "m.room.power_levels");
-                console.log("Adding ", filtered_events.length, " items");
+                console.log("Adding", filtered_events.length, "items");
                 this.setState({
                     events: filtered_events,
                 });
             });
-        } catch (err) {
+        } catch (error) {
             this.setState({
-                error: JSON.stringify(err),
+                error: JSON.stringify(error),
             });
         } finally {
             this.setState({
@@ -126,7 +126,7 @@ class Profile extends Component<Props, State> {
             return this.renderNotFound();
         }
 
-        const banner_event = this.state.events.filter(event => event.type === "matrixart.profile_banner")[0];
+        const banner_event = this.state.events.find(event => event.type === "matrixart.profile_banner");
         const avatar_url = this.state.avatar_url;
         const image_events = this.state.events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
         // TODO opengraph shows mxid instead of displayname
@@ -145,7 +145,7 @@ class Profile extends Component<Props, State> {
                         backgroundImage: `url(${this.context.client.downloadLink((banner_event as BannerEvent).content["m.file"].url)})`
                     }}
                         className="fixed top-14 w-full h-[32.5rem] bg-cover bg-[position:50%]"
-                    ></div> : null}
+                    ></div> : undefined}
                     <div className="relative">
                         <div className="relative mb-0 min-h-[43.75rem]">
                             <div id="transparent_gradient" className="absolute left-0 right-0 top-[39rem] bottom-0 bg-[#f8f8f8] dark:bg-[#06070D]"></div>
@@ -268,7 +268,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     mxid: mxid
                 }
             };
-        } catch (error) {
+        } catch {
             return { notFound: true, props: {} };
         }
     }

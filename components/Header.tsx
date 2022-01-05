@@ -22,9 +22,9 @@ export default class Header extends Component {
                         </div>
 
                         <nav className='flex flex-shrink-0 relative mr-0 h-full'>
-                            {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span> : null}
-                            {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span> : null}
-                            {!this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>Profile</Link></span> : null}
+                            {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span> : undefined}
+                            {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span> : undefined}
+                            {!this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>Profile</Link></span> : undefined}
                         </nav>
                     </div>
                     <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] h-7'></span>

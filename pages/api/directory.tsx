@@ -2,7 +2,7 @@ import Cors from 'cors';
 import initMiddleware from '../../helpers/init-middleware';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import PouchDB from 'pouchdb';
-import path from 'path';
+import path from 'node:path';
 
 const db = new PouchDB(path.join(process.cwd(), "matrix-art-db"));
 
@@ -26,8 +26,11 @@ export const get_data = async () => {
             }
         ];
     }
-    const db_data: { _id: string; user_id: string; user_room: string; _rev?: string; }[] = (await db.allDocs({ include_docs: true })).rows.map(x => x.doc) as unknown as { _id: string; user_id: string; user_room: string; _rev?: string; }[];
-    db_data.forEach(x => delete x?._rev);
+    const db_resp = await db.allDocs({ include_docs: true });
+    const db_data: { _id: string; user_id: string; user_room: string; _rev?: string; }[] = db_resp.rows.map(x => x.doc) as unknown as { _id: string; user_id: string; user_room: string; _rev?: string; }[];
+    for (const entry of db_data) {
+        delete entry._rev;
+    }
     return db_data;
 };
 
@@ -41,9 +44,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             const db_data = await get_data();
             res.status(200).json({ data: db_data });
-        } catch (err) {
+        } catch (error) {
             res.status(502).json({});
-            console.error(err);
+            console.error(error);
         }
     } else if (req.method == "POST") {
         const data: {
@@ -58,9 +61,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             await db.put(db_data);
             res.status(200).json({});
-        } catch (err) {
+        } catch (error) {
             res.status(502).json({});
-            console.error(err);
+            console.error(error);
         }
 
     } else if (req.method == "DELETE") {
@@ -72,9 +75,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const db_data = await db.get(data.user_id);
             await db.remove(db_data);
             res.status(200).json({});
-        } catch (err) {
+        } catch (error) {
             res.status(502).json({});
-            console.error(err);
+            console.error(error);
         }
 
     } else {

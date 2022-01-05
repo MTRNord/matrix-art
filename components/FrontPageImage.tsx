@@ -41,8 +41,8 @@ export default class FrontPageImage extends Component<Props, State> {
                 this.setState({
                     displayname: profile.displayname,
                 });
-            } catch (ex) {
-                console.debug(`Failed to fetch profile for user ${this.props.event.sender}:`, ex);
+            } catch (error) {
+                console.debug(`Failed to fetch profile for user ${this.props.event.sender}:`, error);
             }
         }
 
@@ -55,10 +55,10 @@ export default class FrontPageImage extends Component<Props, State> {
             if (typeof window !== "undefined") {
                 window.location.reload();
             }
-        } catch (err) {
-            console.error("Failed to register as guest:", err);
+        } catch (error) {
+            console.error("Failed to register as guest:", error);
             this.setState({
-                error: "Failed to register as guest: " + JSON.stringify(err),
+                error: "Failed to register as guest: " + JSON.stringify(error),
             });
         }
     }
@@ -67,7 +67,7 @@ export default class FrontPageImage extends Component<Props, State> {
         const event = this.props.event;
         return (
             <>
-                {isImageGalleryEvent(event) ? this.render_gallery(event) : isImageEvent(event) ? this.render_image(event) : <div key={(event as MatrixEventBase).event_id}></div>}
+                {isImageGalleryEvent(event) ? this.render_gallery(event) : (isImageEvent(event) ? this.render_image(event) : <div key={(event as MatrixEventBase).event_id}></div>)}
             </>
         );
     }
@@ -79,7 +79,7 @@ export default class FrontPageImage extends Component<Props, State> {
             return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
         });
         let caption_text = "";
-        if (caption.length != 0) {
+        if (caption.length > 0) {
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
         return event.content['m.image_gallery'].map(image => {
@@ -94,7 +94,7 @@ export default class FrontPageImage extends Component<Props, State> {
             return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
         });
         let caption_text = "";
-        if (caption.length != 0) {
+        if (caption.length > 0) {
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
         return this.render_image_box(event.content['m.thumbnail'][0].url, event.event_id, event.event_id, caption_text);
@@ -108,7 +108,7 @@ export default class FrontPageImage extends Component<Props, State> {
             <li style={{ height: this.state.imageHeight }} key={id}>
                 <Link href={direct_link} passHref>
                     <div style={{ height: this.state.imageHeight }} className={`relative cursor-pointer`}>
-                        <img alt={caption} title={caption} style={{ height: this.state.imageHeight }} className={`relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", parseInt(this.state.imageHeight?.replace("px", "")!), parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+                        <img alt={caption} title={caption} style={{ height: this.state.imageHeight }} className={`relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
                         <div style={{ height: this.state.imageHeight }} className={`flex-col max-w-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4`}>
                             <h2 className='truncate max-w-full text-base font-semibold'>{caption}</h2>
                             <p className='truncate max-w-full text-sm'>{this.state.displayname}</p>

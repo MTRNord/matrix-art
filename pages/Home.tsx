@@ -53,7 +53,8 @@ export default class Home extends Component<Props, State>{
         } else {
             console.log("Already logged in");
             try {
-                const data = await (await fetch('/api/directory')).json();
+                const resp = await fetch('/api/directory');
+                const data = await resp.json();
                 this.setState({ directory_data: data.data, directoryIsLoaded: true });
             } catch (error) {
                 this.setState({
@@ -72,10 +73,10 @@ export default class Home extends Component<Props, State>{
             if (typeof window !== "undefined") {
                 window.location.reload();
             }
-        } catch (err) {
-            console.error("Failed to register as guest:", err);
+        } catch (error) {
+            console.error("Failed to register as guest:", error);
             this.setState({
-                error: "Failed to register as guest: " + JSON.stringify(err),
+                error: "Failed to register as guest: " + JSON.stringify(error),
             });
         }
     }
@@ -96,15 +97,15 @@ export default class Home extends Component<Props, State>{
                 await client?.getTimeline(roomId, 100, (events) => {
                     // Filter events by type
                     const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
-                    console.log("Adding ", image_events.length, " items");
+                    console.log("Adding", image_events.length, "items");
                     this.setState({
                         image_events: image_events,
                     });
                 });
             }
-        } catch (err) {
+        } catch (error) {
             this.setState({
-                error: JSON.stringify(err),
+                error: JSON.stringify(error),
             });
         } finally {
             this.setState({

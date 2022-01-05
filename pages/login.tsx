@@ -79,7 +79,7 @@ class Login extends Component<Props, State> {
     }
 
     render(): ReactNode {
-        const { loading } = this.state;
+        const { loading, showServerField, serverFieldsOpacity, serverFieldsDisplay, serverUrl, mxid, password } = this.state;
         if (loading) {
             return (
                 <>
@@ -126,7 +126,7 @@ class Login extends Component<Props, State> {
                                     <div className="mt-2">
                                         <div>
                                             <label className="inline-flex items-center">
-                                                <input className="cursor-pointer h-4 w-4" type="checkbox" name="showServerField" checked={this.state.showServerField} onChange={this.handleInputChange} />
+                                                <input className="cursor-pointer h-4 w-4" type="checkbox" name="showServerField" checked={showServerField} onChange={this.handleInputChange} />
                                                 <span className="ml-2 text-gray-900 dark:text-gray-200">Use custom Server</span>
                                             </label>
                                         </div>
@@ -135,25 +135,25 @@ class Login extends Component<Props, State> {
 
                                 <label style={{
                                     transition: 'opacity 0.4s ease',
-                                    opacity: this.state.serverFieldsOpacity,
-                                    display: this.state.serverFieldsDisplay
+                                    opacity: serverFieldsOpacity,
+                                    display: serverFieldsDisplay
                                 }} id="homeserverField">
                                     <span className="text-gray-900 dark:text-gray-200">Homeserver:</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="text" name="serverUrl" value={this.state.serverUrl} onChange={this.handleInputChange} />
+                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 
                                 <label className="block">
                                     <span className="text-gray-900 dark:text-gray-200">Username:</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="text" name="mxid" value={this.state.mxid} onChange={this.handleInputChange} />
+                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
                                 <label className="block">
                                     <span className="text-gray-900 dark:text-gray-200">Password:</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="password" name="password" value={this.state.password} onChange={this.handleInputChange} />
+                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="password" name="password" value={password} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 

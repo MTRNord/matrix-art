@@ -55,8 +55,8 @@ class Post extends Component<Props, State> {
                 let serverUrl = constMatrixArtServer + "/_matrix/client";
                 await this.context.client?.registerAsGuest(serverUrl);
                 await this.context.guest_client?.registerAsGuest(serverUrl);
-            } catch (err) {
-                console.error("Failed to register as guest:", err);
+            } catch (error) {
+                console.error("Failed to register as guest:", error);
             }
         } else {
             console.log("Already logged in");
@@ -81,25 +81,27 @@ class Post extends Component<Props, State> {
                 const roomId = await this.context.client?.followUser(user.user_room);
                 await this.context.client?.getTimeline(roomId, 100, async (events) => {
                     // Filter events by type
-                    const image_event = events.filter((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
+                    const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
                     try {
-                        const profile = await this.context.client.getProfile(image_event[0].sender);
+                        // TODO this should get handled if null
+                        const profile = await this.context.client.getProfile(image_event!.sender);
                         this.setState({
-                            image_event: image_event[0] as MatrixImageEvents,
+                            image_event: image_event as MatrixImageEvents,
                             displayname: profile.displayname,
                         });
-                    } catch (ex) {
-                        console.debug(`Failed to fetch profile for user ${image_event[0].sender}:`, ex);
+
+                    } catch (error) {
+                        console.debug(`Failed to fetch profile for user ${image_event?.sender}:`, error);
                         this.setState({
-                            image_event: image_event[0] as MatrixImageEvents,
-                            displayname: image_event[0].sender,
+                            image_event: image_event as MatrixImageEvents,
+                            displayname: image_event?.sender,
                         });
                     }
                 });
             }
-        } catch (err) {
+        } catch (error) {
             this.setState({
-                error: JSON.stringify(err),
+                error: JSON.stringify(error),
             });
         } finally {
             this.setState({
@@ -110,7 +112,7 @@ class Post extends Component<Props, State> {
     }
 
     render() {
-        const { error, hasFullyLoaded, image_event } = this.state;
+        const { error, hasFullyLoaded, image_event, displayname } = this.state;
 
         if (!hasFullyLoaded) {
             return (
@@ -147,7 +149,7 @@ class Post extends Component<Props, State> {
                 const possible_html_caption = (cap as { body: string; mimetype: string; });
                 return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
             });
-            if (caption.length != 0) {
+            if (caption.length > 0) {
                 post_title = (caption[0] as { body: string; mimetype: string; }).body;
             }
             return (
@@ -162,12 +164,12 @@ class Post extends Component<Props, State> {
                     <Header></Header>
 
                     <main className='flex-col h-full flex lg:pt-20 pt-56 z-0'>
-                        {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>}
+                        {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : (isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>)}
                         <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[25rem] flex flex-col items-center">
                             <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
                                 <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
-                                <h3 className="cursor-pointer mt-0 mb-4 text-l text-gray-900 dark:text-gray-200 font-normal"><Link href={"/profile/" + encodeURIComponent(image_event.sender)}>{this.state.displayname}</Link></h3>
-                                {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>}
+                                <h3 className="cursor-pointer mt-0 mb-4 text-l text-gray-900 dark:text-gray-200 font-normal"><Link href={"/profile/" + encodeURIComponent(image_event.sender)}>{displayname}</Link></h3>
+                                {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : (isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>)}
                             </div>
                         </div>
                     </main>
@@ -313,7 +315,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     directory_data: data, event_id: event_id
                 }
             };
-        } catch (error) {
+        } catch {
             return { notFound: true, props: {} };
         }
     }

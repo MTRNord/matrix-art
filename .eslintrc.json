@@ -4,10 +4,13 @@
   ],
   "extends": [
     "next/core-web-vitals",
-    "plugin:jsx-a11y/recommended"
+    "plugin:jsx-a11y/recommended",
+    "plugin:unicorn/recommended"
   ],
   "rules": {
     "@next/next/no-img-element": "off",
-    "jsx-a11y/anchor-is-valid": "off"
+    "jsx-a11y/anchor-is-valid": "off",
+    "unicorn/prevent-abbreviations": "off",
+    "unicorn/filename-case": "off"
   }
 }
