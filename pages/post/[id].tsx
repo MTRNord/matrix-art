@@ -8,7 +8,6 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { PureComponent, ReactNode } from "react";
-import { RingLoader } from "react-spinners";
 import { ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
@@ -17,13 +16,6 @@ import { get_data } from "../api/directory";
 import { isImageEvent, isImageGalleryEvent } from '../../components/FrontPageImage';
 import Link from 'next/link';
 import Footer from '../../components/Footer';
-
-const centerSpinner = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-`;
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
@@ -116,10 +108,20 @@ class Post extends PureComponent<Props, State> {
 
         if (!hasFullyLoaded) {
             return (
-                <div className="flex h-screen">
-                    <div className="m-auto">
-                        <RingLoader css={centerSpinner} size={150} color={"#123abc"} loading={!hasFullyLoaded} />
-                    </div>
+                <div className='h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
+                    <Head>
+                        <title key="title">Matrix Art | Post not Found</title>
+                        <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
+                        <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
+                        <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
+                        <meta property="og:type" content="website" key="og-type" />
+                    </Head>
+                    <Header></Header>
+                    <main className='w-full lg:pt-20 pt-52 z-0'>
+                        <div className="m-0 w-full">
+                            <div className="loader fixed top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]">Loading...</div>
+                        </div>
+                    </main>
                 </div>
             );
         }

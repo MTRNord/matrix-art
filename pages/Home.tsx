@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { RingLoader } from 'react-spinners';
 import { MatrixEventBase, MatrixImageEvents } from '../helpers/event_types';
 import Head from 'next/head';
 import Header from '../components/Header';
@@ -21,12 +20,6 @@ type State = {
     image_events: MatrixImageEvents[] | [];
 };
 
-export const centerSpinner = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-`;
 
 export default class Home extends PureComponent<Props, State>{
     declare context: React.ContextType<typeof ClientContext>;
@@ -124,10 +117,18 @@ export default class Home extends PureComponent<Props, State>{
             );
         } else if (!hasFullyLoaded) {
             return (
-                <div className="flex h-screen">
-                    <div className="m-auto">
-                        <RingLoader css={centerSpinner} size={150} color={"#123abc"} loading={!hasFullyLoaded} />
-                    </div>
+                <div className='h-full bg-[#f8f8f8] dark:bg-[#06070D]'>
+                    <Head>
+                        <title key="title">Matrix Art | Home</title>
+                        <meta property="og:title" content="Matrix Art | Home" key="og-title" />
+                        <meta property="og:type" content="website" key="og-type" />
+                    </Head>
+                    <Header></Header>
+                    <main className='w-full lg:pt-20 pt-52 z-0'>
+                        <div className="m-0 w-full">
+                            <div className="loader fixed top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]">Loading...</div>
+                        </div>
+                    </main>
                 </div>
             );
         } else {
