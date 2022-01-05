@@ -183,7 +183,7 @@ class Profile extends Component<Props, State> {
                                 </div>
                                 <div className="w-full bg-transparent">
                                     <div className="pt-5">
-                                        <div className="flex">
+                                        <div className="flex flex-col-reverse lg:flex-row">
                                             <div className="mr-16 overflow-hidden pb-4 flex-[auto]">
                                                 <div>
                                                     <section className="pb-4 block">
@@ -201,7 +201,7 @@ class Profile extends Component<Props, State> {
                                                     </section>
                                                 </div>
                                             </div>
-                                            <div className="w-[37.5rem] flex-none">
+                                            <div className="lg:w-[37.5rem] w-full flex-none">
                                                 <div>
                                                     <section className="pb-4 block">
                                                         <div className="w-full flex items-center mt-8 mb-4">

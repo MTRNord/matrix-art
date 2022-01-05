@@ -7,7 +7,7 @@ export default class Header extends Component {
     render() {
         return (
             <>
-                <header className='bg-[#f8f8f8] dark:bg-[#06070D] flex fixed top-0 left-0 right-0 bottom-0 lg:h-20 h-54 z-[100] items-center lg:flex-row flex-col'>
+                <header className='bg-[#f8f8f8] dark:bg-[#06070D] flex fixed top-0 left-0 right-0 bottom-0 lg:h-20 h-52 z-[100] items-center lg:flex-row flex-col shadow-black drop-shadow-xl'>
                     <span className='flex items-center h-full lg:mx-10 my-4 text-gray-900 dark:text-gray-200 font-bold'><Link href="/">Matrix Art</Link></span>
                     <div className='flex flex-1 items-center lg:flex-row flex-col'>
                         <div className='flex grow-[1] h-full relative items-center'>
