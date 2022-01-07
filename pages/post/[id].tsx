@@ -128,7 +128,7 @@ class Post extends PureComponent<Props, State> {
 
         if (!this.props.event_id || !this.props.event_id?.startsWith("$")) {
             return (
-                <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <div className="h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
@@ -137,7 +137,7 @@ class Post extends PureComponent<Props, State> {
                         <meta property="og:type" content="website" key="og-type" />
                     </Head>
                     <Header></Header>
-                    <main className='h-full lg:pt-20 pt-56 z-0 flex items-center justify-center'>
+                    <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
                         <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The Post you wanted does not exist!</h1>
                     </main>
                     <Footer></Footer>
@@ -155,7 +155,7 @@ class Post extends PureComponent<Props, State> {
                 post_title = (caption[0] as { body: string; mimetype: string; }).body;
             }
             return (
-                <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <div className="h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | {post_title}</title>
                         <meta property="og:title" content={`Matrix Art | ${post_title}`} key="og-title" />
@@ -165,7 +165,7 @@ class Post extends PureComponent<Props, State> {
                     </Head>
                     <Header></Header>
 
-                    <main className='flex-col h-full flex lg:pt-20 pt-56 z-0'>
+                    <main className='flex-col mb-auto flex lg:pt-20 pt-56 z-0'>
                         {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : (isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>)}
                         <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[25rem] flex flex-col items-center">
                             <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
@@ -184,7 +184,7 @@ class Post extends PureComponent<Props, State> {
             );
         } else {
             return (
-                <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <div className="h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
@@ -193,7 +193,7 @@ class Post extends PureComponent<Props, State> {
                         <meta property="og:type" content="website" key="og-type" />
                     </Head>
                     <Header></Header>
-                    <main className='h-full lg:pt-20 pt-56 z-0 flex items-center justify-center'>
+                    <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
                         <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The Post you wanted does not exist!</h1>
                     </main>
                     <Footer></Footer>

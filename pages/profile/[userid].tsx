@@ -105,7 +105,7 @@ class Profile extends PureComponent<Props, State> {
 
     renderNotFound() {
         return (
-            <div className="h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+            <div className="h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                 <Head>
                     <title key="title">Matrix Art | User not Found</title>
                     <meta property="og:title" content="Matrix Art | User not Found" key="og-title" />
@@ -114,7 +114,7 @@ class Profile extends PureComponent<Props, State> {
                     <meta property="og:type" content="website" key="og-type" />
                 </Head>
                 <Header></Header>
-                <main className='h-full lg:pt-20 pt-56 z-0 flex items-center justify-center'>
+                <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
                     <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The User you wanted does not exist!</h1>
                 </main>
             </div>
@@ -131,7 +131,7 @@ class Profile extends PureComponent<Props, State> {
         const image_events = this.state.events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
         // TODO opengraph shows mxid instead of displayname
         return (
-            <div className="h-full bg-[#f8f8f8] dark:bg-[#06070D]">
+            <div className="h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]">
                 <Head>
                     <title key="title">Matrix Art | {this.state.displayname}</title>
                     <meta property="og:title" content={`Matrix Art | ${this.state.displayname}`} key="og-title" />
@@ -140,13 +140,13 @@ class Profile extends PureComponent<Props, State> {
                     <meta property="og:type" content="website" key="og-type" />
                 </Head>
                 <Header></Header>
-                <main className='lg:pt-20 pt-56 z-0 bg-[#f8f8f8] dark:bg-[#06070D]'>
+                <main className='w-full mb-auto lg:pt-20 pt-56 z-0 bg-[#f8f8f8] dark:bg-[#06070D]'>
                     {banner_event ? <div style={{
                         backgroundImage: `url(${this.context.client.downloadLink((banner_event as BannerEvent).content["m.file"].url)})`
                     }}
                         className="fixed top-14 w-full h-[32.5rem] bg-cover bg-[position:50%]"
                     ></div> : undefined}
-                    <div className="relative">
+                    <div className="relative w-full">
                         <div className="relative mb-0 min-h-[43.75rem]">
                             <div id="transparent_gradient" className="absolute left-0 right-0 top-[39rem] bottom-0 bg-[#f8f8f8] dark:bg-[#06070D]"></div>
                             <div className="px-14 relative pt-[15.5rem] pb-96 ">
@@ -159,7 +159,7 @@ class Profile extends PureComponent<Props, State> {
                                             </div>
                                         </span>
                                         <div className="ml-5 flex flex-col justify-center">
-                                            <h1 className="font-extrabold text-5xl text-gray-900 dark:text-gray-200 mt-[-1rem] flex items-end">{this.state.displayname}</h1>
+                                            <h1 className="font-extrabold text-5xl text-gray-200 mt-[-1rem] flex items-end">{this.state.displayname}</h1>
                                         </div>
                                     </div>
                                 </div>
