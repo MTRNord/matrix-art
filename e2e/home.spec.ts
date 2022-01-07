@@ -14,7 +14,7 @@ test('test navigation to details', async ({ page }) => {
   // Click text=Flowers@mtrnord:art.midnightthoughts.space
   await Promise.all([
     page.waitForNavigation(/*{ url: 'http://localhost:3000/post/%24ugLG5srr5AyYCIhL1CnD6KikH8QYsDVMUHQ9jQRn990' }*/),
-    page.click('text=Flowers@mtrnord:art.midnightthoughts.space')
+    page.click('text=FlowersMTRNord @ Art')
   ]);
 
   await page.locator('a:text("Matrix Art")').waitFor();
