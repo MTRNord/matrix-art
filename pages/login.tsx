@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
 import { PureComponent, ReactNode } from "react";
 import { ClientContext } from "../components/ClientContext";
@@ -26,7 +27,7 @@ class Login extends PureComponent<Props, State> {
         super(props);
         this.state = {
             showServerField: false,
-            serverUrl: constMatrixArtServer + "/_matrix/client",
+            serverUrl: constMatrixArtServer,
             serverFieldsDisplay: 'none',
             serverFieldsOpacity: 0,
             loading: false,
@@ -65,6 +66,12 @@ class Login extends PureComponent<Props, State> {
         let serverUrl = this.state.serverUrl;
         // Reset url if the field is hidden.
         if (!this.state.showServerField) {
+            serverUrl = constMatrixArtServer + "/_matrix/client";
+        }
+        if (serverUrl === "") {
+            serverUrl = constMatrixArtServer + "/_matrix/client";
+        }
+        if (serverUrl === constMatrixArtServer) {
             serverUrl = constMatrixArtServer + "/_matrix/client";
         }
 
@@ -106,7 +113,7 @@ class Login extends PureComponent<Props, State> {
         //TODO make better
         return (
             <>
-                <div className='h-full bg-[#f8f8f8] dark:bg-[#06070D]'>
+                <div className='h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
                     <Head>
                         <title key="title">Matrix Art | Login</title>
                         <meta property="og:title" content="Matrix Art | Login" key="og-title" />
@@ -114,22 +121,21 @@ class Login extends PureComponent<Props, State> {
                     </Head>
                     <Header></Header>
 
-                    <main className='h-full lg:pt-20 pt-56'>
+                    <main className='mb-auto lg:pt-20 pt-56'>
                         <div className='z-[100] sticky lg:top-20 top-56 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
                             <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
                                 <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Log In</h1>
                             </div>
                         </div>
                         <div className="flex items-center justify-center m-10">
-                            <form onSubmit={this.handleSubmit} className="grid grid-cols-1 gap-6">
+                            <form onSubmit={this.handleSubmit} className="w-96 grid grid-cols-1 gap-6">
                                 <div className="block">
-                                    <div className="mt-2">
-                                        <div>
-                                            <label className="inline-flex items-center">
-                                                <input className="cursor-pointer h-4 w-4" type="checkbox" name="showServerField" checked={showServerField} onChange={this.handleInputChange} />
-                                                <span className="ml-2 text-gray-900 dark:text-gray-200">Use custom Server</span>
-                                            </label>
-                                        </div>
+                                    <div className="mt-2 flex justify-between items-center">
+                                        <label className="inline-flex items-center">
+                                            <input className="cursor-pointer h-4 w-4" type="checkbox" name="showServerField" checked={showServerField} onChange={this.handleInputChange} />
+                                            <span className="ml-2 text-gray-700 dark:text-gray-400">Use custom Server</span>
+                                        </label>
+                                        <Link href="/resetPassword"><a className="text-gray-900 dark:text-gray-200 hover:text-teal-400">Forgot Password</a></Link>
                                     </div>
                                 </div>
 
@@ -138,22 +144,22 @@ class Login extends PureComponent<Props, State> {
                                     opacity: serverFieldsOpacity,
                                     display: serverFieldsDisplay
                                 }} id="homeserverField">
-                                    <span className="text-gray-900 dark:text-gray-200">Homeserver:</span>
-                                    <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
+                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">Homeserver:</span>
+                                    <div className="bg-teal-600 mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
+                                        <input placeholder="Homeserver" className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 
                                 <label className="block">
-                                    <span className="text-gray-900 dark:text-gray-200">Username:</span>
-                                    <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
+                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">Username:</span>
+                                    <div className="bg-teal-600 mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
+                                        <input placeholder="Username" className=" bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
                                 <label className="block">
-                                    <span className="text-gray-900 dark:text-gray-200">Password:</span>
-                                    <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200" type="password" name="password" value={password} onChange={this.handleInputChange} />
+                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">Password:</span>
+                                    <div className="bg-teal-600 mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
+                                        <input placeholder="Password" className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="password" name="password" value={password} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 

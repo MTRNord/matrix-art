@@ -30,7 +30,7 @@ export default class Header extends PureComponent {
                     <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] h-7'></span>
                     <div className='relative lg:m-0 mt-4'>
                         <div className='flex'>
-                            <button className='text-teal-400 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-auto font-bold'>Submit</button>
+                            <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Submit</a>
                         </div>
                     </div>
                 </header>
