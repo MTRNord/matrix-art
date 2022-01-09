@@ -2,7 +2,7 @@
 import { MatrixEvent } from './event_types';
 import Storage from './storage';
 
-export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL as string;
+export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL || "https://matrix.art.midnightthoughts.space";
 
 export default class MatrixClient {
     private joinedRooms: Map<any, any>;
