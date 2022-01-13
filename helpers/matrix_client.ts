@@ -365,7 +365,7 @@ export default class MatrixClient {
         return info;
     }
 
-    async getTimeline(roomId: string, limit: number, callback: (arg0: MatrixEvent[]) => void | Promise<void>) {
+    async getTimeline(roomId: string, limit: number) {
         if (!this.accessToken) {
             console.error("No access token");
             return [];
@@ -373,6 +373,7 @@ export default class MatrixClient {
         limit = limit || 100;
         let seenEvents = 0;
         let from;
+        let msgs: MatrixEvent[] = [];
         while (seenEvents < limit) {
             let fromQuery = ``;
             if (from) {
@@ -385,17 +386,16 @@ export default class MatrixClient {
                 }
             );
             from = data.end;
-            let msgs: MatrixEvent[] = [];
             for (const ev of data.chunk) {
                 msgs.push(ev);
             }
-            await Promise.resolve(callback(msgs));
             seenEvents += msgs.length;
             if (data.chunk.length < limit) {
                 break;
             }
             seenEvents += 1; // just in case, to stop infinite loops
         }
+        return msgs;
     }
 
     /**

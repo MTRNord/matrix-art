@@ -8,7 +8,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { PureComponent, ReactNode } from "react";
-import { ClientContext } from "../../components/ClientContext";
+import { client, ClientContext } from "../../components/ClientContext";
 import Header from "../../components/Header";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import { constMatrixArtServer } from "../../helpers/matrix_client";
@@ -36,7 +36,9 @@ class Post extends PureComponent<Props, State> {
         super(props);
 
         this.state = {
-            hasFullyLoaded: false,
+            hasFullyLoaded: props.hasFullyLoaded,
+            image_event: props.image_event,
+            displayname: props.displayname,
             isLoadingImages: false
         };
     }
@@ -71,25 +73,25 @@ class Post extends PureComponent<Props, State> {
             for (let user of this.props.directory_data) {
                 // We dont need many events
                 const roomId = await this.context.client?.followUser(user.user_room);
-                await this.context.client?.getTimeline(roomId, 100, async (events) => {
-                    // Filter events by type
-                    const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
-                    try {
-                        // TODO this should get handled if null
-                        const profile = await this.context.client.getProfile(image_event!.sender);
-                        this.setState({
-                            image_event: image_event as MatrixImageEvents,
-                            displayname: profile.displayname,
-                        });
+                const events = await this.context.client?.getTimeline(roomId, 100); // Filter events by type
+                const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
+                if (image_event == null) {
+                    continue;
+                }
+                try {
+                    const profile = await this.context.client.getProfile(image_event.sender);
+                    this.setState({
+                        image_event: image_event as MatrixImageEvents,
+                        displayname: profile.displayname,
+                    });
 
-                    } catch (error) {
-                        console.debug(`Failed to fetch profile for user ${image_event?.sender}:`, error);
-                        this.setState({
-                            image_event: image_event as MatrixImageEvents,
-                            displayname: image_event?.sender,
-                        });
-                    }
-                });
+                } catch (error) {
+                    console.debug(`Failed to fetch profile for user ${image_event.sender}:`, error);
+                    this.setState({
+                        image_event: image_event as MatrixImageEvents,
+                        displayname: image_event.sender,
+                    });
+                }
             }
         } catch (error) {
             this.setState({
@@ -314,10 +316,48 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         try {
             const data = await get_data();
 
+            // TODO fix this. It is super inefficent.
+            for (let user of data) {
+                // TODO check what happens if this is a non public image.
+                // We dont need many events
+                const roomId = await client?.followUser(user.user_room);
+                const events = await client?.getTimeline(roomId, 100);
+                // Filter events by type
+                const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
+                if (image_event == null) {
+                    continue;
+                }
+                try {
+                    const profile = await client.getProfile(image_event.sender);
+                    return {
+                        props: {
+                            directory_data: data,
+                            image_event: image_event as MatrixImageEvents,
+                            event_id: event_id,
+                            hasFullyLoaded: true,
+                            displayname: profile.displayname
+                        }
+                    };
+                } catch (error) {
+                    console.debug(`Failed to fetch profile for user ${image_event.sender}:`, error);
+                    return {
+                        props: {
+                            directory_data: data,
+                            image_event: image_event as MatrixImageEvents,
+                            event_id: event_id,
+                            hasFullyLoaded: true,
+                            displayname: image_event.sender
+                        }
+                    };
+                }
+            }
+
 
             return {
                 props: {
-                    directory_data: data, event_id: event_id
+                    directory_data: data,
+                    event_id: event_id,
+                    hasFullyLoaded: false,
                 }
             };
         } catch {
