@@ -237,6 +237,13 @@ class Post extends PureComponent<Props, State> {
         if (!url || !thumbnail_url) {
             return <></>;
         }
+        const metadata = {
+            "@context": "https://schema.org/",
+            "@type": "ImageObject",
+            contentUrl: url,
+            // TODO get this from the event itself
+            license: "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+        };
         return (
             <>
                 <Head>
@@ -246,6 +253,10 @@ class Post extends PureComponent<Props, State> {
                     <meta property="og:image:width" content={imageEvent.content["m.image"].width.toString()} key="og-image-width" />
                     <meta property="og:image:height" content={imageEvent.content["m.image"].height.toString()} key="og-image-height" />
                     <meta name="twitter:image" content={url} key="og-twitter-image" />
+                    <script type="application/ld+json">
+                        {JSON.stringify(metadata)}
+                    </script>
+
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <LightGallery
@@ -264,12 +275,20 @@ class Post extends PureComponent<Props, State> {
     }
 
     renderImageGalleryEvent(imageEvent: ImageGalleryEvent, caption: string) {
+        const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; }[] = [];
         const images = imageEvent.content['m.image_gallery'].map(image => {
             const url = this.context.client?.downloadLink(image["m.file"].url);
             const thumbnail_url = this.context.client?.downloadLink(image['m.thumbnail'][0].url);
             if (!url || !thumbnail_url) {
                 return <></>;
             }
+            metadata.push({
+                "@context": "https://schema.org/",
+                "@type": "ImageObject",
+                contentUrl: url,
+                // TODO get this from the event itself
+                license: "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+            });
             return (
                 <a key={url} href={url} title={caption} data-src={url}>
                     <img alt={caption} title={caption} src={thumbnail_url} />
@@ -285,6 +304,9 @@ class Post extends PureComponent<Props, State> {
                     <meta property="og:image:width" content={imageEvent.content["m.image_gallery"][0]["m.image"].width.toString()} key="og-image-width" />
                     <meta property="og:image:height" content={imageEvent.content["m.image_gallery"][0]["m.image"].height.toString()} key="og-image-height" />
                     <meta name="twitter:image" content={imageEvent.content["m.image_gallery"][0]["m.file"].url} key="og-twitter-image" />
+                    <script type="application/ld+json">
+                        {JSON.stringify(metadata)}
+                    </script>
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <LightGallery
