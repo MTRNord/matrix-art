@@ -315,7 +315,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (event_id && event_id.startsWith("$")) {
         try {
             const data = await get_data();
-
+            if (!client?.accessToken) {
+                try {
+                    let serverUrl = constMatrixArtServer + "/_matrix/client";
+                    await client?.registerAsGuest(serverUrl);
+                } catch (error) {
+                    console.error("Failed to register as guest:", error);
+                    return {
+                        props: {
+                            directory_data: data,
+                            event_id: event_id,
+                            hasFullyLoaded: false,
+                        }
+                    };
+                }
+            }
             // TODO fix this. It is super inefficent.
             for (let user of data) {
                 // TODO check what happens if this is a non public image.

@@ -5,8 +5,13 @@ export default class Storage {
         this.prefix = prefix;
         if (typeof window === "undefined") {
             var LocalStorage = require('node-localstorage').LocalStorage; // eslint-disable-line unicorn/prefer-module
-            var path = require('path'); // eslint-disable-line unicorn/prefer-module
-            this.nodeLocalStorage = new LocalStorage(path.join(process.cwd(), "localstorage"));
+            var path = require('node:path'); // eslint-disable-line unicorn/prefer-module
+            var fs = require('node:fs'); // eslint-disable-line unicorn/prefer-module
+            const dir = "localstorage";
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir);
+            }
+            this.nodeLocalStorage = new LocalStorage(path.join(process.cwd(), dir));
         }
     }
     getItem(key: string): any {

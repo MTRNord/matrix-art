@@ -5,11 +5,11 @@ import Header from '../components/Header';
 import { client, ClientContext } from '../components/ClientContext';
 import FrontPageImage from '../components/FrontPageImage';
 import Footer from '../components/Footer';
-import { NextRouter, withRouter } from 'next/router';
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType, } from 'next';
 import { get_data } from './api/directory';
+import { constMatrixArtServer } from '../helpers/matrix_client';
 
-type Props = InferGetStaticPropsType<typeof getStaticProps> & {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
 };
 
 type State = {
@@ -67,11 +67,28 @@ class Home extends PureComponent<Props, State>{
 }
 Home.contextType = ClientContext;
 
-export const getStaticProps: GetStaticProps = async (context) => {
-  let image_events: MatrixImageEvents[] = [];
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  context.res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=10, stale-while-revalidate=59'
+  );
   try {
     const data = await get_data();
+    if (!client?.accessToken) {
+      try {
+        let serverUrl = constMatrixArtServer + "/_matrix/client";
+        await client?.registerAsGuest(serverUrl);
+      } catch (error) {
+        console.error("Failed to register as guest:", error);
+        return {
+          props: {
+            image_events: []
+          }
+        };
+      }
+    }
 
+    let image_events: MatrixImageEvents[] = [];
     // TODO fix this somehow. It is super inefficent.
     for (let user of data) {
       // We dont need many events
