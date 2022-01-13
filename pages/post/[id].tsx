@@ -162,6 +162,9 @@ class Post extends PureComponent<Props, State> {
                         <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                         <meta name="twitter:title" content={`Matrix Art | ${post_title}`} key="og-twitter-title" />
                         <meta property="og:type" content="website" key="og-type" />
+                        <meta name="author" content={displayname} />
+                        <meta name="citation_authors" content={displayname} />
+                        <meta name="citation_journal_title" content="Matrix-Art" />
                     </Head>
                     <Header></Header>
 
