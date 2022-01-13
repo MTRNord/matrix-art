@@ -73,6 +73,7 @@ class Profile extends PureComponent<Props, State> {
         }
     }
 
+    // TODO do this on server side
     async loadEvents() {
         const { isLoadingImages, hasFullyLoaded } = this.state;
         if (isLoadingImages || hasFullyLoaded) {

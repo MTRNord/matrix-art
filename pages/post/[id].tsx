@@ -75,7 +75,7 @@ class Post extends PureComponent<Props, State> {
                 const roomId = await this.context.client?.followUser(user.user_room);
                 const events = await this.context.client?.getTimeline(roomId, 100); // Filter events by type
                 const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
-                if (image_event == null) {
+                if (image_event == undefined) {
                     continue;
                 }
                 try {
@@ -324,7 +324,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 const events = await client?.getTimeline(roomId, 100);
                 // Filter events by type
                 const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
-                if (image_event == null) {
+                if (image_event == undefined) {
                     continue;
                 }
                 try {
