@@ -257,8 +257,7 @@ export default class MatrixClient {
         if (mxcUri.indexOf("mxc://") !== 0) {
             return undefined;
         }
-        const mediaUrl = this.serverUrl?.slice(0, -1 * "/client".length);
-        return mediaUrl + "/media/r0/download/" + mxcUri.split("mxc://")[1];
+        return constMatrixArtServer + "/_matrix/media/r0/download/" + mxcUri.split("mxc://")[1];
     }
 
     thumbnailLink(mxcUri: string, method: string, width: number, height: number) {
