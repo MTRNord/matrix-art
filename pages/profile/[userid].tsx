@@ -84,12 +84,11 @@ class Profile extends PureComponent<Props, State> {
         });
         try {
             const roomId = await client?.followUser("#" + this.props.mxid);
-            await client?.getTimeline(roomId, 100, (events) => {
-                const filtered_events = events.filter(event => event.type !== "m.room.member" && event.type !== "m.room.topic" && event.type !== "m.room.name" && event.type !== "m.room.power_levels");
-                console.log("Adding", filtered_events.length, "items");
-                this.setState({
-                    events: filtered_events,
-                });
+            const events = await client?.getTimeline(roomId, 100);
+            const filtered_events = events.filter(event => event.type !== "m.room.member" && event.type !== "m.room.topic" && event.type !== "m.room.name" && event.type !== "m.room.power_levels");
+            console.log("Adding", filtered_events.length, "items");
+            this.setState({
+                events: filtered_events,
             });
         } catch (error) {
             this.setState({
