@@ -6,11 +6,10 @@ import { client, ClientContext } from '../components/ClientContext';
 import FrontPageImage from '../components/FrontPageImage';
 import Footer from '../components/Footer';
 import { NextRouter, withRouter } from 'next/router';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { get_data } from './api/directory';
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
-  router: NextRouter;
+type Props = InferGetStaticPropsType<typeof getStaticProps> & {
 };
 
 type State = {
@@ -68,20 +67,13 @@ class Home extends PureComponent<Props, State>{
 }
 Home.contextType = ClientContext;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { res } = context;
-
-  res.setHeader(
-    'Cache-Control',
-    'public, s-maxage=10, stale-while-revalidate=59'
-  );
+export const getStaticProps: GetStaticProps = async (context) => {
   let image_events: MatrixImageEvents[] = [];
   try {
     const data = await get_data();
 
-    // TODO fix this. It is super inefficent.
+    // TODO fix this somehow. It is super inefficent.
     for (let user of data) {
-      // TODO check what happens if this is a non public image.
       // We dont need many events
       const roomId = await client?.followUser(user.user_room);
       const events = await client?.getTimeline(roomId, 100);
@@ -101,4 +93,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 };
 
-export default withRouter(Home);
+export default Home;
