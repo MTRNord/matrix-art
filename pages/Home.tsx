@@ -160,4 +160,4 @@ export default class Home extends PureComponent<Props, State>{
     }
 
 }
-Home.contextType = ClientContext;;
+Home.contextType = ClientContext;
