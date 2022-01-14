@@ -84,7 +84,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
         return event.content['m.image_gallery'].map(image => {
-            return this.render_image_box(image['m.thumbnail'][0].url, event.event_id + image['m.file'].url, event.event_id, caption_text, image["xyz.amorgan.blurhash"]);
+            return this.render_image_box(image['m.thumbnail'][0].url, event.event_id + image['m.file'].url, event.event_id, caption_text, image['m.image'].height, image['m.image'].width, image["xyz.amorgan.blurhash"]);
         });
     }
 
@@ -98,10 +98,10 @@ export default class FrontPageImage extends PureComponent<Props, State> {
         if (caption.length > 0) {
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
-        return this.render_image_box(event.content['m.thumbnail'][0].url, event.event_id, event.event_id, caption_text, event.content["xyz.amorgan.blurhash"]);
+        return this.render_image_box(event.content['m.thumbnail'][0].url, event.event_id, event.event_id, caption_text, event.content['m.image'].height, event.content['m.image'].width, event.content["xyz.amorgan.blurhash"]);
     }
 
-    render_image_box(thumbnail_url: string, id: string, post_id: string, caption: string, blurhash?: string) {
+    render_image_box(thumbnail_url: string, id: string, post_id: string, caption: string, h: number, w: number, blurhash?: string) {
         // TODO show creators display name instead of mxid and show avatar image
         // TODO proper alt text
         const direct_link = `/post/${encodeURIComponent(post_id)}`;
@@ -112,10 +112,10 @@ export default class FrontPageImage extends PureComponent<Props, State> {
                     height={this.state.imageHeight}
                     width="100%"
                 />
-                <img loading="lazy" width="640" height="360" alt={caption} title={caption} style={{ height: this.state.imageHeight }} className="h-auto w-full relative -ml-[100%] max-w-full object-cover align-bottom" src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+                <img loading="lazy" width={w} height={h} alt={caption} title={caption} style={{ height: this.state.imageHeight }} className="h-auto w-full relative -ml-[100%] max-w-full object-cover align-bottom" src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
             </div>
         ) : (
-                <img alt={caption} width="640" height="360" title={caption} style={{ height: this.state.imageHeight }} className={`h-auto w-full relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+            <img alt={caption} width={w} height={h} title={caption} style={{ height: this.state.imageHeight }} className={`h-auto w-full relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
         );
         return (
             <li style={{ height: this.state.imageHeight }} key={id}>
