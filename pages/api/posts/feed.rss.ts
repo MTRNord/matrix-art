@@ -119,5 +119,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     feed.addCategory("Media");
     feed.addCategory("Images");
     feed.addCategory("SocialMedia");
-    res.status(200).send(feed.atom1());
+    res.status(200).send(feed.rss2());
 }
