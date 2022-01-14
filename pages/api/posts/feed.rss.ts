@@ -86,8 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         title: image["m.text"],
                         id: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/post/" + imageEvent.event_id + "_" + image["m.file"].url,
                         link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
-                        description: "",
-                        content: "",
+                        description: `<img src="${client?.downloadLink(image["m.file"].url)!}"/>`,
                         author: [
                             {
                                 name: imageEvent.content.displayname,
@@ -142,8 +141,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     title: imageEvent.content["m.text"],
                     id: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
                     link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
-                    description: "",
-                    content: "",
+                    description: `<img src="${client?.downloadLink(imageEvent.content["m.file"].url)!}"/>`,
                     author: [
                         {
                             name: imageEvent.content.displayname,
