@@ -37,13 +37,21 @@ class Home extends PureComponent<Props, State>{
         <div>Error: {error.message}</div>
       );
     } else {
-      const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; }[] = image_events.flatMap(event => {
+      const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; thumbnail: any; }[] = image_events.flatMap(event => {
         if (isImageGalleryEvent(event)) {
           return event.content['m.image_gallery'].map(image => {
             return {
               "@context": "https://schema.org/",
               "@type": "ImageObject",
               "contentUrl": this.context.client?.downloadLink(image['m.file'].url)!,
+              "thumbnail": {
+                "@context": "https://schema.org/",
+                "@type": "ImageObject",
+                "contentUrl": this.context.client?.downloadLink(image['m.thumbnail'][0].url)!,
+                "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                "author": event.content.displayname,
+                "name": image['m.text']
+              },
               // TODO get this from the event itself
               "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
               "author": event.content.displayname,
@@ -55,6 +63,14 @@ class Home extends PureComponent<Props, State>{
             "@context": "https://schema.org/",
             "@type": "ImageObject",
             "contentUrl": this.context.client?.downloadLink(event.content['m.file'].url)!,
+            "thumbnail": {
+              "@context": "https://schema.org/",
+              "@type": "ImageObject",
+              "contentUrl": this.context.client?.downloadLink(event.content['m.thumbnail'][0].url)!,
+              "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+              "author": event.content.displayname,
+              "name": event.content['m.text']
+            },
             // TODO get this from the event itself
             "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
             "author": event.content.displayname,
