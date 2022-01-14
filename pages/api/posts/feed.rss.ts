@@ -87,6 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         author: [
                             {
                                 name: imageEvent.content.displayname,
+                                link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/profile/" + imageEvent.sender
                             }
                         ],
                         // TODO extract real time
@@ -104,6 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     author: [
                         {
                             name: imageEvent.content.displayname,
+                            link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/profile/" + imageEvent.sender
                         }
                     ],
                     date: new Date(),
