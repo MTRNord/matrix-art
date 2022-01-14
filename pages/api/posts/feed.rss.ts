@@ -92,7 +92,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         ],
                         // TODO extract real time
                         date: new Date(),
-                        image: client?.downloadLink(image["m.file"].url)
+                        image: {
+                            url: client?.downloadLink(image["m.file"].url)!,
+                            type: image["m.file"].mimetype,
+                            length: image["m.file"].size
+                        }
                     });
                 }
             } else {
@@ -109,7 +113,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         }
                     ],
                     date: new Date(),
-                    image: client?.downloadLink(imageEvent.content["m.file"].url)
+                    image: {
+                        url: client?.downloadLink(imageEvent.content["m.file"].url)!,
+                        type: imageEvent.content["m.file"].mimetype,
+                        length: imageEvent.content["m.file"].size
+                    }
                 });
             }
         }
