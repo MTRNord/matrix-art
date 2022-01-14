@@ -3,7 +3,7 @@ import { MatrixEventBase, MatrixImageEvents } from '../helpers/event_types';
 import Head from 'next/head';
 import Header from '../components/Header';
 import { client, ClientContext } from '../components/ClientContext';
-import FrontPageImage from '../components/FrontPageImage';
+import FrontPageImage, { isImageGalleryEvent } from '../components/FrontPageImage';
 import Footer from '../components/Footer';
 import { GetServerSideProps, InferGetServerSidePropsType, } from 'next';
 import { get_data } from './api/directory';
@@ -37,12 +37,36 @@ class Home extends PureComponent<Props, State>{
         <div>Error: {error.message}</div>
       );
     } else {
+      const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; }[] = image_events.flatMap(event => {
+        if (isImageGalleryEvent(event)) {
+          return event.content['m.image_gallery'].map(image => {
+            return {
+              "@context": "https://schema.org/",
+              "@type": "ImageObject",
+              "contentUrl": this.context.client?.downloadLink(image['m.file'].url)!,
+              // TODO get this from the event itself
+              "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+            };
+          });
+        } else {
+          return {
+            "@context": "https://schema.org/",
+            "@type": "ImageObject",
+            "contentUrl": this.context.client?.downloadLink(event.content['m.file'].url)!,
+            // TODO get this from the event itself
+            "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+          };
+        }
+      });
       return (
         <div className='h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
           <Head>
             <title key="title">Matrix Art | Home</title>
             <meta property="og:title" content="Matrix Art | Home" key="og-title" />
             <meta property="og:type" content="website" key="og-type" />
+            <script type="application/ld+json">
+              {JSON.stringify(metadata)}
+            </script>
           </Head>
           <Header></Header>
           <main className='mb-auto lg:pt-20 pt-52 z-0'>
