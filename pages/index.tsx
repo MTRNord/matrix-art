@@ -52,6 +52,7 @@ class Home extends PureComponent<Props, State>{
                 "author": event.content.displayname,
                 "name": image['m.text']
               },
+              "encodingFormat": image['m.file'].mimetype,
               // TODO get this from the event itself
               "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
               "author": event.content.displayname,
@@ -71,6 +72,7 @@ class Home extends PureComponent<Props, State>{
               "author": event.content.displayname,
               "name": event.content['m.text']
             },
+            "encodingFormat": event.content['m.file'].mimetype,
             // TODO get this from the event itself
             "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
             "author": event.content.displayname,

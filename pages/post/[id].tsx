@@ -250,6 +250,7 @@ class Post extends PureComponent<Props, State> {
                 "author": imageEvent.content.displayname,
                 "name": imageEvent.content['m.text']
             },
+            encodingFormat: imageEvent.content['m.file'].mimetype,
             // TODO get this from the event itself
             license: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
             author: this.state.displayname,
@@ -297,7 +298,7 @@ class Post extends PureComponent<Props, State> {
     }
 
     renderImageGalleryEvent(imageEvent: ImageGalleryEvent, caption: string) {
-        const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; author: string; name: string; thumbnail: any; }[] = [];
+        const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; author: string; name: string; thumbnail: any; encodingFormat: string; }[] = [];
         const images = imageEvent.content['m.image_gallery'].map(image => {
             const url = this.context.client?.downloadLink(image["m.file"].url);
             const thumbnail_url = this.context.client?.downloadLink(image['m.thumbnail'][0].url);
@@ -316,6 +317,7 @@ class Post extends PureComponent<Props, State> {
                     "author": imageEvent.content.displayname,
                     "name": image['m.text']
                 },
+                encodingFormat: image['m.file'].mimetype,
                 // TODO get this from the event itself
                 license: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
                 author: this.state.displayname!,
