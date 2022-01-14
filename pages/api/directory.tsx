@@ -8,7 +8,6 @@ const db = new PouchDB(path.join(process.cwd(), "matrix-art-db"));
 
 // Initialize the cors middleware
 const cors = initMiddleware(
-    // You can read more about the available options here: https://github.com/expressjs/cors#configuration-options
     Cors({
         // Only allow requests with GET, POST, DELETE and OPTIONS
         methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],

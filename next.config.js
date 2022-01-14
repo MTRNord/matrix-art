@@ -36,4 +36,13 @@ module.exports = {
   eslint: {
     dirs: ['pages', 'components', "helpers", "e2e"],
   },
+  async redirects() {
+    return [
+      {
+        source: '/posts.rss',
+        destination: '/api/posts/feed.rss',
+        permanent: false,
+      },
+    ]
+  },
 }
