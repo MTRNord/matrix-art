@@ -56,7 +56,9 @@ class Home extends PureComponent<Props, State>{
               // TODO get this from the event itself
               "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
               "author": event.content.displayname,
-              "name": image['m.text']
+              "name": image['m.text'],
+              "width": image['m.image'].width,
+              "height": image['m.image'].height
             };
           });
         } else {
@@ -76,7 +78,9 @@ class Home extends PureComponent<Props, State>{
             // TODO get this from the event itself
             "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
             "author": event.content.displayname,
-            "name": event.content['m.text']
+            "name": event.content['m.text'],
+            "width": event.content['m.image'].width,
+            "height": event.content['m.image'].height
           };
         }
       });

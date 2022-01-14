@@ -254,7 +254,9 @@ class Post extends PureComponent<Props, State> {
             // TODO get this from the event itself
             license: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
             author: this.state.displayname,
-            name: imageEvent.content['m.text']
+            name: imageEvent.content['m.text'],
+            "width": imageEvent.content['m.image'].width,
+            "height": imageEvent.content['m.image'].height
         };
         const blurhash = imageEvent.content['xyz.amorgan.blurhash'];
         const image_html = blurhash ? (
@@ -298,7 +300,7 @@ class Post extends PureComponent<Props, State> {
     }
 
     renderImageGalleryEvent(imageEvent: ImageGalleryEvent, caption: string) {
-        const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; author: string; name: string; thumbnail: any; encodingFormat: string; }[] = [];
+        const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; author: string; name: string; thumbnail: any; encodingFormat: string; width: number; height: number; }[] = [];
         const images = imageEvent.content['m.image_gallery'].map(image => {
             const url = this.context.client?.downloadLink(image["m.file"].url);
             const thumbnail_url = this.context.client?.downloadLink(image['m.thumbnail'][0].url);
@@ -321,7 +323,9 @@ class Post extends PureComponent<Props, State> {
                 // TODO get this from the event itself
                 license: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
                 author: this.state.displayname!,
-                name: image['m.text']
+                name: image['m.text'],
+                "width": image['m.image'].width,
+                "height": image['m.image'].height
             });
             const blurhash = image["xyz.amorgan.blurhash"];
             const image_html = blurhash ? (
