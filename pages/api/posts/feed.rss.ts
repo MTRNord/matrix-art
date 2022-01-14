@@ -121,7 +121,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 });
             }
         }
-    } catch {/*noop*/ }
+    } catch {
+        /*noop*/
+    }
 
     feed.addCategory("Photography");
     feed.addCategory("Media");
