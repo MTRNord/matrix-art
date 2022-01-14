@@ -11,6 +11,7 @@ FROM node:16-alpine AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
+RUN npx browserslist@latest --update-db
 RUN npm run build && npm install --only=production --ignore-scripts --prefer-offline
 
 # Production image, copy all the files and run next

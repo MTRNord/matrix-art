@@ -1,6 +1,11 @@
 {
   "name": "matrix-art",
   "private": true,
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "maintained node versions"
+  ],
   "scripts": {
     "dev-inspect": "cross-env NODE_OPTIONS='--inspect' next dev",
     "dev-tests": "cross-env PLAYWRIGHT='1' next dev",
