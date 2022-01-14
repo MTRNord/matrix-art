@@ -120,3 +120,8 @@ html, body, #__next {
   white-space: nowrap;
   width: 1px;
 }
+
+
+.gap-safari > *  {
+  margin: 0.25rem;
+}
