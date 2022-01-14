@@ -122,6 +122,8 @@ html, body, #__next {
 }
 
 
-.gap-safari > *  {
-  margin: 0.25rem;
+@media only screen and (max-width: 1024px) {
+  .gap-safari > *  {
+    margin: 0.25rem;
+  }
 }
