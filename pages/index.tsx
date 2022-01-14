@@ -64,9 +64,7 @@ class Home extends PureComponent<Props, State>{
             <title key="title">Matrix Art | Home</title>
             <meta property="og:title" content="Matrix Art | Home" key="og-title" />
             <meta property="og:type" content="website" key="og-type" />
-            <script type="application/ld+json">
-              {JSON.stringify(metadata)}
-            </script>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }}/>
           </Head>
           <Header></Header>
           <main className='mb-auto lg:pt-20 pt-52 z-0'>

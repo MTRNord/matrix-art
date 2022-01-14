@@ -268,10 +268,7 @@ class Post extends PureComponent<Props, State> {
                     <meta property="og:image:width" content={imageEvent.content["m.image"].width.toString()} key="og-image-width" />
                     <meta property="og:image:height" content={imageEvent.content["m.image"].height.toString()} key="og-image-height" />
                     <meta name="twitter:image" content={url} key="og-twitter-image" />
-                    <script type="application/ld+json">
-                        {JSON.stringify(metadata)}
-                    </script>
-
+                    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }} />
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <LightGallery
@@ -333,9 +330,7 @@ class Post extends PureComponent<Props, State> {
                     <meta property="og:image:width" content={imageEvent.content["m.image_gallery"][0]["m.image"].width.toString()} key="og-image-width" />
                     <meta property="og:image:height" content={imageEvent.content["m.image_gallery"][0]["m.image"].height.toString()} key="og-image-height" />
                     <meta name="twitter:image" content={imageEvent.content["m.image_gallery"][0]["m.file"].url} key="og-twitter-image" />
-                    <script type="application/ld+json">
-                        {JSON.stringify(metadata)}
-                    </script>
+                    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }} />
                 </Head>
                 <div className="flex justify-center p-10 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <LightGallery
