@@ -4,6 +4,7 @@ export type MatrixEventBase = {
     room_id: string;
     sender: string;
     redacted_because: any | undefined;
+    origin_server_ts: number;
 };
 
 export type FileEvent = {

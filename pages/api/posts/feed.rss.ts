@@ -94,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             }
                         ],
                         // TODO extract real time
-                        date: new Date(),
+                        date: new Date(imageEvent.origin_server_ts),
                         image: {
                             url: client?.downloadLink(image["m.file"].url)!,
                             type: image["m.file"].mimetype,
@@ -148,7 +148,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/profile/" + imageEvent.sender
                         }
                     ],
-                    date: new Date(),
+                    date: new Date(imageEvent.origin_server_ts),
                     image: {
                         url: client?.downloadLink(imageEvent.content["m.file"].url)!,
                         type: imageEvent.content["m.file"].mimetype,
