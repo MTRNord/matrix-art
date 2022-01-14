@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
-    "feed": "^4.2.2",
+    "feed": "yshrsmz/feed#custom-elements",
     "lightgallery": "^2.3.0",
     "meilisearch": "^0.23.0",
     "next": "12.0.7",

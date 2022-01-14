@@ -32,7 +32,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         link: "https://" + (req.headers.host || "art.midnightthoughts.space"),
         language: "en",
         copyright: "",
-        feed: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/posts.rss"
+        feed: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/posts.rss",
+        namespaces: {
+            "xmlns:creativeCommons": "http://backend.userland.com/creativeCommonsRssModule",
+            "xmlns:media": "https://search.yahoo.com/mrss/"
+        }
     });
 
     try {
@@ -96,6 +100,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             url: client?.downloadLink(image["m.file"].url)!,
                             type: image["m.file"].mimetype,
                             length: image["m.file"].size
+                        },
+                        extra: {
+                            'media:content': {
+                                _attributes: {
+                                    url: client?.downloadLink(image["m.file"].url)!,
+                                    type: image["m.file"].mimetype,
+                                    medium: 'image',
+                                    height: image["m.image"].height,
+                                    width: image["m.image"].width,
+                                },
+                                'media:credit': {
+                                    _attributes: {
+                                        role: "author",
+                                        scheme: "urn:ebu"
+                                    },
+                                    _text: imageEvent.content.displayname,
+                                }
+                            },
+                            'media:keywords': image["matrixart.tags"].join(", "),
+                            'media:rating': "nonadult",
+                            'media:title': {
+                                _attributes: {
+                                    type: "plain"
+                                },
+                                _text: image["m.text"],
+                            },
+                            'creativeCommons:license': "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                            'media:license': {
+                                _attributes: {
+                                    href: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                                    type: "text/html"
+                                },
+                                _text: "Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)"
+                            }
                         }
                     });
                 }
@@ -117,6 +155,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                         url: client?.downloadLink(imageEvent.content["m.file"].url)!,
                         type: imageEvent.content["m.file"].mimetype,
                         length: imageEvent.content["m.file"].size
+                    },
+                    extra: {
+                        'media:content': {
+                            _attributes: {
+                                url: client?.downloadLink(imageEvent.content["m.file"].url)!,
+                                type: imageEvent.content["m.file"].mimetype,
+                                medium: 'image',
+                                height: imageEvent.content["m.image"].height,
+                                width: imageEvent.content["m.image"].width,
+                            },
+                            'media:credit': {
+                                _attributes: {
+                                    role: "author",
+                                    scheme: "urn:ebu"
+                                },
+                                _text: imageEvent.content.displayname,
+                            }
+                        },
+                        'media:keywords': imageEvent.content["matrixart.tags"].join(", "),
+                        'media:rating': "nonadult",
+                        'media:title': {
+                            _attributes: {
+                                type: "plain"
+                            },
+                            _text: imageEvent.content["m.text"],
+                        },
+                        'creativeCommons:license': "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                        'media:license': {
+                            _attributes: {
+                                href: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                                type: "text/html"
+                            },
+                            _text: "Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)"
+                        }
                     }
                 });
             }
