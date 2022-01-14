@@ -37,6 +37,8 @@ export type ImageEventContent = {
 export type MessageAlike = { "m.text": string; } | { body: string; mimetype: string; };
 export type ImageEventContentWithCaption = ImageEventContent & {
     "m.caption": MessageAlike[];
+    // Fake values
+    displayname?: string;
 };
 
 export type ImageEvent = MatrixEventBase & {
@@ -47,6 +49,8 @@ export type ImageEvent = MatrixEventBase & {
 export type ImageGalleryContent = {
     "m.image_gallery": ImageEventContent[];
     "m.caption": MessageAlike[];
+    // Fake values
+    displayname?: string;
 };
 
 export type ImageGalleryEvent = MatrixEventBase & {

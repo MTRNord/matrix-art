@@ -45,7 +45,9 @@ class Home extends PureComponent<Props, State>{
               "@type": "ImageObject",
               "contentUrl": this.context.client?.downloadLink(image['m.file'].url)!,
               // TODO get this from the event itself
-              "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+              "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+              "author": event.content.displayname,
+              "name": image['m.text']
             };
           });
         } else {
@@ -54,7 +56,9 @@ class Home extends PureComponent<Props, State>{
             "@type": "ImageObject",
             "contentUrl": this.context.client?.downloadLink(event.content['m.file'].url)!,
             // TODO get this from the event itself
-            "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/"
+            "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+            "author": event.content.displayname,
+            "name": event.content['m.text']
           };
         }
       });
@@ -64,7 +68,7 @@ class Home extends PureComponent<Props, State>{
             <title key="title">Matrix Art | Home</title>
             <meta property="og:title" content="Matrix Art | Home" key="og-title" />
             <meta property="og:type" content="website" key="og-type" />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }}/>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }} />
           </Head>
           <Header></Header>
           <main className='mb-auto lg:pt-20 pt-52 z-0'>
@@ -117,7 +121,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const roomId = await client?.followUser(user.user_room);
       const events = await client?.getTimeline(roomId, 100);
       // Filter events by type
-      image_events = [...image_events, ...(events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[])];
+      let images = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
+      images = await Promise.all(images.map(async (image) => {
+        try {
+          const profile = await client.getProfile(image.sender);
+          image.content.displayname = profile.displayname;
+        } catch {
+          image.content.displayname = image.sender;
+        }
+        return image;
+      }));
+      image_events = [...image_events, ...images];
       console.log("Adding", image_events.length, "items");
     }
 
