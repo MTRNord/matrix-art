@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PureComponent } from "react";
+import { Blurhash } from "react-blurhash";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../helpers/event_types";
 import { constMatrixArtServer } from "../helpers/matrix_client";
 import { ClientContext } from "./ClientContext";
@@ -83,7 +84,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
         return event.content['m.image_gallery'].map(image => {
-            return this.render_image_box(image['m.thumbnail'][0].url, event.event_id + image['m.file'].url, event.event_id, caption_text);
+            return this.render_image_box(image['m.thumbnail'][0].url, event.event_id + image['m.file'].url, event.event_id, caption_text, image["xyz.amorgan.blurhash"]);
         });
     }
 
@@ -97,18 +98,30 @@ export default class FrontPageImage extends PureComponent<Props, State> {
         if (caption.length > 0) {
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
-        return this.render_image_box(event.content['m.thumbnail'][0].url, event.event_id, event.event_id, caption_text);
+        return this.render_image_box(event.content['m.thumbnail'][0].url, event.event_id, event.event_id, caption_text, event.content["xyz.amorgan.blurhash"]);
     }
 
-    render_image_box(thumbnail_url: string, id: string, post_id: string, caption: string) {
+    render_image_box(thumbnail_url: string, id: string, post_id: string, caption: string, blurhash?: string) {
         // TODO show creators display name instead of mxid and show avatar image
         // TODO proper alt text
         const direct_link = `/post/${encodeURIComponent(post_id)}`;
+        const image = blurhash ? (
+            <div className="flex">
+                <Blurhash
+                    hash={blurhash}
+                    height={this.state.imageHeight}
+                    width="100%"
+                />
+                <img loading="lazy" alt={caption} title={caption} style={{ height: this.state.imageHeight }} className="relative -ml-[100%] max-w-full object-cover align-bottom" src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+            </div>
+        ) : (
+            <img alt={caption} title={caption} style={{ height: this.state.imageHeight }} className={`relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+        );
         return (
             <li style={{ height: this.state.imageHeight }} key={id}>
                 <Link href={direct_link} passHref>
                     <div style={{ height: this.state.imageHeight }} className={`relative cursor-pointer`}>
-                        <img alt={caption} title={caption} style={{ height: this.state.imageHeight }} className={`relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+                        {image}
                         <div style={{ height: this.state.imageHeight }} className={`flex-col max-w-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4`}>
                             <h2 className='truncate max-w-full text-base font-semibold'>{caption}</h2>
                             <p className='truncate max-w-full text-sm'>{this.state.displayname}</p>

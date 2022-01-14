@@ -16,6 +16,7 @@ import { get_data } from "../api/directory";
 import { isImageEvent, isImageGalleryEvent } from '../../components/FrontPageImage';
 import Link from 'next/link';
 import Footer from '../../components/Footer';
+import { Blurhash } from 'react-blurhash';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
@@ -244,6 +245,20 @@ class Post extends PureComponent<Props, State> {
             // TODO get this from the event itself
             license: "https://creativecommons.org/licenses/by-nc-nd/4.0/"
         };
+        const blurhash = imageEvent.content['xyz.amorgan.blurhash'];
+        const image_html = blurhash ? (
+            <div className="flex">
+                <Blurhash
+                    className="max-w-full lg:max-w-3xl max-h-[54.25rem]"
+                    hash={blurhash}
+                    width="100%"
+                    height=""
+                />
+                <img loading="lazy" alt={caption} title={caption} className="relative -ml-[100%] object-cover align-bottom" src={thumbnail_url} />
+            </div>
+        ) : (
+            <img alt={caption} title={caption} src={thumbnail_url} />
+        );
         return (
             <>
                 <Head>
@@ -266,7 +281,7 @@ class Post extends PureComponent<Props, State> {
                         thumbnail={true}
                     >
                         <a href={url} title={caption} data-src={url}>
-                            <img alt={caption} title={caption} src={thumbnail_url} />
+                            {image_html}
                         </a>
                     </LightGallery>
                 </div>
@@ -289,9 +304,23 @@ class Post extends PureComponent<Props, State> {
                 // TODO get this from the event itself
                 license: "https://creativecommons.org/licenses/by-nc-nd/4.0/"
             });
+            const blurhash = image["xyz.amorgan.blurhash"];
+            const image_html = blurhash ? (
+                <div className="flex">
+                    <Blurhash
+                        className="max-w-full lg:max-w-3xl max-h-[54.25rem]"
+                        hash={blurhash}
+                        width="100%"
+                        height=""
+                    />
+                    <img loading="lazy" alt={caption} title={caption} className="relative -ml-[100%] object-cover align-bottom" src={thumbnail_url} />
+                </div>
+            ) : (
+                <img alt={caption} title={caption} src={thumbnail_url} />
+            );
             return (
                 <a key={url} href={url} title={caption} data-src={url}>
-                    <img alt={caption} title={caption} src={thumbnail_url} />
+                    {image_html}
                 </a>
             );
         });

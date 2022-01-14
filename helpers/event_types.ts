@@ -31,6 +31,7 @@ export type ImageEventContent = {
     "m.image": ImageFields;
     "m.thumbnail": ThumbnailFileEvent[];
     "matrixart.tags": string[];
+    "xyz.amorgan.blurhash": string;
 };
 
 export type MessageAlike = { "m.text": string; } | { body: string; mimetype: string; };
