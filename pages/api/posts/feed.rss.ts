@@ -112,10 +112,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     image: client?.downloadLink(imageEvent.content["m.file"].url)
                 });
             }
-
         }
-
-    } catch { }
+    } catch {/*noop*/ }
 
     feed.addCategory("Photography");
     feed.addCategory("Media");
