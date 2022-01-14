@@ -7,11 +7,13 @@ export default class Storage {
             var LocalStorage = require('node-localstorage').LocalStorage; // eslint-disable-line unicorn/prefer-module
             var path = require('node:path'); // eslint-disable-line unicorn/prefer-module
             var fs = require('node:fs'); // eslint-disable-line unicorn/prefer-module
-            const dir = "localstorage";
+            const dir = path.join(process.cwd(), "localstorage");
             if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir);
+                try {
+                    fs.mkdirSync(dir);
+                } catch { console.log("race while folder was checked"); }
             }
-            this.nodeLocalStorage = new LocalStorage(path.join(process.cwd(), dir));
+            this.nodeLocalStorage = new LocalStorage(dir);
         }
     }
     getItem(key: string): any {
