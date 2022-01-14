@@ -112,10 +112,10 @@ export default class FrontPageImage extends PureComponent<Props, State> {
                     height={this.state.imageHeight}
                     width="100%"
                 />
-                <img loading="lazy" alt={caption} title={caption} style={{ height: this.state.imageHeight }} className="relative -ml-[100%] max-w-full object-cover align-bottom" src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+                <img loading="lazy" width="640" height="360" alt={caption} title={caption} style={{ height: this.state.imageHeight }} className="h-auto w-full relative -ml-[100%] max-w-full object-cover align-bottom" src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
             </div>
         ) : (
-            <img alt={caption} title={caption} style={{ height: this.state.imageHeight }} className={`relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
+                <img alt={caption} width="640" height="360" title={caption} style={{ height: this.state.imageHeight }} className={`h-auto w-full relative max-w-full object-cover align-bottom z-0`} src={this.context.client?.thumbnailLink(thumbnail_url, "scale", Number.parseInt(this.state.imageHeight?.replace("px", "")!), Number.parseInt(this.state.imageHeight?.replace("px", "")!))}></img>
         );
         return (
             <li style={{ height: this.state.imageHeight }} key={id}>
