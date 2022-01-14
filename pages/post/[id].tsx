@@ -256,10 +256,10 @@ class Post extends PureComponent<Props, State> {
                     width="100%"
                     height=""
                 />
-                <img loading="lazy" alt={caption} title={caption} className="relative -ml-[100%] object-cover align-bottom" src={thumbnail_url} />
+                <img loading="eager" alt={caption} title={caption} className="relative -ml-[100%] object-cover align-bottom" src={thumbnail_url} />
             </div>
         ) : (
-            <img alt={caption} title={caption} src={thumbnail_url} />
+            <img loading="eager" alt={caption} title={caption} src={thumbnail_url} />
         );
         return (
             <>
@@ -314,10 +314,10 @@ class Post extends PureComponent<Props, State> {
                         width="100%"
                         height=""
                     />
-                    <img loading="lazy" alt={caption} title={caption} className="relative -ml-[100%] object-cover align-bottom" src={thumbnail_url} />
+                    <img loading="eager" alt={caption} title={caption} className="relative -ml-[100%] object-cover align-bottom" src={thumbnail_url} />
                 </div>
             ) : (
-                <img alt={caption} title={caption} src={thumbnail_url} />
+                <img loading="eager" alt={caption} title={caption} src={thumbnail_url} />
             );
             return (
                 <a key={url} href={url} title={caption} data-src={url}>
