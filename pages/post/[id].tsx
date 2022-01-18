@@ -179,7 +179,7 @@ class Post extends PureComponent<Props, State> {
                             <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
                                 <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
                                 <h3 className="cursor-pointer mt-0 mb-4 text-l text-gray-900 dark:text-gray-200 font-normal inline-flex">
-                                    {avatar_url ? <img className="block object-cover rounded-full mr-4" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={this.state.displayname} title={this.state.displayname}/> : null}
+                                    {avatar_url ? <img className="block object-cover rounded-full mr-4" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> : undefined}
                                     <Link href={"/profile/" + encodeURIComponent(image_event.sender)}>{displayname}</Link>
                                 </h3>
                                 {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : (isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>)}
