@@ -8,7 +8,7 @@ export default class Header extends PureComponent {
         return (
             <>
                 <header className='bg-[#f8f8f8] dark:bg-[#06070D] flex fixed top-0 left-0 right-0 lg:h-20 h-auto z-[100] items-center lg:flex-row flex-col shadow-black drop-shadow-xl'>
-                    <span className='flex items-center lg:mx-10 lg:my-auto my-4 text-gray-900 dark:text-gray-200 font-bold'>
+                    <span className='flex items-center lg:mx-10 lg:my-auto my-4 text-gray-900 dark:text-gray-200 font-bold cursor-pointer'>
                         <Link href="/">
                             <svg width="8.75rem" className="fill-gray-900 dark:fill-gray-200" viewBox="0 0 400 82" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M105.578 67.4062C101.016 76.5312 94.5312 81.0938 86.125 81.0938C77.7812 81.0938 71.8125 75.4688 68.2188 64.2188C65.8438 56.7812 64.6562 47.7188 64.6562 37.0312C64.6562 33.0625 64.8125 28.8594 65.125 24.4219C59 36.3906 54.2344 48.2188 50.8281 59.9062H32.875L32.9219 24.3281C26.8594 36.3281 22.2031 48.1875 18.9531 59.9062H0.015625C12.6094 41.1875 22.5312 21.3125 29.7812 0.28125H48.5312C46.7188 11.5938 45.7656 23.4375 45.6719 35.8125C51.6719 23.4688 57.1406 11.625 62.0781 0.28125H83.4062C80.0625 8.84375 78.3906 17.9688 78.3906 27.6562C78.3906 28.875 78.4375 30.3906 78.5312 32.2031C78.8438 38.4844 79.2969 43.2031 79.8906 46.3594C80.7656 51.0469 82.2344 55.5156 84.2969 59.7656C87.7031 66.7656 91.7344 70.2656 96.3906 70.2656C101.141 70.2656 104.203 69.3125 105.578 67.4062Z" fill="inherit" />
