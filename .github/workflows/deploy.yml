@@ -1,0 +1,20 @@
+name: Deploy to server
+on:
+  push:
+    branches: [main]
+permissions: read-all
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
+        with:
+          allowed-endpoints: "gitlab.nordgedanken.dev:443"
+      - name: curl
+        uses: wei/curl@012398a392d02480afa2720780031f8621d5f94c # master
+        with:
+          args: -X POST -F "token=$GITLAB_TOKEN" -F "ref=main" -F "variables[GITHUB_COMMIT_ID]=$GITHUB_SHA" https://gitlab.nordgedanken.dev/api/v4/projects/2/trigger/pipeline
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
