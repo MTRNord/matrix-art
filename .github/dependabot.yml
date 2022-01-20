@@ -11,7 +11,7 @@ updates:
       - "MTRNord"
     assignees:
       - "MTRNord"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 1000
 
   # Enable version updates for Docker
   - package-ecosystem: "docker"
