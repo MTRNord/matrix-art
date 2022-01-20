@@ -24,7 +24,7 @@
     "feed": "yshrsmz/feed#c50d7a82c5b6141039830d615b19b760e173e231",
     "lightgallery": "2.3.0",
     "meilisearch": "0.23.0",
-    "next": "12.0.7",
+    "next": "12.0.8",
     "node-localstorage": "2.2.1",
     "pouchdb": "7.2.2",
     "react": "17.0.2",
