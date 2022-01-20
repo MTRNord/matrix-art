@@ -1,15 +1,15 @@
 # Install dependencies only when needed
-# Use node:16-alpine
-FROM node@sha256:b48580972490b3344047758d93ac454fe6fa0dc0bb7690a4f75212485b4afd5d AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+# Use node:17-slim
+FROM sha256:7c6fb786d7a9f38f5c0f0fa4845615c91441ab7406b13c808357b3b53e599bb2 AS deps
+# for some reason the $PATH get lost inside kaniko, if we re-set it by hand it seems to work. 
+ENV PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
 # Rebuild the source code only when needed
-# Use node:16-alpine
-FROM node@sha256:b48580972490b3344047758d93ac454fe6fa0dc0bb7690a4f75212485b4afd5d AS builder
+# Use node:17-slim
+FROM sha256:7c6fb786d7a9f38f5c0f0fa4845615c91441ab7406b13c808357b3b53e599bb2 AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
@@ -18,8 +18,8 @@ RUN npx browserslist@latest --update-db
 RUN npm run build && npm install --only=production --ignore-scripts --prefer-offline
 
 # Production image, copy all the files and run next
-# Use node:16-alpine
-FROM node@sha256:b48580972490b3344047758d93ac454fe6fa0dc0bb7690a4f75212485b4afd5d AS runner
+# Use node:17-slim
+FROM sha256:7c6fb786d7a9f38f5c0f0fa4845615c91441ab7406b13c808357b3b53e599bb2 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
