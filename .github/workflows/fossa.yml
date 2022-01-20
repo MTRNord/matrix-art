@@ -12,7 +12,11 @@ jobs:
       - name: Harden Runner
         uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
         with:
-          egress-policy: audit
+          allowed-endpoints: "
+            app.fossa.com:443
+            github.com:443
+            objects.githubusercontent.com:443
+            raw.githubusercontent.com:443"
       - uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
       - uses: fossas/fossa-action@3764c5c941b43a8fdce352db1891f7e26e2e3cda # main
         with:
