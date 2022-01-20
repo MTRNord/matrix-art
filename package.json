@@ -15,6 +15,9 @@
     "export": "next export",
     "lint": "next lint"
   },
+  "engines": {
+    "node": ">=17.0.0"
+  },
   "dependencies": {
     "blurhash": "1.1.4",
     "cors": "2.8.5",
