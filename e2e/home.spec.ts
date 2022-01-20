@@ -4,7 +4,7 @@ test.use({
   storageState: 'e2e/auth.json'
 });
 
-test('test navigation to details', async ({ page }) => {
+test('test navigation to details', async ({ page }, testInfo) => {
   page.on('console', msg => console.log(msg.text()));
 
   // Go to http://localhost:3000/
@@ -17,12 +17,18 @@ test('test navigation to details', async ({ page }) => {
     page.click('text=FlowersMTRNord @ Art')
   ]);
 
+
   await expect(page).toHaveURL('http://localhost:3000/post/%24xoIMe7tUMb2NhCBZaxsZr2CVkptCVu1GaJ_eJMKbJQo');
-  // Click img[alt="Flowers"]
-  await page.click('img[alt="Flowers"]');
-  // Click [aria-label="Close gallery"]
-  await page.click('[aria-label="Close gallery"]');
-  await expect(page).toHaveURL('http://localhost:3000/post/%24xoIMe7tUMb2NhCBZaxsZr2CVkptCVu1GaJ_eJMKbJQo');
+
+  // Dont run this on mobile as the button does only exist on desktop browsers
+  if (!testInfo.project.name.includes("Mobile")) {
+    // Click img[alt="Flowers"]
+    await page.click('img[alt="Flowers"]');
+    // Click [aria-label="Close gallery"]
+    await page.click('[aria-label="Close gallery"]');
+    await expect(page).toHaveURL('http://localhost:3000/post/%24xoIMe7tUMb2NhCBZaxsZr2CVkptCVu1GaJ_eJMKbJQo');
+  }
+
 
   // Click svg
   await Promise.all([
