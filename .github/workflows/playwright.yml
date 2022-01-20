@@ -19,6 +19,8 @@ jobs:
           allowed-endpoints: "
             github.com:22
             github.com:443
+            api.github.com:443
+            nodejs.org:443
             registry.npmjs.org:443
             playwright.azureedge.net:443
             azure.archive.ubuntu.com:443
