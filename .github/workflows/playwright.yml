@@ -19,7 +19,9 @@ jobs:
           allowed-endpoints: "
             github.com:22
             github.com:443
-            registry.npmjs.org:443"
+            registry.npmjs.org:443
+            playwright.azureedge.net:443
+            azure.archive.ubuntu.com:443"
       - uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
         with:
           persist-credentials: false
