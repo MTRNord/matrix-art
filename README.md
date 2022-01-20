@@ -1,4 +1,5 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/MTRNord/matrix-art.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MTRNord/matrix-art/alerts/) [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/MTRNord/matrix-art.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/MTRNord/matrix-art/context:javascript)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FMTRNord%2Fmatrix-art.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FMTRNord%2Fmatrix-art?ref=badge_shield)
 
 # Matrix-Art
 
@@ -19,3 +20,6 @@ https://scythe-pink-090.notion.site/Art-MX-Fediverse-Devianart-148d45b596e74582a
 
 1. Either copy the `.env.local.example` to `.env.local` or set the `NEXT_PUBLIC_DEFAULT_SERVER_URL` variable.
 2. Run `npm start` or build and run the Dockerimage
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FMTRNord%2Fmatrix-art.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FMTRNord%2Fmatrix-art?ref=badge_large)
