@@ -1,0 +1,14 @@
+name: Fossa Scan
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  fossa-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: fossas/fossa-action@main
+        with:
+          api-key: ${{secrets.fossaApiKey}}
