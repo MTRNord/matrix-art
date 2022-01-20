@@ -11,6 +11,7 @@ FROM node@sha256:23990429c0d7826c690acebe5f85d6df4fbf929b9832796cbf897e718e4a718
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps package-lock.json ./
 RUN npx browserslist@latest --update-db
 RUN npm run build && npm install --only=production --ignore-scripts --prefer-offline
 
