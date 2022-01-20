@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:16-alpine AS deps
+FROM node@sha256:23990429c0d7826c690acebe5f85d6df4fbf929b9832796cbf897e718e4a7180 AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
@@ -7,7 +7,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 # Rebuild the source code only when needed
-FROM node:16-alpine AS builder
+FROM node@sha256:23990429c0d7826c690acebe5f85d6df4fbf929b9832796cbf897e718e4a7180 AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
@@ -15,7 +15,7 @@ RUN npx browserslist@latest --update-db
 RUN npm run build && npm install --only=production --ignore-scripts --prefer-offline
 
 # Production image, copy all the files and run next
-FROM node:16-alpine AS runner
+FROM node@sha256:23990429c0d7826c690acebe5f85d6df4fbf929b9832796cbf897e718e4a7180 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
