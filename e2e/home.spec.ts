@@ -17,7 +17,17 @@ test('test navigation to details', async ({ page }) => {
     page.click('text=FlowersMTRNord @ Art')
   ]);
 
-  await page.locator('a:text("Matrix Art")').waitFor();
-  await page.click('a:text("Matrix Art")');
+  await expect(page).toHaveURL('http://localhost:3000/post/%24xoIMe7tUMb2NhCBZaxsZr2CVkptCVu1GaJ_eJMKbJQo');
+  // Click img[alt="Flowers"]
+  await page.click('img[alt="Flowers"]');
+  // Click [aria-label="Close gallery"]
+  await page.click('[aria-label="Close gallery"]');
+  await expect(page).toHaveURL('http://localhost:3000/post/%24xoIMe7tUMb2NhCBZaxsZr2CVkptCVu1GaJ_eJMKbJQo');
+
+  // Click svg
+  await Promise.all([
+    page.waitForNavigation(/*{ url: 'http://localhost:3000/' }*/),
+    page.click('#matrix-art-logo')
+  ]);
   await expect(page).toHaveURL('http://localhost:3000/');
 });
