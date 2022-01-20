@@ -5,7 +5,7 @@ FROM node@sha256:7c6fb786d7a9f38f5c0f0fa4845615c91441ab7406b13c808357b3b53e599bb
 ENV PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm cache verify && npm ci
 
 # Rebuild the source code only when needed
 # Use node:17-slim
