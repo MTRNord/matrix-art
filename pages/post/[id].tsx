@@ -182,13 +182,13 @@ class Post extends PureComponent<Props, State> {
                     </Head>
                     <Header></Header>
 
-                    <main className='flex-col mb-auto flex lg:pt-20 pt-56 z-0'>
+                    <main className='mb-auto lg:pt-20 pt-56 z-0'>
                         {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : (isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>)}
                         <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[25rem] flex flex-col items-center">
                             <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
                                 <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
                                 <h3 className="cursor-pointer mt-0 mb-4 text-l text-gray-900 dark:text-gray-200 font-normal inline-flex">
-                                    {avatar_url ? <img className="block object-cover rounded-full mr-4" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> : undefined}
+                                    <span className="block object-cover rounded-full mr-4">{avatar_url ? <img className="object-cover rounded-full" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> : undefined}</span>
                                     <Link href={"/profile/" + encodeURIComponent(image_event.sender)} passHref><span className='hover:text-teal-400'>{displayname}</span></Link>
                                 </h3>
                                 {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : (isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>)}
