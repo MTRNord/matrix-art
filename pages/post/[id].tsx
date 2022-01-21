@@ -247,7 +247,7 @@ class Post extends PureComponent<Props, State> {
 
     renderSingleImageEvent(imageEvent: ImageEvent, caption: string) {
         const url = this.context.client?.downloadLink(imageEvent.content["m.file"].url);
-        const thumbnail_url = this.context.client?.downloadLink(imageEvent.content['m.thumbnail'][0].url);
+        const thumbnail_url = this.context.client.thumbnailLink(imageEvent.content['m.file'].url, "scale", imageEvent.content['m.image'].width - 1, imageEvent.content['m.image'].height - 1);
 
         if (!url || !thumbnail_url) {
             return <></>;

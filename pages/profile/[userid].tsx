@@ -145,8 +145,13 @@ class Profile extends PureComponent<Props, State> {
                 </Head>
                 <Header></Header>
                 <main className='w-full mb-auto lg:pt-20 pt-56 z-0 bg-[#f8f8f8] dark:bg-[#06070D]'>
-                    {banner_event ? <div style={{
+                    {/*{banner_event ? <div style={{
                         backgroundImage: `url(${this.context.client.downloadLink((banner_event as BannerEvent).content["m.file"].url)})`
+                    }}
+                        className="fixed top-14 w-full h-[32.5rem] bg-cover lg:bg-[position:50%]"
+                    ></div> : undefined}*/}
+                    {banner_event ? <div style={{
+                        backgroundImage: `url(${this.context.client.thumbnailLink((banner_event as BannerEvent).content["m.file"].url, "scale", (banner_event as BannerEvent).content["m.image"].width - 1, (banner_event as BannerEvent).content["m.image"].height - 1)})`
                     }}
                         className="fixed top-14 w-full h-[32.5rem] bg-cover lg:bg-[position:50%]"
                     ></div> : undefined}

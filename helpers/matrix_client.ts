@@ -260,7 +260,7 @@ export default class MatrixClient {
         return constMatrixArtServer + "/_matrix/media/r0/download/" + mxcUri.split("mxc://")[1];
     }
 
-    thumbnailLink(mxcUri: string, method: string, width: number, height: number): string | undefined {
+    thumbnailLink(mxcUri: string, method: "scale" | "crop", width: number, height: number): string | undefined {
         if (!mxcUri) {
             return;
         }
