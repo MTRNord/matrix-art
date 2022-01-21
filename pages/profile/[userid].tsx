@@ -148,12 +148,12 @@ class Profile extends PureComponent<Props, State> {
                     {banner_event ? <div style={{
                         backgroundImage: `url(${this.context.client.downloadLink((banner_event as BannerEvent).content["m.file"].url)})`
                     }}
-                        className="fixed top-14 w-full h-[32.5rem] bg-cover bg-[position:50%]"
+                        className="fixed top-14 w-full h-[32.5rem] bg-cover lg:bg-[position:50%]"
                     ></div> : undefined}
                     <div className="relative w-full">
                         <div className="relative mb-0 min-h-[43.75rem]">
                             <div id="transparent_gradient" className="absolute left-0 right-0 top-[39rem] bottom-0 bg-[#f8f8f8] dark:bg-[#06070D]"></div>
-                            <div className="px-14 relative pt-[15.5rem] pb-96 ">
+                            <div className="px-14 relative pt-[8.5rem] lg:pt-[15.5rem] pb-96 ">
                                 <div className="relative mt-0">
                                     <div className="relative inline-flex z-[1] mb-10">
                                         <span>
@@ -163,13 +163,13 @@ class Profile extends PureComponent<Props, State> {
                                             </div>
                                         </span>
                                         <div className="ml-5 flex flex-col justify-center">
-                                            <h1 className="font-extrabold text-5xl text-gray-200 mt-[-1rem] flex items-end">{displayname}</h1>
+                                            <h1 className="font-extrabold text-3xl lg:text-5xl text-gray-200 mt-[-1rem] flex items-end">{displayname}</h1>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="relative w-full h-14">
                                     <div className="min-h-0">
-                                        <nav className="w-full h-14 box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D]">
+                                        <nav className="w-full h-14 box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D] overflow-scroll lg:overflow-hidden">
                                             <span id="magic-spacer"></span>
                                             <div className="flex items-center w-full h-full overflow-hidden whitespace-nowrap box-border min-w-fit">
                                                 <Link href={`/profile/${encodeURIComponent(mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Home</a></Link>
