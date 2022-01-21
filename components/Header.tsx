@@ -2,9 +2,40 @@ import Link from "next/link";
 import { PureComponent } from "react";
 import { ClientContext } from "./ClientContext";
 
-export default class Header extends PureComponent {
+type Props = {
+
+};
+
+type State = {
+    directory_data: { _id: string; user_id: string; user_room: string; }[];
+    loading: boolean;
+    error?: string;
+};
+export default class Header extends PureComponent<Props, State> {
     declare context: React.ContextType<typeof ClientContext>;
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            directory_data: [],
+            loading: true
+        } as State;
+    }
+
+    async componentDidMount() {
+        try {
+            const data = await fetch("/api/directory", { method: "GET" });
+            const directory_data = (await data.json()).data;
+            this.setState({ directory_data: directory_data, loading: false });
+        } catch {
+            console.error("Failed to get directory");
+            this.setState({ error: "Failed to get directory" });
+        }
+    }
     render() {
+        if (this.state.loading) {
+            return <></>;
+        }
         return (
             <>
                 <header className='bg-[#f8f8f8] dark:bg-[#06070D] flex fixed top-0 left-0 right-0 lg:h-20 h-auto z-[100] items-center lg:flex-row flex-col shadow-black drop-shadow-xl'>
@@ -38,14 +69,18 @@ export default class Header extends PureComponent {
                         <nav className='flex lg:flex-shrink-0 my-4'>
                             {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span> : undefined}
                             {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span> : undefined}
-                            {!this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>Profile</Link></span> : undefined}
+                            {!this.context.client.isGuest && this.state.directory_data.find(thing => thing.user_id == this.context.client.userId) ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>Profile</Link></span> : undefined}
                             {!this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/logout/">Logout</Link></span> : undefined}
                         </nav>
                     </div>
                     <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] lg:h-7 h-0'></span>
                     <div className='relative lg:m-0'>
                         <div className='flex'>
-                            <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Submit</a>
+                            {
+                                this.state.directory_data.find(thing => thing.user_id == this.context.client.userId) ?
+                                    <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Submit</a> :
+                                    <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Setup Account</a>
+                            }
                         </div>
                     </div>
                 </header>
