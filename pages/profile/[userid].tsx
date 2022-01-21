@@ -41,6 +41,14 @@ class Profile extends PureComponent<Props, State> {
         if (!this.context.client?.accessToken) {
             this.registerAsGuest();
         } else {
+            if (!this.context.guest_client?.accessToken) {
+                try {
+                    let serverUrl = constMatrixArtServer + "/_matrix/client";
+                    await this.context.guest_client?.registerAsGuest(serverUrl);
+                } catch (error) {
+                    console.error("Failed to register as guest:", error);
+                }
+            }
             console.log("Already logged in");
             if (!this.props.mxid) {
                 return;

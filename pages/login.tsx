@@ -61,7 +61,6 @@ class Login extends PureComponent<Props, State> {
     }
 
     async handleSubmit(event: { preventDefault: () => void; }) {
-        // TODO update client
         event.preventDefault();
         let serverUrl = this.state.serverUrl;
         // Reset url if the field is hidden.
@@ -75,13 +74,16 @@ class Login extends PureComponent<Props, State> {
             serverUrl = constMatrixArtServer + "/_matrix/client";
         }
 
-        // TODO join required rooms
         if (this.state.mxid && this.state.password) {
             this.setState({
                 loading: true
             });
             await this.context.client.login(serverUrl, this.state.mxid, this.state.password, true);
-            this.props.router.replace("/");
+            await this.context.client.followUser(`#${this.context.client.userId}`);
+            if (typeof window !== "undefined") {
+                window.location.reload();
+            }
+            await this.props.router.replace("/");
         }
     }
 
@@ -103,7 +105,9 @@ class Login extends PureComponent<Props, State> {
                                     <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Log In</h1>
                                 </div>
                             </div>
-                            {/* TODO fix loader */}
+                            <div className="m-0 w-full">
+                                <div className="loader fixed top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]">Loading...</div>
+                            </div>
                         </main>
                         <Footer></Footer>
                     </div>
