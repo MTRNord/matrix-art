@@ -267,10 +267,7 @@ export default class MatrixClient {
         if (mxcUri.indexOf("mxc://") !== 0) {
             return;
         }
-        return `${constMatrixArtServer}/_matrix/media/r0/thumbnail/${mxcUri.split("mxc://")[1]
-            }?method=${encodeURIComponent(method)}&width=${encodeURIComponent(
-                width
-            )}&height=${encodeURIComponent(height)}`;
+        return `${constMatrixArtServer}/_matrix/media/r0/thumbnail/${mxcUri.split("mxc://")[1]}?method=${encodeURIComponent(method)}&width=${encodeURIComponent(width)}&height=${encodeURIComponent(height)}`;
     }
 
     async uploadFile(file: File): Promise<string> {

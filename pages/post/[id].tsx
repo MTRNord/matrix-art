@@ -281,10 +281,10 @@ class Post extends PureComponent<Props, State> {
                     width="100%"
                     height=""
                 />
-                <img loading="eager" width={imageEvent.content['m.image'].width} height={imageEvent.content['m.image'].height} alt={caption} title={caption} className="h-auto w-full relative -ml-[100%] object-cover align-bottom" src={thumbnail_url} />
+                <img loading="eager" width={imageEvent.content['m.image'].width - 1} height={imageEvent.content['m.image'].height - 1} alt={caption} title={caption} className="h-auto w-full relative -ml-[100%] object-cover align-bottom max-h-[54.25rem]" src={thumbnail_url} />
             </div>
         ) : (
-            <img loading="eager" width={imageEvent.content['m.image'].width} height={imageEvent.content['m.image'].height} className="h-auto w-full" alt={caption} title={caption} src={thumbnail_url} />
+                <img loading="eager" width={imageEvent.content['m.image'].width - 1} height={imageEvent.content['m.image'].height - 1} className="h-auto w-full max-h-[54.25rem]" alt={caption} title={caption} src={thumbnail_url} />
         );
         return (
             <>
