@@ -3,8 +3,12 @@ export type MatrixEventBase = {
     event_id: string;
     room_id: string;
     sender: string;
-    redacted_because: any | undefined;
+    redacted_because?: any;
     origin_server_ts: number;
+};
+
+export type MatrixStateEventBase = MatrixEventBase & {
+    state_key: string;
 };
 
 export type FileEvent = {
@@ -68,5 +72,20 @@ export type BannerEvent = MatrixEventBase & {
     content: BannerEventContent;
 };
 
+export type MatrixArtProfileContent = {
+    "matrixart.profile.description": string;
+    "matrixart.profile.pronouns": string;
+    "matrixart.profile.links": { [key: string]: { url: string; name: string; icon_url: string; }; };
+    "matrixart.profile.biography": string;
+    // Same as bio
+    "m.text": string;
+    [key: string]: any;
+};
+
+// matrixart.profile state
+export type MatrixArtProfile = MatrixStateEventBase & {
+    content: MatrixArtProfileContent;
+};
+
 export type MatrixImageEvents = ImageEvent | ImageGalleryEvent;
-export type MatrixEvent = MatrixImageEvents | BannerEvent;
+export type MatrixEvent = MatrixImageEvents | BannerEvent | MatrixArtProfile;

@@ -363,7 +363,8 @@ export default class MatrixClient {
         return info;
     }
 
-    async getTimeline(roomId: string, limit: number) {
+    // TODO allow filters
+    async getTimeline(roomId: string, limit: number, filter: object = { limit: 30, types: ["m.image", "m.image_gallery"] }) {
         if (!this.accessToken) {
             console.error("No access token");
             return [];
@@ -378,7 +379,7 @@ export default class MatrixClient {
                 fromQuery = `&from=${from}`;
             }
             let data = await this.fetchJson(
-                `${this.serverUrl}/r0/rooms/${roomId}/messages?dir=b&limit=${limit}${fromQuery}`,
+                `${this.serverUrl}/r0/rooms/${roomId}/messages?dir=b&limit=${limit}${fromQuery}&filter=${JSON.stringify(filter)}`,
                 {
                     headers: { Authorization: `Bearer ${this.accessToken}` },
                 }

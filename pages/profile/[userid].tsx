@@ -7,7 +7,7 @@ import { ClientContext } from "../../components/ClientContext";
 import Footer from "../../components/Footer";
 import FrontPageImage from "../../components/FrontPageImage";
 import Header from "../../components/Header";
-import { BannerEvent, MatrixEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
+import { BannerEvent, MatrixArtProfile, MatrixEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import { constMatrixArtServer } from "../../helpers/matrix_client";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
@@ -18,6 +18,7 @@ type State = {
     displayname: string;
     avatar_url: string;
     events: MatrixEvent[] | [];
+    profile_event?: MatrixArtProfile;
     error?: any;
     isLoadingImages: boolean;
     hasFullyLoaded: boolean;
@@ -85,11 +86,13 @@ class Profile extends PureComponent<Props, State> {
         });
         try {
             const roomId = await client?.followUser("#" + this.props.mxid);
-            const events = await client?.getTimeline(roomId, 100);
+            const events = await client?.getTimeline(roomId, 100, { limit: 30, types: ["m.image", "m.image_gallery", "matrixart.profile"] });
+            const profile_event = events.find((event) => event.type === "matrixart.profile" && event.sender === this.props.mxid);
             const filtered_events = events.filter(event => event.type !== "m.room.member" && event.type !== "m.room.topic" && event.type !== "m.room.name" && event.type !== "m.room.power_levels");
             console.log("Adding", filtered_events.length, "items");
             this.setState({
                 events: filtered_events,
+                profile_event: profile_event as MatrixArtProfile | undefined,
             });
         } catch (error) {
             this.setState({
@@ -122,21 +125,22 @@ class Profile extends PureComponent<Props, State> {
     }
 
     render() {
-        if (!this.props.mxid || !this.props.mxid?.startsWith("@")) {
+        const { mxid } = this.props;
+        const { events, profile_event, avatar_url, displayname } = this.state;
+        if (!mxid || !mxid?.startsWith("@")) {
             return this.renderNotFound();
         }
 
-        const banner_event = this.state.events.find(event => event.type === "matrixart.profile_banner");
-        const avatar_url = this.state.avatar_url;
-        const image_events = this.state.events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
+        const banner_event = events.find(event => event.type === "matrixart.profile_banner");
+        const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
         // TODO opengraph shows mxid instead of displayname
         return (
             <div className="h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]">
                 <Head>
-                    <title key="title">Matrix Art | {this.state.displayname}</title>
-                    <meta property="og:title" content={`Matrix Art | ${this.state.displayname}`} key="og-title" />
+                    <title key="title">Matrix Art | {displayname}</title>
+                    <meta property="og:title" content={`Matrix Art | ${displayname}`} key="og-title" />
                     <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
-                    <meta name="twitter:title" content={`Matrix Art | ${this.state.displayname}`} key="og-twitter-title" />
+                    <meta name="twitter:title" content={`Matrix Art | ${displayname}`} key="og-twitter-title" />
                     <meta property="og:type" content="website" key="og-type" />
                 </Head>
                 <Header></Header>
@@ -155,11 +159,11 @@ class Profile extends PureComponent<Props, State> {
                                         <span>
                                             <div className="block relative">
                                                 {/* TODO fallback*/}
-                                                <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={this.state.displayname} title={this.state.displayname} />
+                                                <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
                                             </div>
                                         </span>
                                         <div className="ml-5 flex flex-col justify-center">
-                                            <h1 className="font-extrabold text-5xl text-gray-200 mt-[-1rem] flex items-end">{this.state.displayname}</h1>
+                                            <h1 className="font-extrabold text-5xl text-gray-200 mt-[-1rem] flex items-end">{displayname}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -168,9 +172,9 @@ class Profile extends PureComponent<Props, State> {
                                         <nav className="w-full h-14 box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D]">
                                             <span id="magic-spacer"></span>
                                             <div className="flex items-center w-full h-full overflow-hidden whitespace-nowrap box-border min-w-fit">
-                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Home</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Gallery</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>About</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Home</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Gallery</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>About</a></Link>
                                             </div>
                                             <div className="pr-4">
                                                 {/*TODO Share menu here*/}
@@ -190,7 +194,7 @@ class Profile extends PureComponent<Props, State> {
                                                         <div className="w-full flex items-center mt-8 mb-4">
                                                             <h2 className="font-bold text-lg tracking-[.3px] leading-[1.22] text-gray-900 dark:text-gray-200">Gallery</h2>
                                                             <div className="ml-4 flex flex-[1] items-center relative justify-end">
-                                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}/gallery`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>See All</a></Link>
+                                                                <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>See All</a></Link>
                                                             </div>
                                                         </div>
                                                         <div>
@@ -205,21 +209,21 @@ class Profile extends PureComponent<Props, State> {
                                                 <div>
                                                     <section className="pb-4 block">
                                                         <div className="w-full flex items-center mt-8 mb-4">
-                                                            <h2 className="font-bold text-gray-900 dark:text-gray-200 text-lg tracking--[.3px] leading-[1.22] max-w-[90%] mr-auto overflow-hidden text-ellipsis whitespace-nowrap">{`About ${this.state.displayname} (Currently Hardcoded)`}</h2>
+                                                            <h2 className="font-bold text-gray-900 dark:text-gray-200 text-lg tracking--[.3px] leading-[1.22] max-w-[90%] mr-auto overflow-hidden text-ellipsis whitespace-nowrap">{`About ${displayname}`}</h2>
                                                             <div className="ml-4 flex flex-[1] items-center relative justify-end">
-                                                                <Link href={`/profile/${encodeURIComponent(this.props.mxid)}/about`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>More</a></Link>
+                                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>More</a></Link>
                                                             </div>
                                                         </div>
                                                         <div className="bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95] pt-7 w-ull flex flex-col box-border tracking--[.3px] text-gray-900 dark:text-gray-200">
                                                             <div className="px-8">
                                                                 <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
-                                                                    Coder // Photographer // Student
+                                                                    {profile_event ? profile_event.content["matrixart.profile.description"] : undefined}
                                                                 </div>
                                                             </div>
                                                             <div className="px-8">
                                                                 <div className="mb-8 flex items-start justify-between flex-wrap w-full">
                                                                     <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">Pronouns</div>
-                                                                    <div className="w-full justify-items-end">They/Them</div>
+                                                                    <div className="w-full justify-items-end">{profile_event ? profile_event.content["matrixart.profile.pronouns"] : undefined}</div>
                                                                 </div>
                                                             </div>
                                                             <div className="px-8">
@@ -231,7 +235,7 @@ class Profile extends PureComponent<Props, State> {
                                                             <div className="px-8">
                                                                 <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
                                                                     <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">My Bio</div>
-                                                                    <div className="text-base font-regular">Hi! I am MTRNord :) I like to photograph since quite a while. A lot of different things like Flowers or architecture but also nature.<br /><br />I also very much like doing things in 3D in blender that I may share here :)</div>
+                                                                    <div className="text-base font-regular">{profile_event ? profile_event.content["matrixart.profile.biography"] : undefined}</div>
                                                                 </div>
                                                             </div>
                                                         </div>
