@@ -215,29 +215,29 @@ class Profile extends PureComponent<Props, State> {
                                                             </div>
                                                         </div>
                                                         <div className="bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95] pt-7 w-ull flex flex-col box-border tracking--[.3px] text-gray-900 dark:text-gray-200">
-                                                            <div className="px-8">
+                                                            {profile_event?.content["matrixart.profile.description"] ? <div className="px-8">
                                                                 <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
                                                                     {profile_event ? profile_event.content["matrixart.profile.description"] : undefined}
                                                                 </div>
-                                                            </div>
-                                                            <div className="px-8">
+                                                            </div> : undefined}
+                                                            {profile_event?.content["matrixart.profile.pronouns"] ? <div className="px-8">
                                                                 <div className="mb-8 flex items-start justify-between flex-wrap w-full">
                                                                     <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">Pronouns</div>
                                                                     <div className="w-full justify-items-end">{profile_event ? profile_event.content["matrixart.profile.pronouns"] : undefined}</div>
                                                                 </div>
-                                                            </div>
-                                                            <div className="px-8">
+                                                            </div> : undefined}
+                                                            {profile_event?.content["matrixart.profile.links"] ? <div className="px-8">
                                                                 <div className="mb-8 flex items-start justify-between flex-wrap w-full">
                                                                     <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">Follow me on</div>
                                                                     <div className="w-full max-w-[21.5rem] grid gap-4 auto-cols-[2.75rem] auto-rows-[2.75rem] grid-flow-col justify-items-end">{/*TODO Social Icons */}</div>
                                                                 </div>
-                                                            </div>
-                                                            <div className="px-8">
+                                                            </div> : undefined}
+                                                            {profile_event?.content["matrixart.profile.biography"] ? <div className="px-8">
                                                                 <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
                                                                     <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">My Bio</div>
                                                                     <div className="text-base font-regular">{profile_event ? profile_event.content["matrixart.profile.biography"] : undefined}</div>
                                                                 </div>
-                                                            </div>
+                                                            </div> : undefined}
                                                         </div>
                                                     </section>
                                                 </div>

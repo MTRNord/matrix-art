@@ -364,7 +364,7 @@ export default class MatrixClient {
     }
 
     // TODO allow filters
-    async getTimeline(roomId: string, limit: number, filter: object = { limit: 30, types: ["m.image", "m.image_gallery"] }) {
+    async getTimeline(roomId: string, limit: number, filter: object = { limit: 30, types: ["m.image", "m.image_gallery"] }) {// eslint-disable-line unicorn/no-object-as-default-parameter
         if (!this.accessToken) {
             console.error("No access token");
             return [];
