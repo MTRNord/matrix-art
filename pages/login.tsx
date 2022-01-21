@@ -12,6 +12,7 @@ type Props = {
 };
 type State = {
     showServerField: boolean;
+    generateProfile: boolean;
     serverUrl: string;
     mxid?: string;
     password?: string;
@@ -27,6 +28,7 @@ class Login extends PureComponent<Props, State> {
         super(props);
         this.state = {
             showServerField: false,
+            generateProfile: false,
             serverUrl: constMatrixArtServer,
             serverFieldsDisplay: 'none',
             serverFieldsOpacity: 0,
@@ -67,11 +69,10 @@ class Login extends PureComponent<Props, State> {
         if (!this.state.showServerField) {
             serverUrl = constMatrixArtServer + "/_matrix/client";
         }
-        if (serverUrl === "") {
+        if (serverUrl === "" || serverUrl === constMatrixArtServer) {
             serverUrl = constMatrixArtServer + "/_matrix/client";
-        }
-        if (serverUrl === constMatrixArtServer) {
-            serverUrl = constMatrixArtServer + "/_matrix/client";
+        } else if (this.state.showServerField && !serverUrl.endsWith("/_matrix/client") && !serverUrl.endsWith("/_matrix/client/")) {
+            serverUrl = serverUrl + "/_matrix/client";
         }
 
         if (this.state.mxid && this.state.password) {
@@ -79,7 +80,10 @@ class Login extends PureComponent<Props, State> {
                 loading: true
             });
             await this.context.client.login(serverUrl, this.state.mxid, this.state.password, true);
-            await this.context.client.followUser(`#${this.context.client.userId}`);
+            if (this.state.generateProfile) {
+                await this.context.client.followUser(`#${this.context.client.userId}`);
+                await fetch("/api/directory", { method: "POST", body: JSON.stringify({ user_id: this.context.client.userId, user_room: `#${this.context.client.userId}` }) });
+            }
             if (typeof window !== "undefined") {
                 window.location.reload();
             }
@@ -88,7 +92,7 @@ class Login extends PureComponent<Props, State> {
     }
 
     render(): ReactNode {
-        const { loading, showServerField, serverFieldsOpacity, serverFieldsDisplay, serverUrl, mxid, password } = this.state;
+        const { loading, showServerField, serverFieldsOpacity, serverFieldsDisplay, serverUrl, mxid, password, generateProfile } = this.state;
         if (loading) {
             return (
                 <>
@@ -167,6 +171,14 @@ class Login extends PureComponent<Props, State> {
                                     </div>
                                 </label>
 
+                                <div className="block">
+                                    <div className="mt-2 flex justify-between items-center">
+                                        <label className="inline-flex items-center">
+                                            <input className="cursor-pointer h-4 w-4" type="checkbox" name="generateProfile" checked={generateProfile} onChange={this.handleInputChange} />
+                                            <span className="ml-2 text-gray-700 dark:text-gray-400">Create a full profile? (Cant be done later currently. This is WIP)</span>
+                                        </label>
+                                    </div>
+                                </div>
 
                                 <input className="bg-teal-400 hover:bg-teal-500 cursor-pointer h-10 rounded dark:text-gray-900 text-gray-200" type="submit" value="Log In" />
                             </form>
