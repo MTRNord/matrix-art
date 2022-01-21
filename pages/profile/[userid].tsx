@@ -86,7 +86,7 @@ class Profile extends PureComponent<Props, State> {
         });
         try {
             const roomId = await client?.followUser("#" + this.props.mxid);
-            const events = await client?.getTimeline(roomId, 100, { limit: 30, types: ["m.image", "m.image_gallery", "matrixart.profile"] });
+            const events = await client?.getTimeline(roomId, 100, { limit: 30, types: ["m.image", "m.image_gallery", "matrixart.profile", "matrixart.profile_banner"] });
             const profile_event = events.find((event) => event.type === "matrixart.profile" && event.sender === this.props.mxid);
             const filtered_events = events.filter(event => event.type !== "m.room.member" && event.type !== "m.room.topic" && event.type !== "m.room.name" && event.type !== "m.room.power_levels");
             console.log("Adding", filtered_events.length, "items");
