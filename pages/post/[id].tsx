@@ -56,6 +56,14 @@ class Post extends PureComponent<Props, State> {
                 console.error("Failed to register as guest:", error);
             }
         } else {
+            if (!this.context.guest_client?.accessToken) {
+                try {
+                    let serverUrl = constMatrixArtServer + "/_matrix/client";
+                    await this.context.guest_client?.registerAsGuest(serverUrl);
+                } catch (error) {
+                    console.error("Failed to register as guest:", error);
+                }
+            }
             console.log("Already logged in");
         }
         if (this.props.directory_data && this.props.event_id && this.props.event_id.startsWith("$")) {
@@ -68,6 +76,7 @@ class Post extends PureComponent<Props, State> {
         if (isLoadingImages || hasFullyLoaded || !this.props.directory_data) {
             return;
         }
+        const client = this.context.client.isGuest ? this.context.client : this.context.guest_client;
         this.setState({
             isLoadingImages: true,
         });
@@ -75,14 +84,14 @@ class Post extends PureComponent<Props, State> {
             // TODO fix this. It is super inefficent.
             for (let user of this.props.directory_data) {
                 // We dont need many events
-                const roomId = await this.context.client?.followUser(user.user_room);
-                const events = await this.context.client?.getTimeline(roomId, 100); // Filter events by type
+                const roomId = await client?.followUser(user.user_room);
+                const events = await client?.getTimeline(roomId, 100); // Filter events by type
                 const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
                 if (image_event == undefined) {
                     continue;
                 }
                 try {
-                    const profile = await this.context.client.getProfile(image_event.sender);
+                    const profile = await client.getProfile(image_event.sender);
                     this.setState({
                         image_event: image_event as MatrixImageEvents,
                         displayname: profile.displayname,
