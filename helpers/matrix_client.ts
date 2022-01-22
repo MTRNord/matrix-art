@@ -140,6 +140,11 @@ export default class MatrixClient {
         }
     }
 
+    async getOpenidToken(): Promise<string> {
+        const data = await this.fetchJson(`${this.userId!.slice(this.userId!.indexOf(":") + 1)}/_matrix/client/r0/user/${this.userId}/openid/request_token`, { method: "POST" });
+        return data.access_token;
+    }
+
     async register(serverUrl: string, username: string, password: string) {
         const data = await this.fetchJson(`${serverUrl}/r0/register`, {
             method: "POST",

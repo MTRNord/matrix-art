@@ -82,7 +82,8 @@ class Login extends PureComponent<Props, State> {
             await this.context.client.login(serverUrl, this.state.mxid, this.state.password, true);
             if (this.state.generateProfile) {
                 await this.context.client.followUser(`#${this.context.client.userId}`);
-                await fetch("/api/directory", { method: "POST", body: JSON.stringify({ user_id: this.context.client.userId, user_room: `#${this.context.client.userId}` }) });
+                const token = await this.context.client.getOpenidToken();
+                await fetch("/api/directory", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, user_room: `#${this.context.client.userId}` }) });
             }
             if (typeof window !== "undefined") {
                 window.location.reload();

@@ -3,6 +3,7 @@ import initMiddleware from '../../helpers/init-middleware';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import PouchDB from 'pouchdb';
 import path from 'node:path';
+import ServerOpenID from '../../helpers/ss-well-known';
 
 const db = new PouchDB(path.join(process.cwd(), "matrix-art-db"));
 
@@ -51,34 +52,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const data: {
             user_id: string;
             user_room: string;
+            access_token: string;
         } = req.body;
-        const db_data = {
-            _id: data.user_id,
-            user_id: data.user_id,
-            user_room: data.user_room,
-        };
-        try {
-            await db.put(db_data);
-            res.status(200).json({});
-        } catch (error) {
-            res.status(502).json({});
-            console.error(error);
+        if (await (new ServerOpenID().verify(data.user_id, data.access_token))) {
+            const db_data = {
+                _id: data.user_id,
+                user_id: data.user_id,
+                user_room: data.user_room,
+            };
+            try {
+                await db.put(db_data);
+                res.status(200).json({});
+            } catch (error) {
+                res.status(502).json({});
+                console.error(error);
+            }
+        } else {
+            res.status(401).json({});
         }
+
+
 
     } else if (req.method == "DELETE") {
         const data: {
             user_id: string;
+            access_token: string;
         } = req.body;
-        console.log(data.user_id);
-        try {
-            const db_data = await db.get(data.user_id);
-            await db.remove(db_data);
-            res.status(200).json({});
-        } catch (error) {
-            res.status(502).json({});
-            console.error(error);
+        if (await (new ServerOpenID().verify(data.user_id, data.access_token))) {
+            try {
+                const db_data = await db.get(data.user_id);
+                await db.remove(db_data);
+                res.status(200).json({});
+            } catch (error) {
+                res.status(502).json({});
+                console.error(error);
+            }
+        } else {
+            res.status(401).json({});
         }
-
     } else {
         res.status(405).json({});
     }
