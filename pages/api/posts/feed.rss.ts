@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.setHeader("content-type", "application/rss+xml");
     const feed = new Feed({
         title: "Matrix-Art",
-        description: "Matrix-Art is a Devianart style application for posting media based on Matrix.",
+        description: "Matrix-Art is a Deviantart style application for posting media based on Matrix.",
         id: "https://" + (req.headers.host || "art.midnightthoughts.space"),
         link: "https://" + (req.headers.host || "art.midnightthoughts.space"),
         language: "en",
