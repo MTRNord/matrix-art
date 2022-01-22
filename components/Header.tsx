@@ -25,7 +25,8 @@ export default class Header extends PureComponent<Props, State> {
     async componentDidMount() {
         try {
             const data = await fetch("/api/directory", { method: "GET" });
-            const directory_data = (await data.json()).data;
+            const data_parsed = await data.json();
+            const directory_data = data_parsed.data;
             this.setState({ directory_data: directory_data, loading: false });
         } catch {
             console.error("Failed to get directory");
@@ -69,7 +70,7 @@ export default class Header extends PureComponent<Props, State> {
                         <nav className='flex lg:flex-shrink-0 my-4'>
                             {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span> : undefined}
                             {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span> : undefined}
-                            {!this.context.client.isGuest && this.state.directory_data.find(thing => thing.user_id == this.context.client.userId) ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>Profile</Link></span> : undefined}
+                            {!this.context.client.isGuest && this.state.directory_data.some(thing => thing.user_id == this.context.client.userId) ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>Profile</Link></span> : undefined}
                             {!this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/logout/">Logout</Link></span> : undefined}
                         </nav>
                     </div>
@@ -77,7 +78,7 @@ export default class Header extends PureComponent<Props, State> {
                     <div className='relative lg:m-0'>
                         <div className='flex'>
                             {
-                                this.state.directory_data.find(thing => thing.user_id == this.context.client.userId) ?
+                                this.state.directory_data.some(thing => thing.user_id == this.context.client.userId) ?
                                     <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Submit</a> :
                                     <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Setup Account</a>
                             }
