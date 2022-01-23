@@ -92,7 +92,7 @@ class Submit extends PureComponent<Props, State> {
 
     render(): ReactNode {
         return (
-            <div className='h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
+            <div className='min-h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
                 <Head>
                     <title key="title">Matrix Art | Submit Post</title>
                     <meta property="og:title" content="Matrix Art | Submit Post" key="og-title" />
@@ -110,7 +110,7 @@ class Submit extends PureComponent<Props, State> {
                                         <input {...getInputProps()} />
                                         <p className="text-base text-gray-900 dark:text-gray-200">Drag &apos;n&apos; drop some images here, or click to select images</p>
                                     </div>
-                                    <ul className="flex flex-row flex-wrap gap-1 mt-4">
+                                    <ul className="flex flex-row flex-wrap gap-1 mt-4 max-w-[50rem] justify-evenly">
                                         {this.renderThumbs()}
                                         <li className='grow-[10]'></li>
                                     </ul>

@@ -116,7 +116,7 @@ class Profile extends PureComponent<Props, State> {
 
     renderNotFound() {
         return (
-            <div className="h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+            <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                 <Head>
                     <title key="title">Matrix Art | User not Found</title>
                     <meta property="og:title" content="Matrix Art | User not Found" key="og-title" />
@@ -143,7 +143,7 @@ class Profile extends PureComponent<Props, State> {
         const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
         // TODO opengraph shows mxid instead of displayname
         return (
-            <div className="h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]">
+            <div className="min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]">
                 <Head>
                     <title key="title">Matrix Art | {displayname}</title>
                     <meta property="og:title" content={`Matrix Art | ${displayname}`} key="og-title" />

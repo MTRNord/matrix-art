@@ -122,7 +122,7 @@ class Post extends PureComponent<Props, State> {
 
         if (!hasFullyLoaded) {
             return (
-                <div className='h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
+                <div className='min-h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
@@ -142,7 +142,7 @@ class Post extends PureComponent<Props, State> {
 
         if (!this.props.event_id || !this.props.event_id?.startsWith("$")) {
             return (
-                <div className="h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
@@ -169,7 +169,7 @@ class Post extends PureComponent<Props, State> {
                 post_title = (caption[0] as { body: string; mimetype: string; }).body;
             }
             return (
-                <div className="h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | {post_title}</title>
                         <meta property="og:title" content={`Matrix Art | ${post_title}`} key="og-title" />
@@ -204,7 +204,7 @@ class Post extends PureComponent<Props, State> {
             );
         } else {
             return (
-                <div className="h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
                         <title key="title">Matrix Art | Post not Found</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
@@ -284,7 +284,7 @@ class Post extends PureComponent<Props, State> {
                 <img loading="eager" width={imageEvent.content['m.image'].width - 1} height={imageEvent.content['m.image'].height - 1} alt={caption} title={caption} className="h-auto w-full relative -ml-[100%] object-cover align-bottom max-h-[54.25rem]" src={thumbnail_url} />
             </div>
         ) : (
-                <img loading="eager" width={imageEvent.content['m.image'].width - 1} height={imageEvent.content['m.image'].height - 1} className="h-auto w-full max-h-[54.25rem]" alt={caption} title={caption} src={thumbnail_url} />
+            <img loading="eager" width={imageEvent.content['m.image'].width - 1} height={imageEvent.content['m.image'].height - 1} className="h-auto w-full max-h-[54.25rem]" alt={caption} title={caption} src={thumbnail_url} />
         );
         return (
             <>

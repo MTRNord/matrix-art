@@ -85,7 +85,7 @@ class Home extends PureComponent<Props, State>{
         }
       });
       return (
-        <div className='h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
+        <div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
           <Head>
             <title key="title">Matrix Art | Home</title>
             <meta property="og:title" content="Matrix Art | Home" key="og-title" />
