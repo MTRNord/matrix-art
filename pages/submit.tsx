@@ -41,14 +41,16 @@ class Submit extends PureComponent<Props, State> {
     readFileToSizes(file: File): Promise<HTMLImageElement> {
         return new Promise((resolve, reject) => {
             var fr = new FileReader();
-            fr.onload = () => {
+            fr.addEventListener("load", () => {
                 const img = new Image();
                 // Save as we use readAsDataURL
                 img.src = fr.result as string;
 
                 resolve(img);
-            };
-            fr.onerror = reject;
+            });
+            fr.addEventListener("error", (error) => {
+                reject(error);
+            });
             fr.readAsDataURL(file);
         });
     }
@@ -56,10 +58,12 @@ class Submit extends PureComponent<Props, State> {
     readFileToArray(file: File): Promise<ArrayBuffer> {
         return new Promise((resolve, reject) => {
             var fr = new FileReader();
-            fr.onload = () => {
+            fr.addEventListener("load", () => {
                 resolve(fr.result as ArrayBuffer);
-            };
-            fr.onerror = reject;
+            });
+            fr.addEventListener("error", (error) => {
+                reject(error);
+            });
             fr.readAsArrayBuffer(file);
         });
     }
@@ -85,7 +89,7 @@ class Submit extends PureComponent<Props, State> {
     renderThumbs() {
         return this.state.files.map(file => (
             <div className="relative cursor-pointer  border-2 border-solid border-[#eeeeea] p-1" style={{ height: "212px" }} key={file.name}>
-                <img className="h-auto w-full object-cover max-w-full align-bottom" style={{ height: "200px" }} src={file.preview.src} width={file.preview.width} height={file.preview.height} />
+                <img alt={file.name} className="h-auto w-full object-cover max-w-full align-bottom" style={{ height: "200px" }} src={file.preview.src} width={file.preview.width} height={file.preview.height} />
             </div>
         ));
     }
