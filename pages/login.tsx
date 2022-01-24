@@ -74,22 +74,22 @@ class Login extends PureComponent<Props, State> {
                         { error: error.message }
                     );
                 }
-                let token = undefined;
                 try {
-                    token = await this.context.client.getOpenidToken();
+                    const token = await this.context.client.getOpenidToken();
+                    const resp = await fetch("/api/directory", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, user_room: `#${this.context.client.userId}` }) });
+                    const body = await resp.json();
+                    if (body.error_code) {
+                        if (body.error_code !== "001") {
+                            console.log(body.error);
+                        }
+                    }
                 } catch (error: any) {
                     this.setState(
                         { error: `Failed to reach your server to verify your user: ${error.message}` }
                     );
                     return;
                 }
-                const resp = await fetch("/api/directory", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, user_room: `#${this.context.client.userId}` }) });
-                const body = await resp.json();
-                if (body.error_code) {
-                    if (body.error_code !== "001") {
-                        console.log(body.error);
-                    }
-                }
+
             }
             await this.props.router.replace("/");
             if (typeof window !== "undefined") {

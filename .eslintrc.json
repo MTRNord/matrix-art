@@ -12,6 +12,7 @@
     "jsx-a11y/anchor-is-valid": "off",
     "unicorn/prevent-abbreviations": "off",
     "unicorn/filename-case": "off",
-    "unicorn/prefer-ternary": "off"
+    "unicorn/prefer-ternary": "off",
+    "unicorn/no-lonely-if": "off"
   }
 }
