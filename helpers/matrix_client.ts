@@ -141,7 +141,11 @@ export default class MatrixClient {
     }
 
     async getOpenidToken(): Promise<string> {
-        const data = await this.fetchJson(`${this.userId!.slice(this.userId!.indexOf(":") + 1)}/_matrix/client/r0/user/${this.userId}/openid/request_token`, { method: "POST" });
+        const data = await this.fetchJson(`${this.serverUrl}/r0/user/${this.userId}/openid/request_token`, {
+            method: "POST",
+            body: "{}",
+            headers: { Authorization: `Bearer ${this.accessToken}` },
+        });
         return data.access_token;
     }
 

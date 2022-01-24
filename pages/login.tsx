@@ -29,6 +29,8 @@ class Login extends PureComponent<Props, State> {
         this.state = {
             showServerField: false,
             generateProfile: false,
+            mxid: "",
+            password: "",
             serverUrl: constMatrixArtServer,
             serverFieldsDisplay: 'none',
             serverFieldsOpacity: 0,
@@ -74,6 +76,7 @@ class Login extends PureComponent<Props, State> {
         } else if (this.state.showServerField && !serverUrl.endsWith("/_matrix/client") && !serverUrl.endsWith("/_matrix/client/")) {
             serverUrl = serverUrl + "/_matrix/client";
         }
+        console.log(serverUrl);
 
         if (this.state.mxid && this.state.password) {
             this.setState({

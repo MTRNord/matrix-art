@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             user_id: string;
             user_room: string;
             access_token: string;
-        } = req.body;
+        } = JSON.parse(req.body);
         if (await (new ServerOpenID().verify(data.user_id, data.access_token))) {
             const db_data = {
                 _id: data.user_id,
@@ -77,7 +77,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const data: {
             user_id: string;
             access_token: string;
-        } = req.body;
+        } = JSON.parse(req.body);
         if (await (new ServerOpenID().verify(data.user_id, data.access_token))) {
             try {
                 const db_data = await db.get(data.user_id);
