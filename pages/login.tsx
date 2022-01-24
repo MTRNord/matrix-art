@@ -16,9 +16,8 @@ type State = {
     serverUrl: string;
     mxid?: string;
     password?: string;
-    serverFieldsDisplay: string;
-    serverFieldsOpacity: number;
     loading: boolean;
+    error?: string;
 };
 
 class Login extends PureComponent<Props, State> {
@@ -29,12 +28,11 @@ class Login extends PureComponent<Props, State> {
         this.state = {
             showServerField: false,
             generateProfile: false,
-            mxid: "",
-            password: "",
+            mxid: undefined,
+            password: undefined,
             serverUrl: constMatrixArtServer,
-            serverFieldsDisplay: 'none',
-            serverFieldsOpacity: 0,
             loading: false,
+            error: undefined
         } as State;
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -45,20 +43,6 @@ class Login extends PureComponent<Props, State> {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        if (name == "showServerField") {
-            if (this.state.serverFieldsDisplay === 'none') {
-                this.setState({ serverFieldsDisplay: 'block' });
-                setTimeout(() =>
-                    this.setState({ serverFieldsOpacity: 1 }), 10 // something very short
-                );
-            }
-            if (this.state.serverFieldsDisplay === 'block') {
-                this.setState({ serverFieldsOpacity: 0 });
-                setTimeout(() =>
-                    this.setState({ serverFieldsDisplay: 'none' }), 400 // same as transition time
-                );
-            }
-        }
         this.setState({
             [name]: value
         } as State);
@@ -76,7 +60,6 @@ class Login extends PureComponent<Props, State> {
         } else if (this.state.showServerField && !serverUrl.endsWith("/_matrix/client") && !serverUrl.endsWith("/_matrix/client/")) {
             serverUrl = serverUrl + "/_matrix/client";
         }
-        console.log(serverUrl);
 
         if (this.state.mxid && this.state.password) {
             this.setState({
@@ -84,19 +67,39 @@ class Login extends PureComponent<Props, State> {
             });
             await this.context.client.login(serverUrl, this.state.mxid, this.state.password, true);
             if (this.state.generateProfile) {
-                await this.context.client.followUser(`#${this.context.client.userId}`);
-                const token = await this.context.client.getOpenidToken();
-                await fetch("/api/directory", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, user_room: `#${this.context.client.userId}` }) });
+                try {
+                    await this.context.client.followUser(`#${this.context.client.userId}`);
+                } catch (error: any) {
+                    this.setState(
+                        { error: error.message }
+                    );
+                }
+                let token = undefined;
+                try {
+                    token = await this.context.client.getOpenidToken();
+                } catch (error: any) {
+                    this.setState(
+                        { error: `Failed to reach your server to verify your user: ${error.message}` }
+                    );
+                    return;
+                }
+                const resp = await fetch("/api/directory", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, user_room: `#${this.context.client.userId}` }) });
+                const body = await resp.json();
+                if (body.error_code) {
+                    if (body.error_code !== "001") {
+                        console.log(body.error);
+                    }
+                }
             }
+            await this.props.router.replace("/");
             if (typeof window !== "undefined") {
                 window.location.reload();
             }
-            await this.props.router.replace("/");
         }
     }
 
     render(): ReactNode {
-        const { loading, showServerField, serverFieldsOpacity, serverFieldsDisplay, serverUrl, mxid, password, generateProfile } = this.state;
+        const { loading, showServerField, serverUrl, mxid, password, generateProfile } = this.state;
         if (loading) {
             return (
                 <>
@@ -153,8 +156,8 @@ class Login extends PureComponent<Props, State> {
 
                                 <label style={{
                                     transition: 'opacity 0.4s ease',
-                                    opacity: serverFieldsOpacity,
-                                    display: serverFieldsDisplay
+                                    opacity: showServerField ? 1 : 0,
+                                    display: showServerField ? 'block' : 'none'
                                 }} id="homeserverField">
                                     <span className="text-gray-900 dark:text-gray-200 visually-hidden">Homeserver:</span>
                                     <div className="bg-teal-600 mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">

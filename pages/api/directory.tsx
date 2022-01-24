@@ -62,8 +62,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             };
             try {
                 await db.put(db_data);
-                res.status(200).json({});
-            } catch (error) {
+                res.status(201).json({});
+            } catch (error: any) {
+                if (error.status === 409 && error.name === "conflict") {
+                    res.status(200).json({ "error": "User already existed", "error_code": "001" });
+                }
                 res.status(502).json({});
                 console.error(error);
             }
