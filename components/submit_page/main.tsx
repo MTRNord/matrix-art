@@ -50,7 +50,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
             /* eslint-disable jsx-a11y/click-events-have-key-events */
             return (
-                <div className="relative cursor-pointer w-auto aspect-video" onClick={setIndex} style={{ height: "140px" }} key={file.name} role="radio" tabIndex={index} aria-checked={this.state.currentFileIndex == index ? true : false}>
+                <div aria-label={file.name} className="relative cursor-pointer w-auto aspect-video" onClick={setIndex} style={{ height: "140px" }} key={file.name} role="radio" tabIndex={index} aria-checked={this.state.currentFileIndex == index ? true : false}>
                     <img alt={file.name} className="h-auto w-full object-cover max-w-full align-bottom aspect-video" style={{ height: "140px" }} src={file.preview_url} />
                 </div>
             );
@@ -168,7 +168,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                 </section>
                 {/* Warning for further readers. This css is easy to explode. Reasons are unknown. Dont touch it unless you know the fix! */}
                 <section className="max-w-full flex flex-row justify-start items-start ">
-                    <div className="overflow-x-scroll mr-4 ml-8">
+                    <div className="overflow-x-auto mr-4 ml-8">
                         <div className="flex gap-1">
                             {this.renderThumbs()}
                         </div>
