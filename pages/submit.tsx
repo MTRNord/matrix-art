@@ -24,6 +24,7 @@ export type PreviewWithDataFile = File & {
 class Submit extends PureComponent<Props, State> implements DropCallbacks {
     declare context: React.ContextType<typeof ClientContext>;
     onDrop: (files: File[]) => void;
+    onDropError: (fileRejections: FileRejection[]) => void;
 
     constructor(props: Props) {
         super(props);
@@ -48,6 +49,24 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
                 files: [...this.state.files, ...files_mapped]
             });
         };
+
+        this.onDropError = (fileRejections: FileRejection[]) => {
+            const newRejections = fileRejections.filter(x => !this.state.fileRejections.includes(x));
+            if (newRejections.length > 0) {
+                let errors = "";
+                for (const rejection of newRejections) {
+                    if (errors === "") {
+                        errors = `${rejection.file.name} - ${rejection.errors.join(" & ")}`;
+                    } else {
+                        errors = `${errors}\n${rejection.file.name} - ${rejection.errors.join(" & ")}`;
+                    }
+                }
+                this.setState({
+                    error: errors
+                });
+            }
+            this.setState({ fileRejections: newRejections });
+        };
         this.state = {
             files: [],
             fileRejections: [],
@@ -68,23 +87,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
         });
     }
 
-    onDropError(fileRejections: FileRejection[]) {
-        const newRejections = fileRejections.filter(x => !this.state.fileRejections.includes(x));
-        if (newRejections.length > 0) {
-            let errors = "";
-            for (const rejection of newRejections) {
-                if (errors === "") {
-                    errors = `${rejection.file.name} - ${rejection.errors.join(" & ")}`;
-                } else {
-                    errors = `${errors}\n${rejection.file.name} - ${rejection.errors.join(" & ")}`;
-                }
-            }
-            this.setState({
-                error: errors
-            });
-        }
-        this.setState({ fileRejections: newRejections });
-    }
+
 
 
 
