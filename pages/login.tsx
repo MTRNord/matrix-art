@@ -28,11 +28,11 @@ class Login extends PureComponent<Props, State> {
         this.state = {
             showServerField: false,
             generateProfile: false,
-            mxid: undefined,
-            password: undefined,
+            mxid: "",
+            password: "",
             serverUrl: constMatrixArtServer,
             loading: false,
-            error: undefined
+            error: ""
         } as State;
 
         this.handleInputChange = this.handleInputChange.bind(this);

@@ -95,7 +95,7 @@ class Home extends PureComponent<Props, State>{
           </Head>
           <Header></Header>
           <main className='mb-auto lg:pt-20 pt-52 z-0'>
-            <div className='z-[100] sticky lg:top-20 top-[12.5rem] bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
+            <div className='z-[100] sticky lg:top-20 top-[12.5rem] bg-[#fefefe]/[.95] dark:bg-[#12161D]'>
               <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
                 <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Home</h1>
               </div>
