@@ -1,5 +1,5 @@
 import { NextRouter, withRouter } from "next/router";
-import { PureComponent, ReactNode } from "react";
+import { PureComponent } from "react";
 import { ClientContext } from "../components/ClientContext";
 
 type Props = {
