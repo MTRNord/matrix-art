@@ -143,7 +143,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Image Tags</span>
-                                <input name="tags" type="text" value={this.state[`${this.state.currentFileIndex}_tags`] || ""} placeholder="Enter tags (Seperate with a comma)" className="min-w-full placeholder:text-gray-900 text-gray-900" onChange={this.handleInputChange.bind(this)} />
+                                <input name="tags" type="text" value={this.state[`${this.state.currentFileIndex}_tags`] || ""} placeholder="Enter tags (Separate with a comma)" className="min-w-full placeholder:text-gray-900 text-gray-900" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>

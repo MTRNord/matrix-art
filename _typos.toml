@@ -1,0 +1,14 @@
+[files]
+extend-exclude = [
+	"*.json", "*.svg",
+    "localstorage/**",
+    "node_modules/**",
+    "matrix-art-db/**",
+    ".next/**"
+]
+
+[default]
+locale = "en"
+
+[default.extend-words]
+ND = "ND"

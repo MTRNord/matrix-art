@@ -81,7 +81,7 @@ class Post extends PureComponent<Props, State> {
             isLoadingImages: true,
         });
         try {
-            // TODO fix this. It is super inefficent.
+            // TODO fix this. It is super inefficient.
             for (let user of this.props.directory_data) {
                 // We dont need many events
                 const roomId = await client?.followUser(user.user_room);

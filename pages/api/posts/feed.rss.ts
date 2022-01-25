@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         }
         let image_events: MatrixImageEvents[] = [];
-        // TODO fix this somehow. It is super inefficent.
+        // TODO fix this somehow. It is super inefficient.
         for (let user of directory) {
             // We dont need many events
             const roomId = await client?.followUser(user.user_room);
