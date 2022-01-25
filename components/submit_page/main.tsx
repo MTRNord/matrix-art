@@ -46,11 +46,16 @@ class MainSubmissionForm extends PureComponent<Props, State> {
     renderThumbs() {
         return this.props.files.map((file, index) => {
             const setIndex = () => { this.setState({ currentFileIndex: index }); };
+            // TODO FIXME do make this work with keyboard presses!
+
+            /* eslint-disable jsx-a11y/click-events-have-key-events */
             return (
-                <div className="relative cursor-pointer w-auto aspect-video" onClick={setIndex} style={{ height: "140px" }} key={file.name}>
+                <div className="relative cursor-pointer w-auto aspect-video" onClick={setIndex} style={{ height: "140px" }} key={file.name} role="radio" tabIndex={index} aria-checked={this.state.currentFileIndex == index ? true : false}>
                     <img alt={file.name} className="h-auto w-full object-cover max-w-full align-bottom aspect-video" style={{ height: "140px" }} src={file.preview_url} />
                 </div>
             );
+
+            /* eslint-enable jsx-a11y/click-events-have-key-events */
         });
     }
 
