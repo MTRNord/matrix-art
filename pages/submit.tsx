@@ -18,7 +18,6 @@ type State = {
 
 export type PreviewWithDataFile = File & {
     preview_url: string;
-    data: ArrayBuffer;
 };
 
 class Submit extends PureComponent<Props, State> implements DropCallbacks {
@@ -30,8 +29,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
         super(props);
         this.onDrop = async (files: File[]) => {
             const files_mapped = await Promise.all(files.map(async file => Object.assign(file, {
-                preview_url: URL.createObjectURL(file),
-                data: await this.readFileToArray(file),
+                preview_url: URL.createObjectURL(file)
             }))) as PreviewWithDataFile[];
             let newState: "start" | "editing";
             switch (this.state.submitState) {
@@ -73,23 +71,6 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
             submitState: "start"
         };
     }
-
-    readFileToArray(file: File): Promise<ArrayBuffer> {
-        return new Promise((resolve, reject) => {
-            var fr = new FileReader();
-            fr.addEventListener("load", () => {
-                resolve(fr.result as ArrayBuffer);
-            });
-            fr.addEventListener("error", (error) => {
-                reject(error);
-            });
-            fr.readAsArrayBuffer(file);
-        });
-    }
-
-
-
-
 
     render(): ReactNode {
         return (
