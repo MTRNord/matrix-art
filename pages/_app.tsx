@@ -6,7 +6,7 @@ import React from 'react';
 import Head from 'next/head';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [value, setValue] = useState({
+  const [value] = useState({
     client: client,
     guest_client: guest_client,
   });
