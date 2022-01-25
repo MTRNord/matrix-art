@@ -13,7 +13,6 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
 };
 
 type State = {
-  error?: any;
   // TODO make sure we parse both extev variants properly
   image_events: MatrixImageEvents[] | [];
 };
@@ -30,87 +29,81 @@ class Home extends PureComponent<Props, State>{
     } as State;
   }
   render() {
-    const { error, image_events } = this.state;
+    const { image_events } = this.state;
 
-    if (error) {
-      return (
-        <div>Error: {error.message}</div>
-      );
-    } else {
-      const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; thumbnail: any; }[] = image_events.flatMap(event => {
-        if (isImageGalleryEvent(event)) {
-          return event.content['m.image_gallery'].map(image => {
-            return {
-              "@context": "https://schema.org/",
-              "@type": "ImageObject",
-              "contentUrl": this.context.client?.downloadLink(image['m.file'].url)!,
-              "thumbnail": {
-                "@context": "https://schema.org/",
-                "@type": "ImageObject",
-                "contentUrl": this.context.client?.downloadLink(image['m.thumbnail'][0].url)!,
-                "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-                "author": event.content.displayname,
-                "name": image['m.text']
-              },
-              "encodingFormat": image['m.file'].mimetype,
-              // TODO get this from the event itself
-              "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-              "author": event.content.displayname,
-              "name": image['m.text'],
-              "width": image['m.image'].width,
-              "height": image['m.image'].height
-            };
-          });
-        } else {
+    const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; thumbnail: any; }[] = image_events.flatMap(event => {
+      if (isImageGalleryEvent(event)) {
+        return event.content['m.image_gallery'].map(image => {
           return {
             "@context": "https://schema.org/",
             "@type": "ImageObject",
-            "contentUrl": this.context.client?.downloadLink(event.content['m.file'].url)!,
+            "contentUrl": this.context.client?.downloadLink(image['m.file'].url)!,
             "thumbnail": {
               "@context": "https://schema.org/",
               "@type": "ImageObject",
-              "contentUrl": this.context.client?.downloadLink(event.content['m.thumbnail'][0].url)!,
+              "contentUrl": this.context.client?.downloadLink(image['m.thumbnail'][0].url)!,
               "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
               "author": event.content.displayname,
-              "name": event.content['m.text']
+              "name": image['m.text']
             },
-            "encodingFormat": event.content['m.file'].mimetype,
+            "encodingFormat": image['m.file'].mimetype,
             // TODO get this from the event itself
             "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
             "author": event.content.displayname,
-            "name": event.content['m.text'],
-            "width": event.content['m.image'].width,
-            "height": event.content['m.image'].height
+            "name": image['m.text'],
+            "width": image['m.image'].width,
+            "height": image['m.image'].height
           };
-        }
-      });
-      return (
-        <div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
-          <Head>
-            <title key="title">Matrix Art | Home</title>
-            <meta property="og:title" content="Matrix Art | Home" key="og-title" />
-            <meta property="og:type" content="website" key="og-type" />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }} />
-            <meta name="description" content="Matrix-Art is a Deviantart style application for posting media based on Matrix."></meta>
-          </Head>
-          <Header></Header>
-          <main className='mb-auto lg:pt-20 pt-52 z-0'>
-            <div className='z-[100] sticky lg:top-20 top-[12.5rem] bg-[#fefefe]/[.95] dark:bg-[#12161D]'>
-              <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
-                <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Home</h1>
-              </div>
+        });
+      } else {
+        return {
+          "@context": "https://schema.org/",
+          "@type": "ImageObject",
+          "contentUrl": this.context.client?.downloadLink(event.content['m.file'].url)!,
+          "thumbnail": {
+            "@context": "https://schema.org/",
+            "@type": "ImageObject",
+            "contentUrl": this.context.client?.downloadLink(event.content['m.thumbnail'][0].url)!,
+            "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+            "author": event.content.displayname,
+            "name": event.content['m.text']
+          },
+          "encodingFormat": event.content['m.file'].mimetype,
+          // TODO get this from the event itself
+          "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+          "author": event.content.displayname,
+          "name": event.content['m.text'],
+          "width": event.content['m.image'].width,
+          "height": event.content['m.image'].height
+        };
+      }
+    });
+    return (
+      <div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
+        <Head>
+          <title key="title">Matrix Art | Home</title>
+          <meta property="og:title" content="Matrix Art | Home" key="og-title" />
+          <meta property="og:type" content="website" key="og-type" />
+          <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }} />
+          <meta name="description" content="Matrix-Art is a Deviantart style application for posting media based on Matrix."></meta>
+        </Head>
+        <Header></Header>
+        <main className='mb-auto lg:pt-20 pt-52 z-0'>
+          <div className='z-[100] sticky lg:top-20 top-[12.5rem] bg-[#fefefe]/[.95] dark:bg-[#12161D]'>
+            <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
+              <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Home</h1>
             </div>
-            <div className='m-10'>
-              <ul className='flex flex-wrap gap-1'>
-                {image_events.map(event => <FrontPageImage event={event} key={(event as MatrixEventBase).event_id} />)}
-                <li className='grow-[10]'></li>
-              </ul>
-            </div>
-          </main>
-          <Footer></Footer>
-        </div>
-      );
-    }
+          </div>
+          <div className='m-10'>
+            <ul className='flex flex-wrap gap-1'>
+              {image_events.map(event => <FrontPageImage event={event} key={(event as MatrixEventBase).event_id} />)}
+              <li className='grow-[10]'></li>
+            </ul>
+          </div>
+        </main>
+        <Footer></Footer>
+      </div>
+    );
   }
 
 }
