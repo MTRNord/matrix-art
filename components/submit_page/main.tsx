@@ -98,6 +98,17 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         }
     }
 
+    private async doUpload() {
+        const urls = [];
+        if (!this.context.client.isGuest) {
+            for (const file of this.props.files) {
+                const result = this.context.client.uploadFile(file);
+                urls.push({ file_name: file.name, url: result });
+            }
+        }
+        return urls;
+    }
+
     handleInputChange(event: { target: any; }) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
