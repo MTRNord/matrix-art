@@ -59,7 +59,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // TODO fix this somehow. It is super inefficient.
         for (let user of directory) {
             // We dont need many events
-            const roomId = await client?.followUser(user.user_room);
+            const roomId = await client?.followUser(user.public_user_room);
             const events = await client?.getTimeline(roomId, 100);
             // Filter events by type
             let images = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];

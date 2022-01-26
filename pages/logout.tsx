@@ -17,13 +17,14 @@ class Logout extends PureComponent<Props, State> {
     }
 
     async componentDidMount() {
-        if (!this.context.client.isGuest) {
-            await this.context.client.logout(false);
-        }
         if (typeof window !== "undefined") {
+            if (!this.context.client.isGuest) {
+                await this.context.client.logout(false);
+            }
+
             window.location.reload();
+            await this.props.router.replace("/");
         }
-        await this.props.router.replace("/");
     }
     render() {
         return <></>;

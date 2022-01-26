@@ -134,7 +134,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // TODO fix this somehow. It is super inefficient.
     for (let user of data) {
       // We dont need many events
-      const roomId = await client?.followUser(user.user_room);
+      const roomId = await client?.followUser(user.public_user_room);
       const events = await client?.getTimeline(roomId, 100);
       // Filter events by type
       let images = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
@@ -157,7 +157,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         image_events: image_events
       }
     };
-  } catch {
+  } catch (error) {
+    console.log(error);
     return { notFound: true, props: {} };
   }
 };

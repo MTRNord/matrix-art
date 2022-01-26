@@ -17,9 +17,11 @@ import { isImageEvent, isImageGalleryEvent } from '../../components/FrontPageIma
 import Link from 'next/link';
 import Footer from '../../components/Footer';
 import { Blurhash } from 'react-blurhash';
+import User from '../../helpers/db/Users';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
+    directory_data: User[];
 };
 
 type State = {
@@ -76,6 +78,7 @@ class Post extends PureComponent<Props, State> {
         if (isLoadingImages || hasFullyLoaded || !this.props.directory_data) {
             return;
         }
+        console.log("hi");
         const client = this.context.client.isGuest ? this.context.client : this.context.guest_client;
         this.setState({
             isLoadingImages: true,
@@ -84,7 +87,7 @@ class Post extends PureComponent<Props, State> {
             // TODO fix this. It is super inefficient.
             for (let user of this.props.directory_data) {
                 // We dont need many events
-                const roomId = await client?.followUser(user.user_room);
+                const roomId = await client?.followUser(user.public_user_room);
                 const events = await client?.getTimeline(roomId, 100); // Filter events by type
                 const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
                 if (image_event == undefined) {
@@ -409,7 +412,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     console.error("Failed to register as guest:", error);
                     return {
                         props: {
-                            directory_data: data,
+                            directory_data: JSON.stringify(data),
                             event_id: event_id,
                             hasFullyLoaded: false,
                         }
@@ -420,7 +423,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             for (let user of data) {
                 // TODO check what happens if this is a non public image.
                 // We dont need many events
-                const roomId = await client?.followUser(user.user_room);
+                const roomId = await client?.followUser(user.public_user_room);
                 const events = await client?.getTimeline(roomId, 100);
                 // Filter events by type
                 const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
@@ -431,7 +434,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     const profile = await client.getProfile(image_event.sender);
                     return {
                         props: {
-                            directory_data: data,
                             image_event: image_event as MatrixImageEvents,
                             event_id: event_id,
                             hasFullyLoaded: true,
@@ -443,7 +445,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     console.debug(`Failed to fetch profile for user ${image_event.sender}:`, error);
                     return {
                         props: {
-                            directory_data: data,
                             image_event: image_event as MatrixImageEvents,
                             event_id: event_id,
                             hasFullyLoaded: true,
@@ -452,15 +453,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     };
                 }
             }
-
-
-            return {
-                props: {
-                    directory_data: data,
-                    event_id: event_id,
-                    hasFullyLoaded: false,
-                }
-            };
         } catch {
             return { notFound: true, props: {} };
         }
