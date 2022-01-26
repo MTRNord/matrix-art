@@ -157,21 +157,21 @@ class Login extends PureComponent<Props, State> {
                                     display: showServerField ? 'block' : 'none'
                                 }} id="homeserverField">
                                     <span className="text-gray-900 dark:text-gray-200 visually-hidden">Homeserver:</span>
-                                    <div className="bg-teal-600 mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input placeholder="Homeserver" className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
+                                    <div className="mt-1 w-full flex flex-row box-border items-center cursor-text">
+                                        <input placeholder="Homeserver" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 
                                 <label className="block">
                                     <span className="text-gray-900 dark:text-gray-200 visually-hidden">Username:</span>
-                                    <div className="bg-teal-600 mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input placeholder="Username" autoComplete="username" className=" bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
+                                    <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300">
+                                        <input placeholder="Username" autoComplete="username" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
                                 <label className="block">
                                     <span className="text-gray-900 dark:text-gray-200 visually-hidden">Password:</span>
-                                    <div className="bg-teal-600 mt-1 w-full flex flex-row box-border items-center cursor-text duration-300 rounded-sm border dark:border-slate-400 border-slate-500 py-1.5 px-2 focus-within:border-teal-400">
-                                        <input placeholder="Password" autoComplete="current-password" className="bg-transparent min-w-[1.25rem] focus:outline-none flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="password" name="password" value={password} onChange={this.handleInputChange} />
+                                    <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300">
+                                        <input placeholder="Password" autoComplete="current-password" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="password" name="password" value={password} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 

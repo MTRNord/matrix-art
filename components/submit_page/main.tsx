@@ -169,28 +169,28 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                         <form className="flex flex-col w-full">
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Image Title</span>
-                                <input required name="title" value={this.state[`${this.state.currentFileIndex}_title`] || ""} type="text" placeholder="Set an image title" className="min-w-full placeholder:text-gray-900 text-gray-900" onChange={this.handleInputChange.bind(this)} />
+                                <input required name="title" value={this.state[`${this.state.currentFileIndex}_title`] || ""} type="text" placeholder="Set an image title" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Description</span>
-                                <textarea name="description" value={this.state[`${this.state.currentFileIndex}_description`] || ""} placeholder="Description Text of the current image" className="min-w-full placeholder:text-gray-900 text-gray-900" onChange={this.handleInputChange.bind(this)} />
+                                <textarea name="description" value={this.state[`${this.state.currentFileIndex}_description`] || ""} placeholder="Description Text of the current image" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Image Tags</span>
-                                <input name="tags" type="text" value={this.state[`${this.state.currentFileIndex}_tags`] || ""} placeholder="Enter tags (Separate with a comma)" className="min-w-full placeholder:text-gray-900 text-gray-900" onChange={this.handleInputChange.bind(this)} />
+                                <input name="tags" type="text" value={this.state[`${this.state.currentFileIndex}_tags`] || ""} placeholder="Enter tags (Separate with a comma)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">License</span>
-                                <select required name="license" value={this.state[`${this.state.currentFileIndex}_license`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900" onChange={this.handleInputChange.bind(this)}>
+                                <select required name="license" value={this.state[`${this.state.currentFileIndex}_license`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
                                     <option value="" disabled selected>Select an Creative Commons License</option>
                                     <option value="cc-by-4.0">Attribution 4.0 International (CC BY 4.0)</option>
                                     <option value="cc-by-sa-4.0">Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</option>
@@ -206,7 +206,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Mature/NSFW Content?</span>
-                                <select required name="nsfw" value={this.state[`${this.state.currentFileIndex}_nsfw`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900" onChange={this.handleInputChange.bind(this)}>
+                                <select required name="nsfw" value={this.state[`${this.state.currentFileIndex}_nsfw`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
                                     <option value="" disabled selected>Select Yes or No</option>
                                     <option value="no">No</option>
                                     <option value="yes">Yes</option>
