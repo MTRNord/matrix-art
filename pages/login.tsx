@@ -158,20 +158,20 @@ class Login extends PureComponent<Props, State> {
                                 }} id="homeserverField">
                                     <span className="text-gray-900 dark:text-gray-200 visually-hidden">Homeserver:</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text">
-                                        <input placeholder="Homeserver" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
+                                        <input placeholder="Homeserver" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-9000" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 
                                 <label className="block">
                                     <span className="text-gray-900 dark:text-gray-200 visually-hidden">Username:</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300">
-                                        <input placeholder="Username" autoComplete="username" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
+                                        <input placeholder="Username" autoComplete="username" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-900" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
                                 <label className="block">
                                     <span className="text-gray-900 dark:text-gray-200 visually-hidden">Password:</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300">
-                                        <input placeholder="Password" autoComplete="current-password" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none text-gray-900 dark:text-gray-200 placeholder:text-gray-900" type="password" name="password" value={password} onChange={this.handleInputChange} />
+                                        <input placeholder="Password" autoComplete="current-password" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-900" type="password" name="password" value={password} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 
