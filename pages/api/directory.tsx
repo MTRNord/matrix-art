@@ -14,14 +14,15 @@ const cors = initMiddleware(
     })
 );
 
+const DB_PATH = path.join(process.cwd(), "matrix-art-db/db.sqlite");
+const db = new Sequelize({
+    dialect: 'sqlite',
+    storage: DB_PATH
+});
+db.addModels([User]);
+
 export const get_data = async () => {
-    console.log(path.join(process.cwd(), "matrix-art-db/db.sqlite"));
-    console.log(path.resolve(path.join(process.cwd(), "matrix-art-db/db.sqlite")));
-    const db = new Sequelize({
-        dialect: 'sqlite',
-        storage: path.join(process.cwd(), "matrix-art-db/db.sqlite")
-    });
-    db.addModels([User]);
+
     if (process.env.PLAYWRIGHT === '1') {
         console.log("Running in tests!");
         return [
@@ -41,11 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Run cors
     await cors(req, res);
 
-    const db = new Sequelize({
-        dialect: 'sqlite',
-        storage: path.join(process.cwd(), "matrix-art-db.sqlite")
-    });
-    db.addModels([User]);
     try {
         await db.authenticate();
         console.log('Connection has been established successfully.');
@@ -109,7 +105,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } else {
         res.status(405).json({});
     }
-
-
-    await db.close();
 }
