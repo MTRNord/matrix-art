@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PureComponent } from "react";
+import User from "../helpers/db/Users";
 import { ClientContext } from "./ClientContext";
 
 type Props = {
@@ -7,9 +8,10 @@ type Props = {
 };
 
 type State = {
-    directory_data: { _id: string; user_id: string; user_room: string; }[];
+    directory_data: User[];
     loading: boolean;
     error?: string;
+    loggedIn: boolean;
 };
 export default class Header extends PureComponent<Props, State> {
     declare context: React.ContextType<typeof ClientContext>;
@@ -18,7 +20,8 @@ export default class Header extends PureComponent<Props, State> {
 
         this.state = {
             directory_data: [],
-            loading: true
+            loading: true,
+            loggedIn: false
         } as State;
     }
 
@@ -27,7 +30,7 @@ export default class Header extends PureComponent<Props, State> {
             const data = await fetch("/api/directory", { method: "GET" });
             const data_parsed = await data.json();
             const directory_data = data_parsed.data;
-            this.setState({ directory_data: directory_data, loading: false });
+            this.setState({ directory_data: directory_data, loading: false, loggedIn: !this.context.client.isGuest });
         } catch {
             console.error("Failed to get directory");
             this.setState({ error: "Failed to get directory" });
@@ -68,19 +71,19 @@ export default class Header extends PureComponent<Props, State> {
                         </div>
 
                         <nav className='flex lg:flex-shrink-0 my-4'>
-                            {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span> : undefined}
-                            {this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span> : undefined}
-                            {!this.context.client.isGuest && this.state.directory_data.some(thing => thing.user_id == this.context.client.userId) ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>Profile</Link></span> : undefined}
-                            {!this.context.client.isGuest ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/logout/">Logout</Link></span> : undefined}
+                            {!this.state.loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/register">Join</Link></span> : undefined}
+                            {!this.state.loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/login">Log in</Link></span> : undefined}
+                            {this.state.loggedIn && this.state.directory_data.some(thing => thing.mxid == this.context.client.userId) ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>Profile</Link></span> : undefined}
+                            {this.state.loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium'><Link href="/logout/">Logout</Link></span> : undefined}
                         </nav>
                     </div>
-                    <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] lg:h-7 h-0'></span>
+                    {this.state.loggedIn ? <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] lg:h-7 h-0'></span> : <span className="mr-4"></span>}
                     <div className='relative lg:m-0'>
                         <div className='flex'>
                             {
-                                this.state.directory_data.some(thing => thing.user_id == this.context.client.userId) ?
+                                this.state.directory_data.some(thing => thing.mxid == this.context.client.userId) ?
                                     <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Submit</a></Link> :
-                                    <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Setup Account</a>
+                                    this.state.loggedIn ? <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Setup Account</a> : undefined
                             }
                         </div>
                     </div>

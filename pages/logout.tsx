@@ -22,7 +22,6 @@ class Logout extends PureComponent<Props, State> {
                 await this.context.client.logout(false);
             }
 
-            window.location.reload();
             await this.props.router.replace("/");
         }
     }

@@ -92,9 +92,6 @@ class Login extends PureComponent<Props, State> {
 
             }
             await this.props.router.replace("/");
-            if (typeof window !== "undefined") {
-                window.location.reload();
-            }
         }
     }
 

@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { NextRouter, withRouter } from "next/router";
 import { PureComponent, ReactNode } from "react";
 import { FileRejection } from "react-dropzone";
 import { ClientContext } from "../components/ClientContext";
@@ -7,7 +8,9 @@ import Header from "../components/Header";
 import MainSubmissionForm from "../components/submit_page/main";
 import { DropCallbacks, StartSubmit } from "../components/submit_page/start";
 
-type Props = {};
+type Props = {
+    router: NextRouter;
+};
 
 type State = {
     files: PreviewWithDataFile[];
@@ -24,6 +27,12 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
     declare context: React.ContextType<typeof ClientContext>;
     onDrop: (files: File[]) => void;
     onDropError: (fileRejections: FileRejection[]) => void;
+
+    async componentDidMount() {
+        if (this.context.client.isGuest) {
+            this.props.router.replace("/login");
+        }
+    }
 
     constructor(props: Props) {
         super(props);
@@ -110,4 +119,4 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
 
 Submit.contextType = ClientContext;
 
-export default Submit;
+export default withRouter(Submit);

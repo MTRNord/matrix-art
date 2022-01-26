@@ -22,7 +22,6 @@ const db = new Sequelize({
 db.addModels([User]);
 
 export const get_data = async () => {
-
     if (process.env.PLAYWRIGHT === '1') {
         console.log("Running in tests!");
         return [
