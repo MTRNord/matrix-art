@@ -37,7 +37,7 @@ yarn-error.log*
 *.tsbuildinfo
 
 #pouchdb
-/matrix-art-db.sqlite
+/matrix-art-db
 /localstorage
 #nextjs
 .env.*.local
