@@ -15,6 +15,8 @@ const cors = initMiddleware(
 );
 
 export const get_data = async () => {
+    console.log(path.join(process.cwd(), "matrix-art-db/db.sqlite"));
+    console.log(path.resolve(path.join(process.cwd(), "matrix-art-db/db.sqlite")));
     const db = new Sequelize({
         dialect: 'sqlite',
         storage: path.join(process.cwd(), "matrix-art-db/db.sqlite")
