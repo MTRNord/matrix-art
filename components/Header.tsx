@@ -83,7 +83,7 @@ export default class Header extends PureComponent<Props, State> {
                             {
                                 this.state.directory_data.some(thing => thing.mxid == this.context.client.userId) ?
                                     <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Submit</a></Link> :
-                                    this.state.loggedIn ? <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Setup Account</a> : undefined
+                                    (this.state.loggedIn ? <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>Setup Account</a> : undefined)
                             }
                         </div>
                     </div>

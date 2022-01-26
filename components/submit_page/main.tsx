@@ -25,6 +25,11 @@ class MainSubmissionForm extends PureComponent<Props, State> {
             hasSubmit: props.files.length === 1 ? true : false,
             hasBack: false
         };
+        const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
+        for (const index of range) {
+            // @ts-ignore Its fine in the constructor
+            this.state[`${index}_valid`] = false;
+        }
     }
     static propTypes = {
         onDrop: PropTypes.func,
@@ -37,24 +42,44 @@ class MainSubmissionForm extends PureComponent<Props, State> {
     renderThumb() {
         const file = this.props.files[this.state.currentFileIndex];
         return (
-            <div className="relative" style={{ height: "280px" }} key={file.name}>
-                <img alt={file.name} className="h-auto w-full object-cover max-w-full align-bottom" style={{ height: "280px" }} src={file.preview_url} />
+            <div className="relative aspect-video w-full" style={{ height: "280px" }} key={file.name}>
+                <img alt={file.name} className="w-full object-cover max-w-full align-bottom aspect-video" style={{ height: "280px" }} src={file.preview_url} />
             </div>
         );
     }
 
     renderThumbs() {
         return this.props.files.map((file, index) => {
-            const setIndex = () => { this.setState({ currentFileIndex: index }); };
+            const setIndex = () => {
+                if (this.props.files.length - 1 > index) {
+                    const hasBack = index > 0 ? true : false;
+                    this.setState({ currentFileIndex: index, hasBack, hasSubmit: false });
+                } else if (this.props.files.length - 1 === index) {
+                    const hasBack = index > 0 ? true : false;
+                    this.setState({ currentFileIndex: index, hasBack, hasSubmit: true });
+                }
+            };
+
+            const classes = () => {
+                const classes_base = ["cursor-pointer", "aspect-video", "my-2"];
+
+                if (this.state.currentFileIndex == index) {
+                    classes_base.push("border", "p-2", "border-2", "border-white");
+                } else if (this.state[`${index}_valid`]) {
+                    classes_base.push("border", "p-2", "border-2", "border-teal-600");
+                } else {
+                    classes_base.push("border", "p-2", "border-2", "border-yellow-700");
+                }
+                return classes_base.join(" ");
+            };
             // TODO FIXME do make this work with keyboard presses!
 
             /* eslint-disable jsx-a11y/click-events-have-key-events */
             return (
-                <div aria-label={file.name} className="relative cursor-pointer w-auto aspect-video" onClick={setIndex} style={{ height: "140px" }} key={file.name} role="radio" tabIndex={index} aria-checked={this.state.currentFileIndex == index ? true : false}>
-                    <img alt={file.name} className="h-auto w-full object-cover max-w-full align-bottom aspect-video" style={{ height: "140px" }} src={file.preview_url} />
+                <div aria-label={file.name} className={classes.bind(this)()} onClick={setIndex} style={{ height: "144px" }} key={file.name} role="radio" tabIndex={index} aria-checked={this.state.currentFileIndex == index ? true : false}>
+                    <img alt={file.name} className="h-full w-full object-cover align-middle aspect-video" src={file.preview_url} />
                 </div>
             );
-
             /* eslint-enable jsx-a11y/click-events-have-key-events */
         });
     }
@@ -83,7 +108,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
 
     async handleSubmit(event: { preventDefault: () => void; }) {
-        const range = [...Array(this.props.files.length - 1).keys()]; // eslint-disable-line unicorn/new-for-builtins
+        const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
         for (const index of range) {
             const title = `${index}_title`;
             console.log(`${index}: ${this.state[title]}`);
@@ -109,12 +134,27 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         return urls;
     }
 
+    componentDidUpdate() {
+        const title = `${this.state.currentFileIndex}_title`;
+        const description = `${this.state.currentFileIndex}_description`;
+        const license = `${this.state.currentFileIndex}_license`;
+        const nsfw = `${this.state.currentFileIndex}_nsfw`;
+        let validated = false;
+        if (this.state[title] && this.state[license] && this.state[description] && this.state[nsfw]) {
+            validated = true;
+        }
+        this.setState({
+            [`${this.state.currentFileIndex}_valid`]: validated
+        } as State);
+    }
+
     handleInputChange(event: { target: any; }) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = `${this.state.currentFileIndex}_${target.name}`;
+
         this.setState({
-            [name]: value
+            [name]: value,
         } as State);
     }
 
@@ -122,7 +162,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         return (
             <main className='min-h-full max-w-full flex flex-col justify-start items-center lg:pt-20 pt-52 z-0 bottom-0 relative mb-8'>
                 <section className="flex flex-col items-start mb-4">
-                    <div className="flex flex-row my-4">
+                    <div className="flex flex-row my-4 w-full items-center justify-center">
                         {this.renderThumb()}
                     </div>
                     <div className="flex flex-row w-full mb-4">
@@ -152,6 +192,13 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">License</span>
                                 <select required name="license" value={this.state[`${this.state.currentFileIndex}_license`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900" onChange={this.handleInputChange.bind(this)}>
                                     <option value="" disabled selected>Select an Creative Commons License</option>
+                                    <option value="cc-by-4.0">Attribution 4.0 International (CC BY 4.0)</option>
+                                    <option value="cc-by-sa-4.0">Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</option>
+                                    <option value="cc-by-nc-4.0">Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</option>
+                                    <option value="cc-by-nc-sa-4.0">Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</option>
+                                    <option value="cc-by-nd-4.0">Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)</option>
+                                    <option value="cc-by-nc-nd-4.0">Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)</option>
+                                    <option value="CC0-1.0">CC0 1.0 Universal (CC0 1.0) Public Domain Dedication</option>
                                 </select>
                             </label>
 
@@ -186,7 +233,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                     </div>
                     <Dropzone accept='image/*' onDropAccepted={this.props.onDrop} onDropRejected={this.props.onDropError}>
                         {({ getRootProps, getInputProps }) => (
-                            <div className="flex aspect-square justify-center items-center border border-dashed dark:border-white border-black cursor-pointer h-[140px] w-[140px] mr-8" {...getRootProps()}>
+                            <div className="my-2 flex aspect-square justify-center items-center border border-dashed dark:border-white border-black cursor-pointer h-[144px] w-[144px] mr-8" {...getRootProps()}>
                                 <input {...getInputProps()} />
                                 <svg className="dark:fill-gray-200 fill-gray-900" xmlns="http://www.w3.org/2000/svg" height="5rem" viewBox="0 0 24 24" width="5rem" fill="inherit"><path d="M0 0h24v24H0V0z" fill="none" /><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /></svg>
                             </div>
