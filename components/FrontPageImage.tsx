@@ -75,15 +75,19 @@ export default class FrontPageImage extends PureComponent<Props, State> {
 
 
     render_gallery(event: ImageGalleryEvent) {
-        const caption = event.content['m.caption'].filter((cap) => {
+        const caption_text = event.content['m.caption'].filter(cap => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
-            return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
-        });
-        let caption_text = "";
-        if (caption.length > 0) {
-            caption_text = (caption[0] as { body: string; mimetype: string; }).body;
-        }
+            const possible_text_caption = (cap as { "m.text": string; });
+            return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") || possible_text_caption["m.text"];
+        }).map(cap => {
+            const possible_html_caption = (cap as { body: string; mimetype: string; });
+            const possible_text_caption = (cap as { "m.text": string; });
+            return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") ? possible_html_caption.body : possible_text_caption["m.text"];
+        })[0];
         return event.content['m.image_gallery'].map(image => {
+            if (image["matrixart.nsfw"]) {
+                return undefined;
+            }
             const thumbnail_url = image['m.thumbnail'] ? (image['m.thumbnail'].length > 0 ? image['m.thumbnail'][0].url : image['m.file'].url) : image['m.file'].url;
             return this.render_image_box(thumbnail_url, event.event_id + image['m.file'].url, event.event_id, caption_text, image['m.image'].height, image['m.image'].width, image["xyz.amorgan.blurhash"]);
         });
@@ -91,6 +95,9 @@ export default class FrontPageImage extends PureComponent<Props, State> {
 
 
     render_image(event: ImageEvent) {
+        if (event.content["matrixart.nsfw"]) {
+            return undefined;
+        }
         const caption_text = event.content['m.caption'].filter(cap => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
             const possible_text_caption = (cap as { "m.text": string; });
