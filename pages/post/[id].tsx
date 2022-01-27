@@ -191,7 +191,7 @@ class Post extends PureComponent<Props, State> {
                             <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
                                 <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
                                 <h3 className="cursor-pointer mt-0 mb-4 text-l text-gray-900 dark:text-gray-200 font-normal inline-flex">
-                                    <span className="block object-cover rounded-full mr-4">{avatar_url ? <img className="object-cover rounded-full" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> : undefined}</span>
+                                    {avatar_url ? <span className="block object-cover rounded-full mr-4"> <img className="object-cover rounded-full" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> </span> : undefined}
                                     <Link href={"/profile/" + encodeURIComponent(image_event.sender)} passHref><span className='hover:text-teal-400'>{displayname}</span></Link>
                                 </h3>
                                 {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : (isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>)}
@@ -255,18 +255,11 @@ class Post extends PureComponent<Props, State> {
         if (!url || !thumbnail_url) {
             return <></>;
         }
+
         const metadata = {
             "@context": "https://schema.org/",
             "@type": "ImageObject",
             contentUrl: url,
-            "thumbnail": {
-                "@context": "https://schema.org/",
-                "@type": "ImageObject",
-                "contentUrl": this.context.client?.downloadLink(imageEvent.content['m.thumbnail'][0].url)!,
-                "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-                "author": imageEvent.content.displayname,
-                "name": imageEvent.content['m.text']
-            },
             encodingFormat: imageEvent.content['m.file'].mimetype,
             // TODO get this from the event itself
             license: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
@@ -275,6 +268,19 @@ class Post extends PureComponent<Props, State> {
             "width": imageEvent.content['m.image'].width,
             "height": imageEvent.content['m.image'].height
         };
+        if (imageEvent.content['m.thumbnail']) {
+            if (imageEvent.content['m.thumbnail'].length > 0) {
+                //@ts-ignore TS is not able to figure out types here
+                metadata["thumbnail"] = {
+                    "@context": "https://schema.org/",
+                    "@type": "ImageObject",
+                    "contentUrl": this.context.client?.downloadLink(imageEvent.content['m.thumbnail'][0].url)!,
+                    "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                    "author": imageEvent.content.displayname,
+                    "name": imageEvent.content['m.text'],
+                };
+            }
+        }
         const blurhash = imageEvent.content['xyz.amorgan.blurhash'];
         const image_html = blurhash ? (
             <div className="flex">
@@ -320,7 +326,7 @@ class Post extends PureComponent<Props, State> {
         const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; author: string; name: string; thumbnail: any; encodingFormat: string; width: number; height: number; }[] = [];
         const images = imageEvent.content['m.image_gallery'].map(image => {
             const url = this.context.client?.downloadLink(image["m.file"].url);
-            const thumbnail_url = this.context.client?.downloadLink(image['m.thumbnail'][0].url);
+            const thumbnail_url = this.context.client?.downloadLink(image['m.thumbnail'] ? (image['m.thumbnail'].length > 0 ? image['m.thumbnail'][0].url : image["m.file"].url) : image["m.file"].url);
             if (!url || !thumbnail_url) {
                 return <></>;
             }
@@ -328,14 +334,14 @@ class Post extends PureComponent<Props, State> {
                 "@context": "https://schema.org/",
                 "@type": "ImageObject",
                 contentUrl: url,
-                "thumbnail": {
+                "thumbnail": image['m.thumbnail'] ? (image['m.thumbnail'].length > 0 ? {
                     "@context": "https://schema.org/",
                     "@type": "ImageObject",
                     "contentUrl": this.context.client?.downloadLink(image['m.thumbnail'][0].url)!,
                     "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
                     "author": imageEvent.content.displayname,
                     "name": image['m.text']
-                },
+                } : undefined) : undefined,
                 encodingFormat: image['m.file'].mimetype,
                 // TODO get this from the event itself
                 license: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
@@ -426,7 +432,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 const roomId = await client?.followUser(user.public_user_room);
                 const events = await client?.getTimeline(roomId, 100);
                 // Filter events by type
-                const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
+                const image_event = events.find((event) => ((event.type == "m.image_gallery" || event.type == "m.image") && !event.unsigned?.redacted_because) && event.event_id === event_id);
                 if (image_event == undefined) {
                     continue;
                 }
@@ -438,7 +444,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                             event_id: event_id,
                             hasFullyLoaded: true,
                             displayname: profile.displayname,
-                            avatar_url: profile.avatar_url
+                            avatar_url: profile.avatar_url || null
                         }
                     };
                 } catch (error) {

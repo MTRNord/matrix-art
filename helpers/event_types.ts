@@ -3,8 +3,10 @@ export type MatrixEventBase = {
     event_id: string;
     room_id: string;
     sender: string;
-    redacted_because?: any;
     origin_server_ts: number;
+    unsigned?: {
+        redacted_because?: any;
+    };
 };
 
 export type MatrixStateEventBase = MatrixEventBase & {
@@ -29,14 +31,21 @@ export type ImageFields = {
     height: number;
 };
 
-export type ImageEventContent = {
+export type ThumbnailData = {
+    "m.thumbnail"?: ThumbnailFileEvent[];
+    "xyz.amorgan.blurhash": string;
+};
+
+export type ImageEventContent = ThumbnailData & {
     // TODO maybe not correct as it may be formatted?
     "m.text": string;
     "m.file": FileEvent;
     "m.image": ImageFields;
-    "m.thumbnail": ThumbnailFileEvent[];
     "matrixart.tags": string[];
-    "xyz.amorgan.blurhash": string;
+    // TODO check if correct
+    "matrixart.description": string;
+    "matrixart.nsfw": boolean;
+    "matrixart.license": string;
 };
 
 export type MessageAlike = { "m.text": string; } | { body: string; mimetype: string; };
@@ -89,3 +98,5 @@ export type MatrixArtProfile = MatrixStateEventBase & {
 
 export type MatrixImageEvents = ImageEvent | ImageGalleryEvent;
 export type MatrixEvent = MatrixImageEvents | BannerEvent | MatrixArtProfile;
+
+export type MatrixContents = MatrixArtProfileContent | BannerEventContent | ImageGalleryContent | ImageEventContentWithCaption | ImageEventContent;

@@ -140,7 +140,7 @@ class Profile extends PureComponent<Props, State> {
         }
 
         const banner_event = events.find(event => event.type === "matrixart.profile_banner");
-        const image_events = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
+        const image_events = events.filter((event) => (event.type == "m.image_gallery" || event.type == "m.image") && !event.unsigned?.redacted_because) as MatrixImageEvents[];
         // TODO opengraph shows mxid instead of displayname
         return (
             <div className="min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]">

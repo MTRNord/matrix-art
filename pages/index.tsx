@@ -31,21 +31,13 @@ class Home extends PureComponent<Props, State>{
   render() {
     const { image_events } = this.state;
 
-    const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; thumbnail: any; }[] = image_events.flatMap(event => {
+    const metadata: { "@context": string; "@type": string; contentUrl: string; license: string; thumbnail?: any; }[] = image_events.flatMap(event => {
       if (isImageGalleryEvent(event)) {
         return event.content['m.image_gallery'].map(image => {
-          return {
+          const metadata = {
             "@context": "https://schema.org/",
             "@type": "ImageObject",
             "contentUrl": this.context.client?.downloadLink(image['m.file'].url)!,
-            "thumbnail": {
-              "@context": "https://schema.org/",
-              "@type": "ImageObject",
-              "contentUrl": this.context.client?.downloadLink(image['m.thumbnail'][0].url)!,
-              "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-              "author": event.content.displayname,
-              "name": image['m.text']
-            },
             "encodingFormat": image['m.file'].mimetype,
             // TODO get this from the event itself
             "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
@@ -54,20 +46,26 @@ class Home extends PureComponent<Props, State>{
             "width": image['m.image'].width,
             "height": image['m.image'].height
           };
+          if (image['m.thumbnail']) {
+            if (image['m.thumbnail'].length > 0) {
+              //@ts-ignore TS is not able to figure out types here
+              metadata["thumbnail"] = {
+                "@context": "https://schema.org/",
+                "@type": "ImageObject",
+                "contentUrl": this.context.client?.downloadLink(image['m.thumbnail'][0].url)!,
+                "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                "author": event.content.displayname,
+                "name": image['m.text']
+              };
+            }
+          }
+          return metadata;
         });
       } else {
-        return {
+        const metadata = {
           "@context": "https://schema.org/",
           "@type": "ImageObject",
           "contentUrl": this.context.client?.downloadLink(event.content['m.file'].url)!,
-          "thumbnail": {
-            "@context": "https://schema.org/",
-            "@type": "ImageObject",
-            "contentUrl": this.context.client?.downloadLink(event.content['m.thumbnail'][0].url)!,
-            "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
-            "author": event.content.displayname,
-            "name": event.content['m.text']
-          },
           "encodingFormat": event.content['m.file'].mimetype,
           // TODO get this from the event itself
           "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
@@ -76,6 +74,22 @@ class Home extends PureComponent<Props, State>{
           "width": event.content['m.image'].width,
           "height": event.content['m.image'].height
         };
+
+        if (event.content['m.thumbnail']) {
+          if (event.content['m.thumbnail'].length > 0) {
+            //@ts-ignore TS is not able to figure out types here
+            metadata["thumbnail"] = {
+              "@context": "https://schema.org/",
+              "@type": "ImageObject",
+              "contentUrl": this.context.client?.downloadLink(event.content['m.thumbnail'][0].url)!,
+              "license": "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+              "author": event.content.displayname,
+              "name": event.content['m.text']
+            };
+          }
+        }
+
+        return metadata;
       }
     });
     return (
@@ -137,7 +151,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       const roomId = await client?.followUser(user.public_user_room);
       const events = await client?.getTimeline(roomId, 100);
       // Filter events by type
-      let images = events.filter((event) => event.type == "m.image_gallery" || event.type == "m.image") as MatrixImageEvents[];
+      let images = events.filter((event) => (event.type == "m.image_gallery" || event.type == "m.image") && !event.unsigned?.redacted_because) as MatrixImageEvents[];
       images = await Promise.all(images.map(async (image) => {
         try {
           const profile = await client.getProfile(image.sender);

@@ -1,11 +1,29 @@
-import { PureComponent } from "react";
+import { createRef, PureComponent, RefObject } from "react";
 import { DropCallbacks } from "./start";
 import PropTypes from 'prop-types';
 import { PreviewWithDataFile } from "../../pages/submit";
 import { ClientContext } from "../ClientContext";
 import Dropzone from "react-dropzone";
+import { SearchMedia } from "../../pages/api/submitSearch";
+import { withRouter } from "next/router";
+import { WithRouterProps } from "next/dist/client/with-router";
+import { BlurhashEncoder } from "../../helpers/BlurhashEncoder";
+import { ImageEventContent, MatrixContents, ThumbnailData } from "../../helpers/event_types";
 
-interface Props extends DropCallbacks {
+type ThumbnailableElement = HTMLImageElement | HTMLVideoElement;
+type ThumbnailTransmissionData = {
+    thumbnail_meta: ThumbnailData;
+    thumbnail: Blob;
+};
+const MAX_WIDTH = 800;
+const MAX_HEIGHT = 600;
+// Minimum size for image files before we generate a thumbnail for them.
+const IMAGE_SIZE_THRESHOLD_THUMBNAIL = 1 << 15; // 32KB
+// Minimum size improvement for image thumbnails, if both are not met then don't bother uploading thumbnail.
+const IMAGE_THUMBNAIL_MIN_REDUCTION_SIZE = 1 << 16; // 1MB
+const IMAGE_THUMBNAIL_MIN_REDUCTION_PERCENT = 0.1; // 10%
+
+interface Props extends DropCallbacks, WithRouterProps {
     files: PreviewWithDataFile[];
 };
 
@@ -16,6 +34,7 @@ type State = {
     [key: string]: any;
 };
 class MainSubmissionForm extends PureComponent<Props, State> {
+    private image_refs: RefObject<HTMLImageElement>[] = [];
     declare context: React.ContextType<typeof ClientContext>;
 
     constructor(props: Props) {
@@ -72,12 +91,17 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                 }
                 return classes_base.join(" ");
             };
-            // TODO FIXME do make this work with keyboard presses!
 
+            if (!this.image_refs[index]) {
+                this.image_refs[index] = createRef();
+            }
+
+
+            // TODO FIXME do make this work with keyboard presses!
             /* eslint-disable jsx-a11y/click-events-have-key-events */
             return (
                 <div aria-label={file.name} className={classes.bind(this)()} onClick={setIndex} style={{ height: "144px" }} key={file.name} role="radio" tabIndex={index} aria-checked={this.state.currentFileIndex == index ? true : false}>
-                    <img alt={file.name} className="h-full w-full object-cover align-middle aspect-video" src={file.preview_url} />
+                    <img alt={file.name} ref={this.image_refs[index]} className="h-full w-full object-cover align-middle aspect-video" src={file.preview_url} />
                 </div>
             );
             /* eslint-enable jsx-a11y/click-events-have-key-events */
@@ -109,26 +133,196 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
     async handleSubmit(event: { preventDefault: () => void; }) {
         const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
-        for (const index of range) {
-            const title = `${index}_title`;
-            console.log(`${index}: ${this.state[title]}`);
-            const description = `${index}_description`;
-            console.log(`${index}: ${this.state[description]}`);
-            const tags = `${index}_tags`;
-            console.log(`${index}: ${this.state[tags]}`);
-            const license = `${index}_license`;
-            console.log(`${index}: ${this.state[license]}`);
-            const nsfw = `${index}_nsfw`;
-            console.log(`${index}: ${this.state[nsfw]}`);
+        const posts_for_search: SearchMedia[] = [];
+
+        if (this.context.client.isGuest) {
+            return;
         }
+
+        // If any image is invalid do exit submit for now.
+        // TODO show an error
+        for (const index of range) {
+            const valid = `${index}_valid`;
+            if (!valid) {
+                return;
+            }
+        }
+
+        const ids = await this.doUpload();
+
+        const thumbnails = await this.generateThumbnailsAndUpload();
+
+        // Handle uploads
+        for (const index of range) {
+            console.log(index);
+            console.log(this.context.client.profileRoomId);
+            const title = `${index}_title`;
+            const description = `${index}_description`;
+            const tags = `${index}_tags`;
+            const license = `${index}_license`;
+            const nsfw = `${index}_nsfw`;
+            const file = this.props.files[index];
+
+            if (!this.context.client.profileRoomId) {
+                return;
+            }
+
+            const event = {
+                "m.text": this.state[title],
+                "m.caption": [{
+                    "m.text": this.state[title]
+                }],
+                "m.file": {
+                    mimetype: file.type,
+                    name: file.name,
+                    url: ids[index].url,
+                    size: file.size
+                },
+                "m.image": {
+                    height: this.image_refs[index].current?.naturalHeight!,
+                    width: this.image_refs[index].current?.naturalWidth!,
+                },
+                "matrixart.description": this.state[description],
+                "matrixart.nsfw": this.state[nsfw] === "yes" ? true : false,
+                "matrixart.license": this.state[license],
+                "matrixart.tags": this.state[tags].split(",").map((x: string) => x.trimStart().trimEnd()),
+            } as unknown as ImageEventContent;
+            const thumbnailData = thumbnails.find(item => item.index == index);
+            event["m.thumbnail"] = thumbnailData?.meta["m.thumbnail"];
+            event["xyz.amorgan.blurhash"] = thumbnailData?.meta["xyz.amorgan.blurhash"]!;
+
+            const event_id = await this.context.client.sendEvent(this.context.client.profileRoomId, 'm.image', event);
+
+            posts_for_search.push({
+                mxc_url: ids[index].url,
+                event_id: event_id,
+                title: this.state[title],
+                description: this.state[description],
+                tags: this.state[tags].trimStart().trimEnd(),
+                nsfw: this.state[nsfw] === "yes" ? "true" : "false",
+                license: this.state[license],
+                sender: this.context.client.userId!
+            });
+        }
+        const token = await this.context.client.getOpenidToken();
+        await fetch("/api/submitSearch", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, docs: posts_for_search }) });
+        await this.props.router.replace("/");
+    }
+
+    // THis is aken from matrix-react-sdk commit efa1667d7e9de9e429a72396a5105d0219006db2
+    private async createThumbnail(
+        element: ThumbnailableElement,
+        inputWidth: number,
+        inputHeight: number,
+        mimeType: string
+    ): Promise<ThumbnailTransmissionData | undefined> {
+        let targetWidth = inputWidth;
+        let targetHeight = inputHeight;
+        if (targetHeight > MAX_HEIGHT) {
+            targetWidth = Math.floor(targetWidth * (MAX_HEIGHT / targetHeight));
+            targetHeight = MAX_HEIGHT;
+        }
+        if (targetWidth > MAX_WIDTH) {
+            targetHeight = Math.floor(targetHeight * (MAX_WIDTH / targetWidth));
+            targetWidth = MAX_WIDTH;
+        }
+
+        let canvas: HTMLCanvasElement | OffscreenCanvas;
+        let context: OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D | null;
+        try {
+            canvas = new window.OffscreenCanvas(targetWidth, targetHeight);
+            context = canvas.getContext("2d");
+        } catch {
+            // Fallback support for other browsers (Safari and Firefox for now)
+            canvas = document.createElement("canvas");
+            (canvas as HTMLCanvasElement).width = targetWidth;
+            (canvas as HTMLCanvasElement).height = targetHeight;
+            context = canvas.getContext("2d");
+        }
+
+        if (!context) {
+            return;
+        }
+        context?.drawImage(element, 0, 0, targetWidth, targetHeight);
+
+        let thumbnailPromise: Promise<Blob | null>;
+
+        if (window.OffscreenCanvas) {
+            thumbnailPromise = (canvas as OffscreenCanvas).convertToBlob({ type: mimeType });
+        } else {
+            thumbnailPromise = new Promise<Blob | null>(resolve => (canvas as HTMLCanvasElement).toBlob(resolve, mimeType));
+        }
+
+        const imageData = context.getImageData(0, 0, targetWidth, targetHeight);
+        // thumbnailPromise and blurhash promise are being awaited concurrently
+        const blurhash = await BlurhashEncoder.instance.getBlurhash(imageData);
+        const thumbnail = await thumbnailPromise;
+        if (!thumbnail) {
+            return;
+        }
+
+        return {
+            thumbnail_meta: {
+                "m.thumbnail": [
+                    {
+                        width: targetWidth,
+                        height: targetHeight,
+                        mimetype: thumbnail.type,
+                        size: thumbnail.size,
+                        url: ""
+                    }
+                ],
+                "xyz.amorgan.blurhash": blurhash,
+            },
+            thumbnail,
+        };
+    }
+
+    private async generateThumbnailsAndUpload(): Promise<{ index: number; meta: ThumbnailData; }[]> {
+        const thumbnails = [];
+        if (!this.context.client.isGuest) {
+            const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
+            for (const index of range) {
+                const file = this.props.files[index];
+                const image = this.image_refs[index];
+                const thumbnail_data = await this.createThumbnail(
+                    image.current!,
+                    image.current!.naturalWidth,
+                    image.current!.naturalHeight,
+                    file.type
+                );
+                if (!thumbnail_data) {
+                    // TODO this causes issues
+                    continue;
+                }
+
+                // we do all sizing checks here because we still rely on thumbnail generation for making a blurhash from.
+                const sizeDifference = file.size - thumbnail_data.thumbnail_meta["m.thumbnail"]![0].size;
+                if (
+                    file.size <= IMAGE_SIZE_THRESHOLD_THUMBNAIL || // image is small enough already
+                    (sizeDifference <= IMAGE_THUMBNAIL_MIN_REDUCTION_SIZE && // thumbnail is not sufficiently smaller than original
+                        sizeDifference <= (file.size * IMAGE_THUMBNAIL_MIN_REDUCTION_PERCENT))
+                ) {
+                    delete thumbnail_data.thumbnail_meta["m.thumbnail"];
+                    thumbnails.push({ index: index, meta: thumbnail_data.thumbnail_meta });
+                }
+
+                const result = await this.context.client.uploadFile(thumbnail_data.thumbnail);
+                thumbnail_data.thumbnail_meta["m.thumbnail"]![0].url = result;
+                thumbnails.push({ index: index, meta: thumbnail_data.thumbnail_meta });
+            }
+        }
+        return thumbnails;
     }
 
     private async doUpload() {
         const urls = [];
         if (!this.context.client.isGuest) {
-            for (const file of this.props.files) {
-                const result = this.context.client.uploadFile(file);
-                urls.push({ file_name: file.name, url: result });
+            const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
+            for (const index of range) {
+                const file = this.props.files[index];
+                const result = await this.context.client.uploadFile(file);
+                urls.push({ index: index, url: result });
             }
         }
         return urls;
@@ -190,8 +384,8 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">License</span>
-                                <select required name="license" value={this.state[`${this.state.currentFileIndex}_license`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
-                                    <option value="" disabled selected>Select an Creative Commons License</option>
+                                <select defaultValue="" required name="license" value={this.state[`${this.state.currentFileIndex}_license`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
+                                    <option value="" disabled>Select an Creative Commons License</option>
                                     <option value="cc-by-4.0">Attribution 4.0 International (CC BY 4.0)</option>
                                     <option value="cc-by-sa-4.0">Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</option>
                                     <option value="cc-by-nc-4.0">Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</option>
@@ -206,8 +400,8 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Mature/NSFW Content?</span>
-                                <select required name="nsfw" value={this.state[`${this.state.currentFileIndex}_nsfw`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
-                                    <option value="" disabled selected>Select Yes or No</option>
+                                <select defaultValue="" required name="nsfw" value={this.state[`${this.state.currentFileIndex}_nsfw`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
+                                    <option value="" disabled>Select Yes or No</option>
                                     <option value="no">No</option>
                                     <option value="yes">Yes</option>
                                 </select>
@@ -248,4 +442,5 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
 MainSubmissionForm.contextType = ClientContext;
 
-export default MainSubmissionForm;
+// @ts-ignore Typescript is wrong
+export default withRouter(MainSubmissionForm);

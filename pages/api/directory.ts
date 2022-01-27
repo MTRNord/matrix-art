@@ -35,11 +35,15 @@ export const get_data = async () => {
     return await User.findAll();
 };
 
-// TODO this is fully insecured. Make sure to use OpenID or something to verify the user of this.
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // Run cors
     await cors(req, res);
+
+    if (req.method !== "GET" && req.method !== "POST" && req.method !== "DELETE") {
+        res.status(405).json({});
+        return;
+    }
 
     try {
         await db.authenticate();
@@ -101,7 +105,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } else {
             res.status(401).json({});
         }
-    } else {
-        res.status(405).json({});
     }
 }

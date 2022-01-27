@@ -44,3 +44,4 @@ yarn-error.log*
 .env.local
 test-results/
 playwright-report/
+/meilifiles

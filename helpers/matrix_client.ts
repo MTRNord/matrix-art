@@ -1,17 +1,18 @@
 // This file is based on https://github.com/matrix-org/cerulean/blob/1499ca2b80d3a2cc090f75636b1c4db138729b59/src/Client.js
-import { MatrixEvent } from './event_types';
+import { MatrixContents, MatrixEvent } from './event_types';
 import Storage from './storage';
 
 export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL || "https://matrix.art.midnightthoughts.space";
 
 export default class MatrixClient {
-    private joinedRooms: Map<any, any>;
-    private userProfileCache: Map<any, any>;
+    private joinedRooms: Map<string, string>;
+    private userProfileCache: Map<string, any>;
     private storage!: Storage;
     private serverUrl?: string;
     private _userId?: string;
     private _accessToken?: string;
     private _isGuest?: boolean;
+    private _profileRoomId?: string;
     private serverName?: string;
     get userId(): string | undefined {
         return this._userId;
@@ -21,6 +22,12 @@ export default class MatrixClient {
     }
     get isGuest(): boolean | undefined {
         return this._isGuest;
+    }
+
+    get profileRoomId(): string | undefined {
+        console.log(this.joinedRooms);
+        console.log(this._profileRoomId);
+        return this.joinedRooms.get(`#${this.userId}`) || this._profileRoomId;
     }
 
     constructor(storage: Storage) {
@@ -35,6 +42,7 @@ export default class MatrixClient {
         this._accessToken = storage.getItem("accessToken");
         this._isGuest = (this.userId || "").indexOf("@matrix_art_guest_") === 0;
         this.serverName = storage.getItem("serverName");
+        this._profileRoomId = storage.getItem("profileRoomId");
     }
 
     private saveAuthState() {
@@ -47,7 +55,7 @@ export default class MatrixClient {
         this.storage.setOrDelete("serverName", this.serverName);
     }
 
-    generateToken(len: number) {
+    private generateToken(len: number) {
         var arr = new Uint8Array(len / 2);
         if (typeof window !== "undefined") {
             window.crypto.getRandomValues(arr);
@@ -216,6 +224,9 @@ export default class MatrixClient {
                     headers: { Authorization: `Bearer ${this.accessToken}` },
                 }
             );
+            if (isMyself) {
+                this.storage.setOrDelete("profileRoomId", data.room_id);
+            }
             this.joinedRooms.set(roomAlias, data.room_id);
             return data.room_id;
         } catch (error) {
@@ -248,6 +259,8 @@ export default class MatrixClient {
                     }
                 );
                 this.joinedRooms.set(roomAlias, data.room_id);
+
+                this.storage.setOrDelete("profileRoomId", data.room_id);
                 return data.room_id;
             } else {
                 throw error;
@@ -279,8 +292,23 @@ export default class MatrixClient {
         return `${constMatrixArtServer}/_matrix/media/r0/thumbnail/${mxcUri.split("mxc://")[1]}?method=${encodeURIComponent(method)}&width=${encodeURIComponent(width)}&height=${encodeURIComponent(height)}`;
     }
 
-    async uploadFile(file: File): Promise<string> {
-        const fileName = file.name;
+    async sendEvent(roomId: string, event_type: string, content: MatrixContents): Promise<string> {
+        const txnId = Date.now();
+        const data = await this.fetchJson(
+            `${this.serverUrl}/r0/rooms/${encodeURIComponent(
+                roomId
+            )}/send/${event_type}/${encodeURIComponent(txnId)}`,
+            {
+                method: "PUT",
+                body: JSON.stringify(content),
+                headers: { Authorization: `Bearer ${this.accessToken}` },
+            }
+        );
+        return data.event_id;
+    }
+
+    async uploadFile(file: File | Blob): Promise<string> {
+        const fileName = (file as File).name || Date.now();
         const mediaUrl = this.serverUrl?.slice(0, -1 * "/client".length);
         const res = await fetch(
             `${mediaUrl}/media/r0/upload?filename=${encodeURIComponent(
@@ -369,7 +397,6 @@ export default class MatrixClient {
         return info;
     }
 
-    // TODO allow filters
     async getTimeline(roomId: string, limit: number, filter: object = { limit: 30, types: ["m.image", "m.image_gallery"] }) {// eslint-disable-line unicorn/no-object-as-default-parameter
         if (!this.accessToken) {
             console.error("No access token");
@@ -407,7 +434,7 @@ export default class MatrixClient {
      * Follow a user by subscribing to their room.
      * @param {string} userId
      */
-    followUser(userId: string) {
-        return this.joinProfileRoom(userId);
+    async followUser(userId: string) {
+        return await this.joinProfileRoom(userId);
     }
 }

@@ -84,21 +84,25 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             caption_text = (caption[0] as { body: string; mimetype: string; }).body;
         }
         return event.content['m.image_gallery'].map(image => {
-            return this.render_image_box(image['m.thumbnail'][0].url, event.event_id + image['m.file'].url, event.event_id, caption_text, image['m.image'].height, image['m.image'].width, image["xyz.amorgan.blurhash"]);
+            const thumbnail_url = image['m.thumbnail'] ? (image['m.thumbnail'].length > 0 ? image['m.thumbnail'][0].url : image['m.file'].url) : image['m.file'].url;
+            return this.render_image_box(thumbnail_url, event.event_id + image['m.file'].url, event.event_id, caption_text, image['m.image'].height, image['m.image'].width, image["xyz.amorgan.blurhash"]);
         });
     }
 
 
     render_image(event: ImageEvent) {
-        const caption = event.content['m.caption'].filter((cap) => {
+        let caption_text = event.content['m.caption'].filter(cap => {
+
             const possible_html_caption = (cap as { body: string; mimetype: string; });
-            return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
-        });
-        let caption_text = "";
-        if (caption.length > 0) {
-            caption_text = (caption[0] as { body: string; mimetype: string; }).body;
-        }
-        return this.render_image_box(event.content['m.thumbnail'][0].url, event.event_id, event.event_id, caption_text, event.content['m.image'].height, event.content['m.image'].width, event.content["xyz.amorgan.blurhash"]);
+            const possible_text_caption = (cap as { "m.text": string; });
+            return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") || possible_text_caption["m.text"];
+        }).map(cap => {
+            const possible_html_caption = (cap as { body: string; mimetype: string; });
+            const possible_text_caption = (cap as { "m.text": string; });
+            return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") ? possible_html_caption.body : possible_text_caption["m.text"];
+        })[0];
+        const thumbnail_url = event.content['m.thumbnail'] ? (event.content['m.thumbnail'].length > 0 ? event.content['m.thumbnail'][0].url : event.content['m.file'].url) : event.content['m.file'].url;
+        return this.render_image_box(thumbnail_url, event.event_id, event.event_id, caption_text, event.content['m.image'].height, event.content['m.image'].width, event.content["xyz.amorgan.blurhash"]);
     }
 
     render_image_box(thumbnail_url: string, id: string, post_id: string, caption: string, h: number, w: number, blurhash?: string) {
@@ -136,10 +140,10 @@ FrontPageImage.contextType = ClientContext;
 
 // TODO also render the edits properly later on
 export function isImageGalleryEvent(event: MatrixImageEvents): event is ImageGalleryEvent {
-    return event.type === "m.image_gallery" && event.redacted_because === undefined;
+    return event.type === "m.image_gallery" && !event.unsigned?.redacted_because;
 }
 
 
 export function isImageEvent(event: MatrixImageEvents): event is ImageEvent {
-    return event.type === "m.image" && event.redacted_because === undefined;
+    return event.type === "m.image" && !event.unsigned?.redacted_because;
 };
