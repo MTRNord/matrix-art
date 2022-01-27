@@ -1,7 +1,10 @@
 name: Deploy to server
 on:
-  push:
+  workflow_run:
+    workflows: ["Playwright Tests"]
     branches: [main]
+    types:
+      - completed
 permissions: read-all
 
 jobs:
