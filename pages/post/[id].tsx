@@ -163,14 +163,15 @@ class Post extends PureComponent<Props, State> {
         }
 
         if (image_event) {
-            let post_title = "";
-            const caption = image_event.content['m.caption'].filter((cap) => {
+            const post_title = image_event.content['m.caption'].filter(cap => {
                 const possible_html_caption = (cap as { body: string; mimetype: string; });
-                return possible_html_caption.body !== undefined && possible_html_caption.mimetype === "text/html";
-            });
-            if (caption.length > 0) {
-                post_title = (caption[0] as { body: string; mimetype: string; }).body;
-            }
+                const possible_text_caption = (cap as { "m.text": string; });
+                return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") || possible_text_caption["m.text"];
+            }).map(cap => {
+                const possible_html_caption = (cap as { body: string; mimetype: string; });
+                const possible_text_caption = (cap as { "m.text": string; });
+                return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") ? possible_html_caption.body : possible_text_caption["m.text"];
+            })[0];
             return (
                 <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>

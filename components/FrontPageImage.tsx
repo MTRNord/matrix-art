@@ -91,8 +91,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
 
 
     render_image(event: ImageEvent) {
-        let caption_text = event.content['m.caption'].filter(cap => {
-
+        const caption_text = event.content['m.caption'].filter(cap => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
             const possible_text_caption = (cap as { "m.text": string; });
             return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") || possible_text_caption["m.text"];
