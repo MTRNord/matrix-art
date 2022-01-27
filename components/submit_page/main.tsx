@@ -1,4 +1,4 @@
-import { createRef, PureComponent, RefObject } from "react";
+import { PureComponent } from "react";
 import { DropCallbacks } from "./start";
 import PropTypes from 'prop-types';
 import { PreviewWithDataFile } from "../../pages/submit";
@@ -8,8 +8,10 @@ import { SearchMedia } from "../../pages/api/submitSearch";
 import { withRouter } from "next/router";
 import { WithRouterProps } from "next/dist/client/with-router";
 import { BlurhashEncoder } from "../../helpers/BlurhashEncoder";
-import { ImageEventContent, MatrixContents, ThumbnailData } from "../../helpers/event_types";
+import { ImageEventContent, ThumbnailData } from "../../helpers/event_types";
 import { toast } from "react-toastify";
+// @ts-ignore This has no types
+import extractPngChunks from "png-chunks-extract";
 
 type ThumbnailableElement = HTMLImageElement | HTMLVideoElement;
 type ThumbnailTransmissionData = {
@@ -18,6 +20,11 @@ type ThumbnailTransmissionData = {
 };
 const MAX_WIDTH = 800;
 const MAX_HEIGHT = 600;
+
+// scraped out of a macOS hidpi (5660ppm) screenshot png
+//                  5669 px (x-axis)      , 5669 px (y-axis)      , per metre
+const PHYS_HIDPI = [0x00, 0x00, 0x16, 0x25, 0x00, 0x00, 0x16, 0x25, 0x01];
+
 // Minimum size for image files before we generate a thumbnail for them.
 const IMAGE_SIZE_THRESHOLD_THUMBNAIL = 1 << 15; // 32KB
 // Minimum size improvement for image thumbnails, if both are not met then don't bother uploading thumbnail.
@@ -36,7 +43,6 @@ type State = {
     [key: string]: any;
 };
 class MainSubmissionForm extends PureComponent<Props, State> {
-    private image_refs: RefObject<HTMLImageElement>[] = [];
     declare context: React.ContextType<typeof ClientContext>;
 
     constructor(props: Props) {
@@ -95,16 +101,12 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                 return classes_base.join(" ");
             };
 
-            if (!this.image_refs[index]) {
-                this.image_refs[index] = createRef();
-            }
-
 
             // TODO FIXME do make this work with keyboard presses!
             /* eslint-disable jsx-a11y/click-events-have-key-events */
             return (
                 <div aria-label={file.name} className={classes.bind(this)()} onClick={setIndex} style={{ height: "144px" }} key={file.name} role="radio" tabIndex={index} aria-checked={this.state.currentFileIndex == index ? true : false}>
-                    <img alt={file.name} ref={this.image_refs[index]} className="h-full w-full object-cover align-middle aspect-video" src={file.preview_url} />
+                    <img alt={file.name} className="h-full w-full object-cover align-middle aspect-video" src={file.preview_url} />
                 </div>
             );
             /* eslint-enable jsx-a11y/click-events-have-key-events */
@@ -167,9 +169,10 @@ class MainSubmissionForm extends PureComponent<Props, State> {
             }
         }
 
+        const image_infos = await this.getImageInfos();
         const ids = await this.doUpload();
 
-        const thumbnails = await this.generateThumbnailsAndUpload();
+        const thumbnails = await this.generateThumbnailsAndUpload(image_infos);
 
         // Handle uploads
         for (const index of range) {
@@ -200,8 +203,8 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                     size: file.size
                 },
                 "m.image": {
-                    height: this.image_refs[index].current?.naturalHeight!,
-                    width: this.image_refs[index].current?.naturalWidth!,
+                    height: image_infos[index].height,
+                    width: image_infos[index].width,
                 },
                 "matrixart.description": this.state[description],
                 "matrixart.nsfw": this.state[nsfw] === "yes" ? true : false,
@@ -231,7 +234,75 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         this.setState({ submit_in_process: false });
     }
 
-    // THis is aken from matrix-react-sdk commit efa1667d7e9de9e429a72396a5105d0219006db2
+    /**
+     * Read the file as an ArrayBuffer.
+     * @param {File} file The file to read
+     * @return {Promise} A promise that resolves with an ArrayBuffer when the file
+     *   is read.
+     */
+    private async readFileAsArrayBuffer(file: File | Blob): Promise<ArrayBuffer> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.addEventListener("load", (e: ProgressEvent<FileReader>) => {
+                resolve(e.target?.result as ArrayBuffer);
+            });
+            reader.addEventListener("error", (e) => {
+                reject(e);
+            });
+            reader.readAsArrayBuffer(file);
+        });
+    }
+
+    private async getImageInfos() {
+        const image_infos = [];
+        const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
+        for (const index of range) {
+            const imageFile = this.props.files[index];
+            // Load the file into an html element
+            const img = document.createElement("img");
+            const objectUrl = URL.createObjectURL(imageFile);
+            const imgPromise = new Promise((resolve, reject) => {
+                img.addEventListener("load", () => {
+                    URL.revokeObjectURL(objectUrl);
+                    resolve(img);
+                });
+                img.addEventListener("error", (e) => {
+                    reject(e);
+                });
+            });
+            img.src = objectUrl;
+
+            // check for hi-dpi PNGs and fudge display resolution as needed.
+            // this is mainly needed for macOS screencaps
+            let parsePromise;
+            if (imageFile.type === "image/png") {
+                // in practice macOS happens to order the chunks so they fall in
+                // the first 0x1000 bytes (thanks to a massive ICC header).
+                // Thus we could slice the file down to only sniff the first 0x1000
+                // bytes (but this makes extractPngChunks choke on the corrupt file)
+                const headers = imageFile; //.slice(0, 0x1000);
+                parsePromise = this.readFileAsArrayBuffer(headers).then(arrayBuffer => {
+                    const buffer = new Uint8Array(arrayBuffer);
+                    const chunks = extractPngChunks(buffer);
+                    for (const chunk of chunks) {
+                        if (chunk.name === 'pHYs') {
+                            if (chunk.data.byteLength !== PHYS_HIDPI.length) return;
+                            return chunk.data.every((val: number, i: number) => val === PHYS_HIDPI[i]);
+                        }
+                    }
+                    return false;
+                });
+            }
+
+            const [hidpi] = await Promise.all([parsePromise, imgPromise]);
+            const width = hidpi ? (img.width >> 1) : img.width;
+            const height = hidpi ? (img.height >> 1) : img.height;
+            image_infos.push({ width, height, img });
+        }
+        return image_infos;
+    }
+
+    // This is taken from matrix-react-sdk commit efa1667d7e9de9e429a72396a5105d0219006db2
     private async createThumbnail(
         element: ThumbnailableElement,
         inputWidth: number,
@@ -300,17 +371,16 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         };
     }
 
-    private async generateThumbnailsAndUpload(): Promise<{ index: number; meta: ThumbnailData; }[]> {
+    private async generateThumbnailsAndUpload(image_infos: { width: number; height: number; img: HTMLImageElement; }[]): Promise<{ index: number; meta: ThumbnailData; }[]> {
         const thumbnails = [];
         if (!this.context.client.isGuest) {
             const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
             for (const index of range) {
                 const file = this.props.files[index];
-                const image = this.image_refs[index];
                 const thumbnail_data = await this.createThumbnail(
-                    image.current!,
-                    image.current!.naturalWidth,
-                    image.current!.naturalHeight,
+                    image_infos[index].img,
+                    image_infos[index].width,
+                    image_infos[index].height,
                     file.type
                 );
                 if (!thumbnail_data) {
@@ -468,7 +538,6 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         );
     }
 }
-
 
 MainSubmissionForm.contextType = ClientContext;
 

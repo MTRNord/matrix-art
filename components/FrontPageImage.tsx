@@ -4,10 +4,12 @@ import { Blurhash } from "react-blurhash";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../helpers/event_types";
 import { constMatrixArtServer } from "../helpers/matrix_client";
 import { ClientContext } from "./ClientContext";
+import PropTypes from 'prop-types';
 
 type Props = {
     event: MatrixImageEvents;
     imageHeight?: string;
+    show_nsfw: boolean;
 };
 
 type State = {
@@ -27,6 +29,12 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             imageHeight: this.props.imageHeight ? this.props.imageHeight : "270px"
         } as State;
     }
+
+    static propTypes = {
+        event: PropTypes.object,
+        imageHeight: PropTypes.number,
+        show_nsfw: PropTypes.bool
+    };
 
     async componentDidMount() {
         // auto-register as a guest if not logged in
@@ -85,8 +93,8 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") ? possible_html_caption.body : possible_text_caption["m.text"];
         })[0];
         return event.content['m.image_gallery'].map(image => {
-            if (image["matrixart.nsfw"]) {
-                return undefined;
+            if (image["matrixart.nsfw"] && !this.props.show_nsfw) {
+                return;
             }
             const thumbnail_url = image['m.thumbnail'] ? (image['m.thumbnail'].length > 0 ? image['m.thumbnail'][0].url : image['m.file'].url) : image['m.file'].url;
             return this.render_image_box(thumbnail_url, event.event_id + image['m.file'].url, event.event_id, caption_text, image['m.image'].height, image['m.image'].width, image["xyz.amorgan.blurhash"]);
@@ -95,8 +103,8 @@ export default class FrontPageImage extends PureComponent<Props, State> {
 
 
     render_image(event: ImageEvent) {
-        if (event.content["matrixart.nsfw"]) {
-            return undefined;
+        if (event.content["matrixart.nsfw"] && !this.props.show_nsfw) {
+            return;
         }
         const caption_text = event.content['m.caption'].filter(cap => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });

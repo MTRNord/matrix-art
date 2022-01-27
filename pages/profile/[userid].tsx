@@ -211,7 +211,7 @@ class Profile extends PureComponent<Props, State> {
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <ul className='flex flex-wrap gap-1'>{image_events.map(event => <FrontPageImage event={event} imageHeight="286px" key={(event as MatrixEventBase).event_id} />)}
+                                                            <ul className='flex flex-wrap gap-1'>{image_events.map(event => <FrontPageImage show_nsfw={true} event={event} imageHeight="286px" key={(event as MatrixEventBase).event_id} />)}
                                                                 <li className='grow-[10]'></li>
                                                             </ul>
                                                         </div>
