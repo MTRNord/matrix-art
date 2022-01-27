@@ -444,7 +444,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                             event_id: event_id,
                             hasFullyLoaded: true,
                             displayname: profile.displayname,
-                            avatar_url: profile.avatar_url || null
+                            avatar_url: profile.avatar_url || null // eslint-disable-line unicorn/no-null
                         }
                     };
                 } catch (error) {

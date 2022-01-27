@@ -31,8 +31,7 @@ export class BlurhashEncoder {
 
     constructor() {
         if (typeof Worker !== 'undefined') {
-            console.log("created Worker!");
-            this.worker = new Worker(new URL('./workers/blurhash.worker.ts', import.meta.url));
+            this.worker = new Worker(new URL('./workers/blurhash.worker.ts', import.meta.url)); // eslint-disable-line unicorn/relative-url-style
         }
         this.worker?.addEventListener("message", this.onMessage.bind(this));
     }
@@ -50,9 +49,7 @@ export class BlurhashEncoder {
         const seq = this.seq++;
         const deferred = defer<string>();
         this.pendingDeferredMap.set(seq, deferred);
-        console.log("Making blurhash");
         this.worker?.postMessage({ seq, imageData });
-        console.log("returning blurhash promise");
         return deferred.promise;
     }
 }
