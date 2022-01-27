@@ -136,7 +136,7 @@ class Post extends PureComponent<Props, State> {
                     <Header></Header>
                     <main className='w-full lg:pt-20 pt-52 z-0'>
                         <div className="m-0 w-full">
-                            <div className="loader fixed top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]">Loading...</div>
+                            <div className="loader">Loading...</div>
                         </div>
                     </main>
                 </div>

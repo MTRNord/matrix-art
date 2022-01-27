@@ -2,6 +2,7 @@ import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { PureComponent, ReactNode } from "react";
 import { FileRejection } from "react-dropzone";
+import { toast } from "react-toastify";
 import { ClientContext } from "../components/ClientContext";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -79,6 +80,13 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
             fileRejections: [],
             submitState: "start"
         };
+    }
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        if (this.state.error && this.state.error !== prevState.error) {
+            toast(() => <div><h2 className="text-xl text-white">Error</h2><br />{this.state.error}</div>, {
+                autoClose: false
+            });
+        }
     }
 
     render(): ReactNode {

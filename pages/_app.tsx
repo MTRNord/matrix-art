@@ -1,9 +1,11 @@
 import '../styles/globals.css';
+import 'react-toastify/dist/ReactToastify.min.css';
 import type { AppProps } from 'next/app';
 import { useState } from 'react';
 import { client, ClientContext, guest_client } from '../components/ClientContext';
 import React from 'react';
 import Head from 'next/head';
+import { ToastContainer } from 'react-toastify';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [value] = useState({
@@ -22,9 +24,21 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ClientContext.Provider
           value={value}
         >
-          <Component {...pageProps}/>
+          <Component {...pageProps} />
         </ClientContext.Provider>
       </React.StrictMode>
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </>
   );
 }

@@ -9,6 +9,7 @@ import { withRouter } from "next/router";
 import { WithRouterProps } from "next/dist/client/with-router";
 import { BlurhashEncoder } from "../../helpers/BlurhashEncoder";
 import { ImageEventContent, MatrixContents, ThumbnailData } from "../../helpers/event_types";
+import { toast } from "react-toastify";
 
 type ThumbnailableElement = HTMLImageElement | HTMLVideoElement;
 type ThumbnailTransmissionData = {
@@ -31,6 +32,7 @@ type State = {
     currentFileIndex: number;
     hasSubmit: boolean;
     hasBack: boolean;
+    submit_in_process: boolean;
     [key: string]: any;
 };
 class MainSubmissionForm extends PureComponent<Props, State> {
@@ -42,7 +44,8 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         this.state = {
             currentFileIndex: 0,
             hasSubmit: props.files.length === 1 ? true : false,
-            hasBack: false
+            hasBack: false,
+            submit_in_process: false,
         };
         const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
         for (const index of range) {
@@ -131,19 +134,35 @@ class MainSubmissionForm extends PureComponent<Props, State> {
     }
 
 
-    async handleSubmit(event: { preventDefault: () => void; }) {
+    async handleSubmit() {
+        if (this.state.submit_in_process) {
+            return;
+        }
+        this.setState({ submit_in_process: true });
+
         const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
         const posts_for_search: SearchMedia[] = [];
 
+        // Clear all errors before showing new
+        toast.dismiss();
+
+
         if (this.context.client.isGuest) {
+            toast.error(() => <div><h2 className="text-xl text-white">Error</h2><br />You are not logged in!</div>, {
+                autoClose: false
+            });
+            this.setState({ submit_in_process: false });
             return;
         }
 
         // If any image is invalid do exit submit for now.
-        // TODO show an error
         for (const index of range) {
-            const valid = `${index}_valid`;
+            const valid = this.state[`${index}_valid`];
             if (!valid) {
+                toast.error(() => <div><h2 className="text-xl text-white">Error</h2><br />You did not fill the required fields for all images. Please fix this!</div>, {
+                    autoClose: false
+                });
+                this.setState({ submit_in_process: false });
                 return;
             }
         }
@@ -154,8 +173,6 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
         // Handle uploads
         for (const index of range) {
-            console.log(index);
-            console.log(this.context.client.profileRoomId);
             const title = `${index}_title`;
             const description = `${index}_description`;
             const tags = `${index}_tags`;
@@ -164,6 +181,10 @@ class MainSubmissionForm extends PureComponent<Props, State> {
             const file = this.props.files[index];
 
             if (!this.context.client.profileRoomId) {
+                toast.error(() => <div><h2 className="text-xl text-white">Error</h2><br />Unable to find your profile Room. Please log in again!</div>, {
+                    autoClose: false
+                });
+                this.setState({ submit_in_process: false });
                 return;
             }
 
@@ -207,6 +228,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         const token = await this.context.client.getOpenidToken();
         await fetch("/api/submitSearch", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, docs: posts_for_search }) });
         await this.props.router.replace("/");
+        this.setState({ submit_in_process: false });
     }
 
     // THis is aken from matrix-react-sdk commit efa1667d7e9de9e429a72396a5105d0219006db2
@@ -292,7 +314,6 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                     file.type
                 );
                 if (!thumbnail_data) {
-                    // TODO this causes issues
                     continue;
                 }
 
@@ -353,6 +374,15 @@ class MainSubmissionForm extends PureComponent<Props, State> {
     }
 
     render() {
+        if (this.state.submit_in_process) {
+            return (
+                <main className="max-h-full max-w-full lg:pt-20 pt-56">
+                    <div className="mx-auto w-full">
+                        <div className="loader">Loading...</div>
+                    </div>
+                </main>
+            );
+        }
         return (
             <main className='min-h-full max-w-full flex flex-col justify-start items-center lg:pt-20 pt-52 z-0 bottom-0 relative mb-8'>
                 <section className="flex flex-col items-start mb-4">

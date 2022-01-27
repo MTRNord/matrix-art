@@ -113,8 +113,8 @@ class Login extends PureComponent<Props, State> {
                                     <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Log In</h1>
                                 </div>
                             </div>
-                            <div className="m-0 w-full">
-                                <div className="loader fixed top-[50%] left-[50%] transform translate-x-[-50%] translate-y-[-50%]">Loading...</div>
+                            <div className="mx-auto w-full">
+                                <div className="loader">Loading...</div>
                             </div>
                         </main>
                         <Footer></Footer>
