@@ -18,7 +18,7 @@ jobs:
       - name: Checkout Actions Repository
         uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
 
-      - name: Check spelling of proposals
+      - name: Check spelling
         uses: crate-ci/typos@4b2e66487c0d94e0f0ab1765a9e74bfed663aa1e # master
         with:
           config: ${{github.workspace}}/_typos.toml
