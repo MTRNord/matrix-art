@@ -428,9 +428,11 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         if (this.state[title] && this.state[license] && this.state[description] && this.state[nsfw]) {
             validated = true;
         }
-        this.setState({
-            [`${this.state.currentFileIndex}_valid`]: validated
-        } as State);
+        if (this.state[`${this.state.currentFileIndex}_valid`] !== validated) {
+            this.setState({
+                [`${this.state.currentFileIndex}_valid`]: validated
+            } as State);
+        }
     }
 
     handleInputChange(event: { target: any; }) {
