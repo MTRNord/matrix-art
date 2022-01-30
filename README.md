@@ -5,6 +5,8 @@
 
 Matrix Art is an experimental Devianart Fediverse version which tries to be close to Devianart.
 
+![Screenshot](.github/images/screenshot.png)
+
 ## Concept (roughly)
 
 https://scythe-pink-090.notion.site/Art-MX-Fediverse-Devianart-148d45b596e74582acff518baadd3026
@@ -17,11 +19,19 @@ https://art.midnightthoughts.space/
 
 ### Prerequisites 
 
+- Nodejs
 - A Matrix Server with public registration
 - A Matrix Server with guests enabled
 - A Matrix Server with dynamic thumbnails
+- A Meillisearch server (See https://meilisearch.com for more information)
 
 ### Steps
 
-1. Either copy the `.env.local.example` to `.env.local` or set the `NEXT_PUBLIC_DEFAULT_SERVER_URL` variable.
+1. Copy the `.env.local.example` to `.env.local` or set the `NEXT_PUBLIC_DEFAULT_SERVER_URL` variable.
 2. Run `npm run dev` or build and run the Dockerimage
+
+## Translations
+
+Translations can be contributed via https://trans.nordgedanken.dev/projects/matrix-art/matrix-art/
+
+![Übersetzungsstatus](https://trans.nordgedanken.dev/widgets/matrix-art/-/matrix-art/multi-auto.svg)
