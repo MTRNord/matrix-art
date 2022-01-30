@@ -4,14 +4,17 @@ import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
 import { PureComponent } from "react";
 import { ClientContext } from "../../components/ClientContext";
+import { EditIcon } from "../../components/editIcon";
 import Footer from "../../components/Footer";
 import FrontPageImage from "../../components/FrontPageImage";
 import Header from "../../components/Header";
+import { UploadIcon } from "../../components/uploadIcon";
 import { BannerEvent, MatrixArtProfile, MatrixEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import { constMatrixArtServer } from "../../helpers/matrix_client";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
+    mxid: string;
 };
 
 type State = {
@@ -19,9 +22,12 @@ type State = {
     avatar_url: string;
     events: MatrixEvent[] | [];
     profile_event?: MatrixArtProfile;
-    error?: any;
+    error?: string;
     isLoadingImages: boolean;
     hasFullyLoaded: boolean;
+    isLoggedInUser: boolean;
+    editingUsername: boolean;
+    editingAbout: boolean;
 };
 
 class Profile extends PureComponent<Props, State> {
@@ -32,7 +38,13 @@ class Profile extends PureComponent<Props, State> {
 
         this.state = {
             displayname: this.props.mxid,
-            events: []
+            avatar_url: "",
+            events: [],
+            isLoadingImages: false,
+            hasFullyLoaded: false,
+            isLoggedInUser: false,
+            editingUsername: false,
+            editingAbout: false,
         } as State;
     }
 
@@ -64,6 +76,9 @@ class Profile extends PureComponent<Props, State> {
             }
             await this.loadEvents();
         }
+        this.setState({
+            isLoggedInUser: this.props.mxid === this.context.client.userId && !this.context.client.isGuest
+        });
     }
 
     async registerAsGuest() {
@@ -132,9 +147,42 @@ class Profile extends PureComponent<Props, State> {
         );
     }
 
+    handleUsernameInputChange(event: { target: any; }) {
+        this.setState({
+            displayname: event.target.value
+        });
+    }
+
+    async onClickEditUsername() {
+        if (!this.state.editingUsername) {
+            this.setState({
+                editingUsername: true
+            });
+        } else {
+            await this.context.client.setDisplayname(this.state.displayname);
+            this.setState({
+                editingUsername: false
+            });
+        }
+
+    }
+
+    async handleAvatarUpload(event: { target: { files: FileList | null; }; }) {
+        const files = event.target.files;
+        if (!files) {
+            return;
+        }
+        const file = files[0];
+        const mxc = await this.context.client.uploadFile(file);
+        await this.context.client.setAvatarUrl(mxc);
+        this.setState({
+            avatar_url: mxc,
+        });
+    }
+
     render() {
         const { mxid } = this.props;
-        const { events, profile_event, avatar_url, displayname } = this.state;
+        const { events, profile_event, avatar_url, displayname, isLoggedInUser, editingUsername } = this.state;
         if (!mxid || !mxid?.startsWith("@")) {
             return this.renderNotFound();
         }
@@ -153,11 +201,6 @@ class Profile extends PureComponent<Props, State> {
                 </Head>
                 <Header></Header>
                 <main className='w-full mb-auto lg:pt-20 pt-56 z-0 bg-[#f8f8f8] dark:bg-[#06070D]'>
-                    {/*{banner_event ? <div style={{
-                        backgroundImage: `url(${this.context.client.downloadLink((banner_event as BannerEvent).content["m.file"].url)})`
-                    }}
-                        className="fixed top-14 w-full h-[32.5rem] bg-cover lg:bg-[position:50%]"
-                    ></div> : undefined}*/}
                     {banner_event ? <div style={{
                         backgroundImage: `url(${this.context.client.thumbnailLink((banner_event as BannerEvent).content["m.file"].url, "scale", (banner_event as BannerEvent).content["m.image"].width - 1, (banner_event as BannerEvent).content["m.image"].height - 1)})`
                     }}
@@ -172,11 +215,32 @@ class Profile extends PureComponent<Props, State> {
                                         <span>
                                             <div className="block relative">
                                                 {/* TODO fallback*/}
-                                                <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
+                                                {
+                                                    isLoggedInUser ?
+                                                        (
+                                                            avatar_url ? (
+                                                                <>
+                                                                    <label htmlFor="avatar-upload" className="rounded-md flex justify-center items-center cursor-pointer" style={{ height: "100px", width: "100px" }}>
+                                                                        <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
+                                                                        <div className="min-h-[48px] min-w-[48px] absolute left-[20%] rounded-full bg-slate-700/40 p-1 flex justify-center items-center"><EditIcon /></div>
+                                                                    </label>
+                                                                    <input className="hidden" id="avatar-upload" type="file" accept="image/*" onChange={this.handleAvatarUpload.bind(this)} />
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <label htmlFor="avatar-upload" className="rounded-md bg-slate-500 flex justify-center items-center cursor-pointer" style={{ height: "100px", width: "100px" }}>
+                                                                        <UploadIcon />
+                                                                    </label>
+                                                                    <input className="hidden" id="avatar-upload" type="file" accept="image/*" onChange={this.handleAvatarUpload.bind(this)} />
+                                                                </>
+                                                            )
+                                                        )
+                                                        : <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
+                                                }
                                             </div>
                                         </span>
                                         <div className="ml-5 flex flex-col justify-center">
-                                            <h1 className="font-extrabold text-3xl lg:text-5xl text-gray-200 mt-[-1rem] flex items-end">{displayname}</h1>
+                                            <h1 className="font-extrabold text-3xl lg:text-5xl text-gray-200 mt-[-1rem] flex items-center gap-1">{editingUsername ? <input onChange={this.handleUsernameInputChange.bind(this)} className="placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" type="text" placeholder="Set a displayname" value={displayname}></input> : <span>{displayname}</span>}{isLoggedInUser ? <EditIcon className="cursor-pointer" onClick={this.onClickEditUsername.bind(this)} /> : undefined}</h1>
                                         </div>
                                     </div>
                                 </div>

@@ -32,7 +32,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
 
     static propTypes = {
         event: PropTypes.object,
-        imageHeight: PropTypes.number,
+        imageHeight: PropTypes.string,
         show_nsfw: PropTypes.bool
     };
 

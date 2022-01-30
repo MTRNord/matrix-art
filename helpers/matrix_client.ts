@@ -185,6 +185,42 @@ export default class MatrixClient {
         });
     }
 
+    async setDisplayname(newDisplayname: string) {
+        const data = await this.fetchJson(
+            `${this.serverUrl}/r0/profile/${encodeURIComponent(this.userId!)}/displayname`,
+            {
+                method: "PUT",
+                body: JSON.stringify({ displayname: newDisplayname }),
+                headers: { Authorization: `Bearer ${this.accessToken}` },
+            }
+        );
+        if (this.userProfileCache.has(this.userId!)) {
+            const old = this.userProfileCache.get(this.userId!);
+            old.displayname = newDisplayname;
+            this.userProfileCache.set(this.userId!, old);
+        } else {
+            await this.getProfile(this.userId!);
+        }
+    }
+
+    async setAvatarUrl(newAvatarUrl: string) {
+        const data = await this.fetchJson(
+            `${this.serverUrl}/r0/profile/${encodeURIComponent(this.userId!)}/avatar_url`,
+            {
+                method: "PUT",
+                body: JSON.stringify({ avatar_url: newAvatarUrl }),
+                headers: { Authorization: `Bearer ${this.accessToken}` },
+            }
+        );
+        if (this.userProfileCache.has(this.userId!)) {
+            const old = this.userProfileCache.get(this.userId!);
+            old.avatar_url = newAvatarUrl;
+            this.userProfileCache.set(this.userId!, old);
+        } else {
+            await this.getProfile(this.userId!);
+        }
+    }
+
     async getProfile(userId: string) {
         if (this.userProfileCache.has(userId)) {
             console.debug(`Returning cached copy of ${userId}'s profile`);
