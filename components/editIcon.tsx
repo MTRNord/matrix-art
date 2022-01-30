@@ -18,7 +18,7 @@ export class EditIcon extends PureComponent<Props, State> {
 
         this.state = {
             className: (props.className || "") + " dark:fill-white fill-black",
-            onClick: props.onClick || (() => { })
+            onClick: props.onClick || (() => {/*noop*/ })
         };
     }
     static propTypes = {
