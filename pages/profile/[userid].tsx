@@ -238,7 +238,7 @@ class Profile extends PureComponent<Props, State> {
                                                         : (avatar_url ?
                                                             <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
                                                             :
-                                                            <div className="rounded-md bg-slate-500 flex justify-center items-center"></div>
+                                                            <div className="rounded-md bg-slate-500 flex justify-center items-center" style={{ height: "100px", width: "100px" }}></div>
                                                         )
                                                 }
                                             </div>
