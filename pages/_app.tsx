@@ -6,6 +6,7 @@ import { client, ClientContext, guest_client } from '../components/ClientContext
 import React from 'react';
 import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
+import { appWithTranslation } from 'next-i18next';
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [value] = useState({
@@ -43,4 +44,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default MyApp;
+export default appWithTranslation(MyApp);

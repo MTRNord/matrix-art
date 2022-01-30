@@ -8,8 +8,10 @@ import Footer from '../components/Footer';
 import { GetServerSideProps, InferGetServerSidePropsType, } from 'next';
 import { get_data } from './api/directory';
 import { constMatrixArtServer } from '../helpers/matrix_client';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { WithTranslation } from 'next-i18next';
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps> & WithTranslation & {
 };
 
 type State = {
@@ -123,11 +125,12 @@ class Home extends PureComponent<Props, State>{
 }
 Home.contextType = ClientContext;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  context.res.setHeader(
+export const getServerSideProps: GetServerSideProps = async ({ res, locale }) => {
+  res.setHeader(
     'Cache-Control',
     'public, s-maxage=10, stale-while-revalidate=59'
   );
+  console.log(`locale: ${locale}`);
   try {
     const data = await get_data();
     if (!client?.accessToken) {
@@ -138,6 +141,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         console.error("Failed to register as guest:", error);
         return {
           props: {
+            ...(await serverSideTranslations(locale!, ['common'])),
             image_events: []
           }
         };
@@ -168,6 +172,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return {
       props: {
+        ...(await serverSideTranslations(locale!, ['common'])),
         image_events: image_events
       }
     };

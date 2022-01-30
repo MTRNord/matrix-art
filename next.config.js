@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const { i18n } = require('./next-i18next.config');
+
 const securityHeaders = [
   {
     key: 'X-DNS-Prefetch-Control',
@@ -23,6 +25,7 @@ const securityHeaders = [
 ]
 
 module.exports = {
+  i18n,
   reactStrictMode: true,
   async headers() {
     return [
