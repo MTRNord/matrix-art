@@ -1,7 +1,6 @@
 [files]
 extend-exclude = [
-    "package.json",
-    "package-lock.json",
+    "*.json",
     "*.svg",
     "localstorage/**",
     "node_modules/**",
