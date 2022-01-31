@@ -247,10 +247,6 @@ class Post extends PureComponent<Props, State> {
                     <Footer></Footer>
                 </div>
             );
-        } else if (error) {
-            return (
-                <div>Error: {error.message}</div>
-            );
         } else {
             return (
                 <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
