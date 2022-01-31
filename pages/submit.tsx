@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import { i18n } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
@@ -85,7 +86,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
     }
     componentDidUpdate(prevProps: Props, prevState: State) {
         if (this.state.error && this.state.error !== prevState.error) {
-            toast(() => <div><h2 className="text-xl text-white">Error</h2><br />{this.state.error}</div>, {
+            toast(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{this.state.error}</div>, {
                 autoClose: false
             });
         }
@@ -95,7 +96,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
         return (
             <div className='min-h-full flex flex-col bg-[#f8f8f8] dark:bg-[#06070D]'>
                 <Head>
-                    <title key="title">Matrix Art | Submit Post</title>
+                    <title key="title">Matrix Art | {i18n?.t("Submit Post")}</title>
                     <meta property="og:title" content="Matrix Art | Submit Post" key="og-title" />
                     <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                     <meta name="twitter:title" content="Matrix Art | Submit Post" key="og-twitter-title" />
@@ -104,7 +105,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
                 <Header></Header>
                 <div className='z-[100] sticky lg:top-[4.9rem] top-[12.5rem] bg-[#fefefe]/[.95] dark:bg-[#12161D]'>
                     <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
-                        <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Submit Image</h1>
+                        <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>{i18n?.t("Submit Image")}</h1>
                     </div>
                 </div>
                 {this.renderStage()}

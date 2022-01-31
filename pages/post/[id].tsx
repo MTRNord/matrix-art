@@ -19,6 +19,7 @@ import Footer from '../../components/Footer';
 import { Blurhash } from 'react-blurhash';
 import User from '../../helpers/db/Users';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { i18n } from 'next-i18next';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
@@ -170,7 +171,7 @@ class Post extends PureComponent<Props, State> {
             return (
                 <div className='min-h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
                     <Head>
-                        <title key="title">Matrix Art | Post not Found</title>
+                        <title key="title">Matrix Art | {i18n?.t("Post not Found")}</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
                         <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                         <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
@@ -179,7 +180,7 @@ class Post extends PureComponent<Props, State> {
                     <Header></Header>
                     <main className='w-full lg:pt-20 pt-52 z-0'>
                         <div className="m-0 w-full">
-                            <div className="loader">Loading...</div>
+                            <div className="loader">{i18n?.t("Loading")}...</div>
                         </div>
                     </main>
                 </div>
@@ -190,7 +191,7 @@ class Post extends PureComponent<Props, State> {
             return (
                 <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
-                        <title key="title">Matrix Art | Post not Found</title>
+                        <title key="title">Matrix Art | {i18n?.t("Post not Found")}</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
                         <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                         <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
@@ -198,7 +199,7 @@ class Post extends PureComponent<Props, State> {
                     </Head>
                     <Header></Header>
                     <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
-                        <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The Post you wanted does not exist!</h1>
+                        <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The Post you wanted does not exist!")}</h1>
                     </main>
                     <Footer></Footer>
                 </div>
@@ -238,7 +239,7 @@ class Post extends PureComponent<Props, State> {
                                     {avatar_url ? <span className="block object-cover rounded-full mr-4"> <img className="object-cover rounded-full" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> </span> : undefined}
                                     <Link href={"/profile/" + encodeURIComponent(image_event.sender)} passHref><span className='hover:text-teal-400'>{displayname}</span></Link>
                                 </h3>
-                                {isImageEvent(image_event) ? (image_event.content['matrixart.license'] ? <h3 className='cursor-pointer mt-0 mb-4 text-l text-gray-600 dark:text-gray-400 font-normal'>License: <a href={this.getLicenseUrl(image_event.content['matrixart.license'])} title={this.getLicenseName(image_event.content['matrixart.license'])}>{this.getLicenseName(image_event.content['matrixart.license'])}</a></h3> : undefined) : undefined}
+                                {isImageEvent(image_event) ? (image_event.content['matrixart.license'] ? <h3 className='cursor-pointer mt-0 mb-4 text-l text-gray-600 dark:text-gray-400 font-normal'>{i18n?.t("License: {{license_link}}", { license_link: <a href={this.getLicenseUrl(image_event.content['matrixart.license'])} title={this.getLicenseName(image_event.content['matrixart.license'])}>{this.getLicenseName(image_event.content['matrixart.license'])}</a> })}</h3> : undefined) : undefined}
                                 {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : (isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>)}
                             </div>
                         </div>
@@ -254,7 +255,7 @@ class Post extends PureComponent<Props, State> {
             return (
                 <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                     <Head>
-                        <title key="title">Matrix Art | Post not Found</title>
+                        <title key="title">Matrix Art | {i18n?.t("Post not Found")}</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
                         <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                         <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
@@ -262,7 +263,7 @@ class Post extends PureComponent<Props, State> {
                     </Head>
                     <Header></Header>
                     <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
-                        <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The Post you wanted does not exist!</h1>
+                        <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The Post you wanted does not exist!")}</h1>
                     </main>
                     <Footer></Footer>
                 </div>

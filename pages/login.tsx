@@ -1,4 +1,5 @@
 import { GetServerSideProps } from "next";
+import { i18n } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
@@ -104,7 +105,7 @@ class Login extends PureComponent<Props, State> {
                 <>
                     <div className='min-h-full bg-[#f8f8f8] dark:bg-[#06070D]'>
                         <Head>
-                            <title key="title">Matrix Art | Login</title>
+                            <title key="title">Matrix Art | {i18n?.t("Login")}</title>
                             <meta property="og:title" content="Matrix Art | Login" key="og-title" />
                             <meta property="og:type" content="website" key="og-type" />
                         </Head>
@@ -112,11 +113,11 @@ class Login extends PureComponent<Props, State> {
                         <main className="min-h-full lg:pt-20 pt-56">
                             <div className='z-[100] sticky lg:top-20 top-56 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
                                 <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
-                                    <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Log In</h1>
+                                    <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>{i18n?.t("Log In")}</h1>
                                 </div>
                             </div>
                             <div className="mx-auto w-full">
-                                <div className="loader">Loading...</div>
+                                <div className="loader">{i18n?.t("Loading")}...</div>
                             </div>
                         </main>
                         <Footer></Footer>
@@ -129,7 +130,7 @@ class Login extends PureComponent<Props, State> {
             <>
                 <div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
                     <Head>
-                        <title key="title">Matrix Art | Login</title>
+                        <title key="title">Matrix Art | {i18n?.t("Login")}</title>
                         <meta property="og:title" content="Matrix Art | Login" key="og-title" />
                         <meta property="og:type" content="website" key="og-type" />
                     </Head>
@@ -138,7 +139,7 @@ class Login extends PureComponent<Props, State> {
                     <main className='mb-auto lg:pt-20 pt-56'>
                         <div className='z-[100] sticky lg:top-20 top-56 bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
                             <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
-                                <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Log In</h1>
+                                <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>{i18n?.t("Log In")}</h1>
                             </div>
                         </div>
                         <div className="flex items-center justify-center m-10">
@@ -147,9 +148,9 @@ class Login extends PureComponent<Props, State> {
                                     <div className="mt-2 flex justify-between items-center">
                                         <label className="inline-flex items-center">
                                             <input className="cursor-pointer h-4 w-4" type="checkbox" name="showServerField" checked={showServerField} onChange={this.handleInputChange} />
-                                            <span className="ml-2 text-gray-700 dark:text-gray-400">Use custom Server</span>
+                                            <span className="ml-2 text-gray-700 dark:text-gray-400">{i18n?.t("Use custom Server")}</span>
                                         </label>
-                                        <Link href="/resetPassword"><a className="text-gray-900 dark:text-gray-200 hover:text-teal-400">Forgot Password</a></Link>
+                                        <Link href="/resetPassword"><a className="text-gray-900 dark:text-gray-200 hover:text-teal-400">{i18n?.t("Forgot Password")}</a></Link>
                                     </div>
                                 </div>
 
@@ -158,22 +159,22 @@ class Login extends PureComponent<Props, State> {
                                     opacity: showServerField ? 1 : 0,
                                     display: showServerField ? 'block' : 'none'
                                 }} id="homeserverField">
-                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">Homeserver:</span>
+                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">{i18n?.t("Homeserver:")}</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text">
-                                        <input placeholder="Homeserver" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-9000" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
+                                        <input placeholder={i18n?.t("Homeserver")} className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-9000" type="text" name="serverUrl" value={serverUrl} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 
                                 <label className="block">
-                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">Username:</span>
+                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">{i18n?.t("Username:")}</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300">
-                                        <input placeholder="Username" autoComplete="username" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-900" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
+                                        <input placeholder={i18n?.t("Username")} autoComplete="username" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-900" type="text" name="mxid" value={mxid} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
                                 <label className="block">
-                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">Password:</span>
+                                    <span className="text-gray-900 dark:text-gray-200 visually-hidden">{i18n?.t("Password:")}</span>
                                     <div className="mt-1 w-full flex flex-row box-border items-center cursor-text duration-300">
-                                        <input placeholder="Password" autoComplete="current-password" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-900" type="password" name="password" value={password} onChange={this.handleInputChange} />
+                                        <input placeholder={i18n?.t("Password")} autoComplete="current-password" className="rounded py-1.5 px-2 min-w-[1.25rem] flex-[1] border-none placeholder:text-gray-900 text-gray-900" type="password" name="password" value={password} onChange={this.handleInputChange} />
                                     </div>
                                 </label>
 
@@ -181,7 +182,7 @@ class Login extends PureComponent<Props, State> {
                                     <div className="mt-2 flex justify-between items-center">
                                         <label className="inline-flex items-center">
                                             <input className="cursor-pointer h-4 w-4" type="checkbox" name="generateProfile" checked={generateProfile} onChange={this.handleInputChange} />
-                                            <span className="ml-2 text-gray-700 dark:text-gray-400">Create a full profile? (Cant be done later currently. This is WIP)</span>
+                                            <span className="ml-2 text-gray-700 dark:text-gray-400">{i18n?.t("Create a full profile? (Cant be done later currently. This is WIP)")}</span>
                                         </label>
                                     </div>
                                 </div>

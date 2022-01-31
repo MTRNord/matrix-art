@@ -1,4 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { i18n } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
@@ -134,7 +135,7 @@ class Profile extends PureComponent<Props, State> {
         return (
             <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
                 <Head>
-                    <title key="title">Matrix Art | User not Found</title>
+                    <title key="title">Matrix Art | {i18n?.t("User not Found")}</title>
                     <meta property="og:title" content="Matrix Art | User not Found" key="og-title" />
                     <meta name="twitter:card" content="summary_large_image" key="og-twitter" />
                     <meta name="twitter:title" content="Matrix Art | User not Found" key="og-twitter-title" />
@@ -142,7 +143,7 @@ class Profile extends PureComponent<Props, State> {
                 </Head>
                 <Header></Header>
                 <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
-                    <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">The User you wanted does not exist!</h1>
+                    <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The User you wanted does not exist!")}</h1>
                 </main>
             </div>
         );
@@ -245,7 +246,7 @@ class Profile extends PureComponent<Props, State> {
                                             </div>
                                         </span>
                                         <div className="ml-5 flex flex-col justify-center">
-                                            <h1 className="font-extrabold text-3xl lg:text-5xl text-gray-200 mt-[-1rem] flex items-center gap-1">{editingUsername ? <input onChange={this.handleUsernameInputChange.bind(this)} className="placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" type="text" placeholder="Set a displayname" value={displayname}></input> : <span>{displayname}</span>}{isLoggedInUser ? <EditIcon className="cursor-pointer" onClick={this.onClickEditUsername.bind(this)} /> : undefined}</h1>
+                                            <h1 className="font-extrabold text-3xl lg:text-5xl text-gray-200 mt-[-1rem] flex items-center gap-1">{editingUsername ? <input onChange={this.handleUsernameInputChange.bind(this)} className="placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" type="text" placeholder={i18n?.t("Set a displayname")} value={displayname}></input> : <span>{displayname}</span>}{isLoggedInUser ? <EditIcon className="cursor-pointer" onClick={this.onClickEditUsername.bind(this)} /> : undefined}</h1>
                                         </div>
                                     </div>
                                 </div>
@@ -254,15 +255,15 @@ class Profile extends PureComponent<Props, State> {
                                         <nav className="w-full h-14 box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D] overflow-scroll lg:overflow-hidden">
                                             <span id="magic-spacer"></span>
                                             <div className="flex items-center w-full h-full overflow-hidden whitespace-nowrap box-border min-w-fit">
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Home</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>Gallery</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>About</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>{i18n?.t("Home")}</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>{i18n?.t("Gallery")}</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>{i18n?.t("About")}</a></Link>
                                             </div>
                                             <div className="pr-4">
                                                 {/*TODO Share menu here*/}
                                             </div>
                                             <div>
-                                                <button id="reflection" className="min-w-[7.75rem] h-14 min-h-[2.5rem] box-border m-0 shadow-none rounded-none relative overflow-hidden z-0 border-none outline-none px-5 flex items-center justify-center cursor-pointer bg-teal-400 text-gray-900 text-sm font-bold">Follow</button>
+                                                <button id="reflection" className="min-w-[7.75rem] h-14 min-h-[2.5rem] box-border m-0 shadow-none rounded-none relative overflow-hidden z-0 border-none outline-none px-5 flex items-center justify-center cursor-pointer bg-teal-400 text-gray-900 text-sm font-bold">{i18n?.t("Follow")}</button>
                                             </div>
                                         </nav>
                                     </div>
@@ -274,7 +275,7 @@ class Profile extends PureComponent<Props, State> {
                                                 <div>
                                                     <section className="pb-4 block">
                                                         <div className="w-full flex items-center mt-8 mb-4">
-                                                            <h2 className="font-bold text-lg tracking-[.3px] leading-[1.22] text-gray-900 dark:text-gray-200">Gallery</h2>
+                                                            <h2 className="font-bold text-lg tracking-[.3px] leading-[1.22] text-gray-900 dark:text-gray-200">{i18n?.t("Gallery")}</h2>
                                                             <div className="ml-4 flex flex-[1] items-center relative justify-end">
                                                                 <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>See All</a></Link>
                                                             </div>
@@ -291,9 +292,9 @@ class Profile extends PureComponent<Props, State> {
                                                 <div>
                                                     <section className="pb-4 block">
                                                         <div className="w-full flex items-center mt-8 mb-4">
-                                                            <h2 className="font-bold text-gray-900 dark:text-gray-200 text-lg tracking--[.3px] leading-[1.22] max-w-[90%] mr-auto overflow-hidden text-ellipsis whitespace-nowrap">{`About ${displayname}`}</h2>
+                                                            <h2 className="font-bold text-gray-900 dark:text-gray-200 text-lg tracking--[.3px] leading-[1.22] max-w-[90%] mr-auto overflow-hidden text-ellipsis whitespace-nowrap">{i18n?.t("About {{displayname}}", { displayname: displayname })}</h2>
                                                             <div className="ml-4 flex flex-[1] items-center relative justify-end">
-                                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>More</a></Link>
+                                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>{i18n?.t("More")}</a></Link>
                                                             </div>
                                                         </div>
                                                         <div className="bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95] pt-7 w-ull flex flex-col box-border tracking--[.3px] text-gray-900 dark:text-gray-200">
@@ -304,19 +305,19 @@ class Profile extends PureComponent<Props, State> {
                                                             </div> : undefined}
                                                             {profile_event?.content["matrixart.profile.pronouns"] ? <div className="px-8">
                                                                 <div className="mb-8 flex items-start justify-between flex-wrap w-full">
-                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">Pronouns</div>
+                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("Pronouns")}</div>
                                                                     <div className="w-full justify-items-end">{profile_event ? profile_event.content["matrixart.profile.pronouns"] : undefined}</div>
                                                                 </div>
                                                             </div> : undefined}
                                                             {profile_event?.content["matrixart.profile.links"] ? <div className="px-8">
                                                                 <div className="mb-8 flex items-start justify-between flex-wrap w-full">
-                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">Follow me on</div>
+                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("Follow me on")}</div>
                                                                     <div className="w-full max-w-[21.5rem] grid gap-4 auto-cols-[2.75rem] auto-rows-[2.75rem] grid-flow-col justify-items-end">{/*TODO Social Icons */}</div>
                                                                 </div>
                                                             </div> : undefined}
                                                             {profile_event?.content["matrixart.profile.biography"] ? <div className="px-8">
                                                                 <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
-                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">My Bio</div>
+                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("My Bio")}</div>
                                                                     <div className="text-base font-regular">{profile_event ? profile_event.content["matrixart.profile.biography"] : undefined}</div>
                                                                 </div>
                                                             </div> : undefined}

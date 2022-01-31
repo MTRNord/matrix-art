@@ -1,6 +1,7 @@
 import { PureComponent } from "react";
 import Dropzone, { FileRejection } from "react-dropzone";
 import PropTypes from 'prop-types';
+import { i18n } from "next-i18next";
 
 export interface DropCallbacks {
     onDrop: (files: File[]) => void;
@@ -24,7 +25,7 @@ export class StartSubmit extends PureComponent<Props> {
                             <section className="flex flex-col">
                                 <div className="dark:bg-[#fefefe]/[.25] bg-[#14181E]/[.25] min-h-[11.5rem] min-w-[39.5rem] flex-[1] flex flex-col items-center justify-center p-5 border-2 rounded-sm border-[#eeeeee] border-dashed outline-none hover:border-[#2196f3] duration-[24ms] transition" {...getRootProps()}>
                                     <input {...getInputProps()} />
-                                    <p className="text-base text-gray-900 dark:text-gray-200">Drag &apos;n&apos; drop some images here, or click to select images</p>
+                                    <p className="text-base text-gray-900 dark:text-gray-200">{i18n?.t("Drag 'n' drop some images here, or click to select images")}</p>
                                 </div>
                             </section>
                         )}

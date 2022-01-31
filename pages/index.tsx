@@ -9,7 +9,7 @@ import { GetServerSideProps, InferGetServerSidePropsType, } from 'next';
 import { get_data } from './api/directory';
 import { constMatrixArtServer } from '../helpers/matrix_client';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { WithTranslation } from 'next-i18next';
+import { i18n, WithTranslation } from 'next-i18next';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & WithTranslation & {
 };
@@ -97,7 +97,7 @@ class Home extends PureComponent<Props, State>{
     return (
       <div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
         <Head>
-          <title key="title">Matrix Art | Home</title>
+          <title key="title">Matrix Art | {i18n?.t("Home")}</title>
           <meta property="og:title" content="Matrix Art | Home" key="og-title" />
           <meta property="og:type" content="website" key="og-type" />
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }} />
@@ -107,7 +107,7 @@ class Home extends PureComponent<Props, State>{
         <main className='mb-auto lg:pt-20 pt-52 z-0'>
           <div className='z-[100] sticky lg:top-20 top-[12.5rem] bg-[#fefefe]/[.95] dark:bg-[#12161D]'>
             <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
-              <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>Home</h1>
+              <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>{i18n?.t("Home")}</h1>
             </div>
           </div>
           <div className='m-10'>

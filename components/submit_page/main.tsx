@@ -12,6 +12,7 @@ import { ImageEventContent, ThumbnailData } from "../../helpers/event_types";
 import { toast } from "react-toastify";
 // @ts-ignore This has no types
 import extractPngChunks from "png-chunks-extract";
+import { i18n } from "next-i18next";
 
 type ThumbnailableElement = HTMLImageElement | HTMLVideoElement;
 type ThumbnailTransmissionData = {
@@ -150,7 +151,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
 
         if (this.context.client.isGuest) {
-            toast.error(() => <div><h2 className="text-xl text-white">Error</h2><br />You are not logged in!</div>, {
+            toast.error(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{i18n?.t("You are not logged in!")}</div>, {
                 autoClose: false
             });
             this.setState({ submit_in_process: false });
@@ -161,7 +162,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         for (const index of range) {
             const valid = this.state[`${index}_valid`];
             if (!valid) {
-                toast.error(() => <div><h2 className="text-xl text-white">Error</h2><br />You did not fill the required fields for all images. Please fix this!</div>, {
+                toast.error(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{i18n?.t("You did not fill the required fields for all images. Please fix this!")}</div>, {
                     autoClose: false
                 });
                 this.setState({ submit_in_process: false });
@@ -184,7 +185,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
             const file = this.props.files[index];
 
             if (!this.context.client.profileRoomId) {
-                toast.error(() => <div><h2 className="text-xl text-white">Error</h2><br />Unable to find your profile Room. Please log in again!</div>, {
+                toast.error(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{i18n?.t("Unable to find your profile Room. Please log in again!")}</div>, {
                     autoClose: false
                 });
                 this.setState({ submit_in_process: false });
@@ -450,7 +451,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
             return (
                 <main className="max-h-full max-w-full lg:pt-20 pt-56">
                     <div className="mx-auto w-full">
-                        <div className="loader">Loading...</div>
+                        <div className="loader">{i18n?.t('Loading')}...</div>
                     </div>
                 </main>
             );
@@ -464,30 +465,30 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                     <div className="flex flex-row w-full mb-4">
                         <form className="flex flex-col w-full">
                             <label className="inner-flex flex-col">
-                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Image Title</span>
-                                <input required name="title" value={this.state[`${this.state.currentFileIndex}_title`] || ""} type="text" placeholder="Set an image title" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
+                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t('Image Title')}</span>
+                                <input required name="title" value={this.state[`${this.state.currentFileIndex}_title`] || ""} type="text" placeholder={i18n?.t("Set an image title")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
-                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Description</span>
-                                <textarea name="description" value={this.state[`${this.state.currentFileIndex}_description`] || ""} placeholder="Description Text of the current image" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
+                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("Description")}</span>
+                                <textarea name="description" value={this.state[`${this.state.currentFileIndex}_description`] || ""} placeholder={i18n?.t("Description Text of the current image")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
-                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Image Tags</span>
-                                <input name="tags" type="text" value={this.state[`${this.state.currentFileIndex}_tags`] || ""} placeholder="Enter tags (Separate with a comma)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
+                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("Image Tags")}</span>
+                                <input name="tags" type="text" value={this.state[`${this.state.currentFileIndex}_tags`] || ""} placeholder={i18n?.t("Enter tags (Separate with a comma)")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
-                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">License</span>
-                                <select defaultValue="" required name="license" value={this.state[`${this.state.currentFileIndex}_license`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
-                                    <option value="" disabled>Select an Creative Commons License</option>
+                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("License")}</span>
+                                <select defaultValue="" required name="license" value={this.state[`${this.state.currentFileIndex}_license`] || ""} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
+                                    <option value="" disabled>{i18n?.t("Select an Creative Commons License")}</option>
                                     <option value="cc-by-4.0">Attribution 4.0 International (CC BY 4.0)</option>
                                     <option value="cc-by-sa-4.0">Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</option>
                                     <option value="cc-by-nc-4.0">Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)</option>
@@ -501,11 +502,11 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
-                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">Mature/NSFW Content?</span>
-                                <select defaultValue="" required name="nsfw" value={this.state[`${this.state.currentFileIndex}_nsfw`] || ""} placeholder="Enter tags (Confirm by pressing enter)" className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
-                                    <option value="" disabled>Select Yes or No</option>
-                                    <option value="no">No</option>
-                                    <option value="yes">Yes</option>
+                                <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("Mature/NSFW Content?")}</span>
+                                <select defaultValue="" required name="nsfw" value={this.state[`${this.state.currentFileIndex}_nsfw`] || ""} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
+                                    <option value="" disabled>{i18n?.t("Select Yes or No")}</option>
+                                    <option value="no">{i18n?.t("No")}</option>
+                                    <option value="yes">{i18n?.t("Yes")}</option>
                                 </select>
                             </label>
                         </form>
@@ -513,11 +514,11 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                     <div className="flex justify-between w-full flex-row-reverse">
                         {
                             this.state.hasSubmit ?
-                                <button className="text-base text-gray-900 dark:text-gray-200" onClick={this.handleSubmit.bind(this)}>Submit Posts</button>
+                                <button className="text-base text-gray-900 dark:text-gray-200" onClick={this.handleSubmit.bind(this)}>{i18n?.t("Submit Posts")}</button>
                                 :
-                                <button className="text-base text-gray-900 dark:text-gray-200" onClick={this.onNext.bind(this)}>Next Image</button>
+                                <button className="text-base text-gray-900 dark:text-gray-200" onClick={this.onNext.bind(this)}>{i18n?.t("Next Image")}</button>
                         }
-                        {this.state.hasBack ? <button className="text-base text-gray-900 dark:text-gray-200" onClick={this.onPrev.bind(this)}>Prev Image</button> : undefined}
+                        {this.state.hasBack ? <button className="text-base text-gray-900 dark:text-gray-200" onClick={this.onPrev.bind(this)}>{i18n?.t("Previous Image")}</button> : undefined}
                     </div>
                 </section>
                 {/* Warning for further readers. This css is easy to explode. Reasons are unknown. Dont touch it unless you know the fix! */}
