@@ -222,9 +222,9 @@ class Profile extends PureComponent<Props, State> {
                                                         (
                                                             avatar_url ? (
                                                                 <>
-                                                                    <label htmlFor="avatar-upload" className="rounded-md flex justify-center items-center cursor-pointer hover:grayscale" style={{ height: "100px", width: "100px" }}>
+                                                                    <label htmlFor="avatar-upload" className="rounded-md flex justify-center items-center cursor-pointer grayscale-0 hover:grayscale transition-all ease-in-out duration-300" style={{ height: "100px", width: "100px" }}>
                                                                         <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
-                                                                        <div className="min-h-[48px] min-w-[48px] absolute left-[20%] rounded-full bg-slate-700/40 p-1 flex justify-center items-center"><EditIcon /></div>
+                                                                        <div className="min-h-[48px] min-w-[48px] absolute left-[20%] rounded-full bg-slate-700/40 p-1 flex justify-center items-center"><EditIcon className="invert-0 duration-300 transition-all ease-in-out hover:invert" /></div>
                                                                     </label>
                                                                     <input className="hidden" id="avatar-upload" type="file" accept="image/*" onChange={this.handleAvatarUpload.bind(this)} />
                                                                 </>
@@ -255,9 +255,9 @@ class Profile extends PureComponent<Props, State> {
                                         <nav className="w-full h-14 box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D] overflow-scroll lg:overflow-hidden">
                                             <span id="magic-spacer"></span>
                                             <div className="flex items-center w-full h-full overflow-hidden whitespace-nowrap box-border min-w-fit">
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>{i18n?.t("Home")}</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>{i18n?.t("Gallery")}</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none]`}>{i18n?.t("About")}</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("Home")}</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("Gallery")}</a></Link>
+                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("About")}</a></Link>
                                             </div>
                                             <div className="pr-4">
                                                 {/*TODO Share menu here*/}
