@@ -222,7 +222,7 @@ class Profile extends PureComponent<Props, State> {
                                                         (
                                                             avatar_url ? (
                                                                 <>
-                                                                    <label htmlFor="avatar-upload" className="rounded-md flex justify-center items-center cursor-pointer" style={{ height: "100px", width: "100px" }}>
+                                                                    <label htmlFor="avatar-upload" className="rounded-md flex justify-center items-center cursor-pointer hover:grayscale" style={{ height: "100px", width: "100px" }}>
                                                                         <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
                                                                         <div className="min-h-[48px] min-w-[48px] absolute left-[20%] rounded-full bg-slate-700/40 p-1 flex justify-center items-center"><EditIcon /></div>
                                                                     </label>
