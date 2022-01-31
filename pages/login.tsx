@@ -1,3 +1,5 @@
+import { GetServerSideProps } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
@@ -196,4 +198,14 @@ class Login extends PureComponent<Props, State> {
 }
 
 Login.contextType = ClientContext;
+
+
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale || 'en', ['common'])),
+        }
+    };
+};
+
 export default withRouter(Login);

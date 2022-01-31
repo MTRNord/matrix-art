@@ -18,6 +18,7 @@ import Link from 'next/link';
 import Footer from '../../components/Footer';
 import { Blurhash } from 'react-blurhash';
 import User from '../../helpers/db/Users';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
@@ -443,8 +444,7 @@ class Post extends PureComponent<Props, State> {
 
 Post.contextType = ClientContext;
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { query, res } = context;
+export const getServerSideProps: GetServerSideProps = async ({ res, locale, query }) => {
     const event_id = decodeURIComponent(query.id as string);
 
     res.setHeader(
@@ -462,6 +462,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     console.error("Failed to register as guest:", error);
                     return {
                         props: {
+                            ...(await serverSideTranslations(locale || 'en', ['common'])),
                             directory_data: JSON.stringify(data),
                             event_id: event_id,
                             hasFullyLoaded: false,
@@ -484,6 +485,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     const profile = await client.getProfile(image_event.sender);
                     return {
                         props: {
+                            ...(await serverSideTranslations(locale || 'en', ['common'])),
                             image_event: image_event as MatrixImageEvents,
                             event_id: event_id,
                             hasFullyLoaded: true,
@@ -495,6 +497,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     console.debug(`Failed to fetch profile for user ${image_event.sender}:`, error);
                     return {
                         props: {
+                            ...(await serverSideTranslations(locale || 'en', ['common'])),
                             image_event: image_event as MatrixImageEvents,
                             event_id: event_id,
                             hasFullyLoaded: true,
@@ -504,10 +507,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 }
             }
         } catch {
-            return { notFound: true, props: {} };
+            return {
+                notFound: true, props: {
+                    ...(await serverSideTranslations(locale || 'en', ['common'])),
+                }
+            };
         }
     }
-    return { notFound: true, props: {} };
+    return {
+        notFound: true, props: {
+            ...(await serverSideTranslations(locale || 'en', ['common'])),
+        }
+    };
 
 };
 export default withRouter(Post);

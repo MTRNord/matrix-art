@@ -1,4 +1,5 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import Head from "next/head";
 import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
@@ -339,7 +340,7 @@ class Profile extends PureComponent<Props, State> {
 Profile.contextType = ClientContext;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { query, res } = context;
+    const { query, res, locale } = context;
     const mxid = decodeURIComponent(query.userid as string);
 
     res.setHeader(
@@ -350,14 +351,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         try {
             return {
                 props: {
+                    ...(await serverSideTranslations(locale || 'en', ['common'])),
                     mxid: mxid
                 }
             };
         } catch {
-            return { notFound: true, props: {} };
+            return {
+                notFound: true, props: {
+                    ...(await serverSideTranslations(locale || 'en', ['common'])),
+                }
+            };
         }
     }
-    return { notFound: true, props: {} };
+    return {
+        notFound: true, props: {
+            ...(await serverSideTranslations(locale || 'en', ['common'])),
+        }
+    };
 
 };
 
