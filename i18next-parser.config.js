@@ -1,5 +1,6 @@
 module.exports = {
-    locales: ['en', 'de'],
+    locales: ['en'],
     defaultNamespace: 'common',
-    output: 'public/locales/$LOCALE/$NAMESPACE.json'
+    output: 'public/locales/$LOCALE/$NAMESPACE.json',
+    indentation: 4
 }

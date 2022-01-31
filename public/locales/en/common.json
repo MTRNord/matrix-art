@@ -1,9 +1,12 @@
 {
-  "Search & Discover": "Search & Discover",
-  "Join": "Join",
-  "Log in": "Log in",
-  "Profile": "Profile",
-  "Logout": "Logout",
-  "Submit": "Submit",
-  "Setup Account": "Setup Account"
+    "Github": "Github",
+    "Matrix": "Matrix",
+    "Developer": "Developer",
+    "Search & Discover": "Search & Discover",
+    "Join": "Join",
+    "Log in": "Log in",
+    "Profile": "Profile",
+    "Logout": "Logout",
+    "Submit": "Submit",
+    "Setup Account": "Setup Account"
 }
