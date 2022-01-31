@@ -1,6 +1,8 @@
 [files]
 extend-exclude = [
-	"*.json", "*.svg",
+    "package.json",
+    "package-lock.json",
+    "*.svg",
     "localstorage/**",
     "node_modules/**",
     "matrix-art-db/**",
