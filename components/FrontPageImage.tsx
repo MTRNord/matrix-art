@@ -5,6 +5,8 @@ import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } fro
 import { constMatrixArtServer } from "../helpers/matrix_client";
 import { ClientContext } from "./ClientContext";
 import PropTypes from 'prop-types';
+import { toast } from "react-toastify";
+import { i18n } from "next-i18next";
 
 type Props = {
     event: MatrixImageEvents;
@@ -15,7 +17,7 @@ type Props = {
 type State = {
     displayname: string;
     imageHeight?: string;
-    error: any;
+    error?: string;
 };
 
 export default class FrontPageImage extends PureComponent<Props, State> {
@@ -35,6 +37,15 @@ export default class FrontPageImage extends PureComponent<Props, State> {
         imageHeight: PropTypes.string,
         show_nsfw: PropTypes.bool
     };
+
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        if (this.state.error && this.state.error !== prevState.error) {
+            toast.dismiss();
+            toast(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{this.state.error}</div>, {
+                autoClose: false
+            });
+        }
+    }
 
     async componentDidMount() {
         // auto-register as a guest if not logged in

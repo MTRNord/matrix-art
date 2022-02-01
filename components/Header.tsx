@@ -3,6 +3,7 @@ import { PureComponent } from "react";
 import User from "../helpers/db/Users";
 import { ClientContext } from "./ClientContext";
 import { i18n } from 'next-i18next';
+import { toast } from "react-toastify";
 
 type Props = {
 
@@ -24,6 +25,15 @@ export default class Header extends PureComponent<Props, State> {
             loading: true,
             loggedIn: false
         } as State;
+    }
+
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        if (this.state.error && this.state.error !== prevState.error) {
+            toast.dismiss();
+            toast(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{this.state.error}</div>, {
+                autoClose: false
+            });
+        }
     }
 
     async componentDidMount() {

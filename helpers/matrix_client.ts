@@ -186,7 +186,7 @@ export default class MatrixClient {
     }
 
     async setDisplayname(newDisplayname: string) {
-        const data = await this.fetchJson(
+        await this.fetchJson(
             `${this.serverUrl}/r0/profile/${encodeURIComponent(this.userId!)}/displayname`,
             {
                 method: "PUT",
@@ -204,7 +204,7 @@ export default class MatrixClient {
     }
 
     async setAvatarUrl(newAvatarUrl: string) {
-        const data = await this.fetchJson(
+        await this.fetchJson(
             `${this.serverUrl}/r0/profile/${encodeURIComponent(this.userId!)}/avatar_url`,
             {
                 method: "PUT",

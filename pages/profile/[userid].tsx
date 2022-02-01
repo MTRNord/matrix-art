@@ -5,6 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { NextRouter, withRouter } from "next/router";
 import { PureComponent } from "react";
+import { toast } from "react-toastify";
 import { ClientContext } from "../../components/ClientContext";
 import { EditIcon } from "../../components/editIcon";
 import Footer from "../../components/Footer";
@@ -48,6 +49,15 @@ class Profile extends PureComponent<Props, State> {
             editingUsername: false,
             editingAbout: false,
         } as State;
+    }
+
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        if (this.state.error && this.state.error !== prevState.error) {
+            toast.dismiss();
+            toast(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{this.state.error}</div>, {
+                autoClose: false
+            });
+        }
     }
 
     async componentDidMount() {

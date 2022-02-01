@@ -86,6 +86,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
     }
     componentDidUpdate(prevProps: Props, prevState: State) {
         if (this.state.error && this.state.error !== prevState.error) {
+            toast.dismiss();
             toast(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{this.state.error}</div>, {
                 autoClose: false
             });

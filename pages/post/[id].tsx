@@ -20,6 +20,7 @@ import { Blurhash } from 'react-blurhash';
 import User from '../../helpers/db/Users';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next';
+import { toast } from 'react-toastify';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
@@ -30,8 +31,8 @@ type State = {
     hasFullyLoaded: boolean;
     isLoadingImages: boolean;
     image_event?: MatrixImageEvents;
+    error?: string;
     displayname: string;
-    error?: any;
     avatar_url?: string;
 };
 
@@ -48,6 +49,15 @@ class Post extends PureComponent<Props, State> {
             isLoadingImages: false,
             avatar_url: props.avatar_url
         };
+    }
+
+    componentDidUpdate(prevProps: Props, prevState: State) {
+        if (this.state.error && this.state.error !== prevState.error) {
+            toast.dismiss();
+            toast(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{this.state.error}</div>, {
+                autoClose: false
+            });
+        }
     }
 
     async componentDidMount() {
@@ -165,7 +175,7 @@ class Post extends PureComponent<Props, State> {
     }
 
     render() {
-        const { error, hasFullyLoaded, image_event, displayname, avatar_url } = this.state;
+        const { hasFullyLoaded, image_event, displayname, avatar_url } = this.state;
 
         if (!hasFullyLoaded) {
             return (
