@@ -1,7 +1,7 @@
 const STORAGE_VERSION = 2;
 export default class Storage {
     private prefix;
-    private nodeLocalStorage?;
+    private nodeLocalStorage?: any;
     constructor(prefix: string) {
         this.prefix = prefix;
         if (typeof window === "undefined") {

@@ -121,7 +121,13 @@ export default class MatrixClient {
     private async fetchJson(fullUrl: string, fetchParams: any) {
         const response = await fetch(fullUrl, fetchParams);
         const data = await response.json();
-        if (!response.ok) {
+        if (response.status === 429) {
+            const retry_after: number = data.retry_after_ms;
+            return new Promise((resolve) => {
+                setTimeout(() => { resolve(this.fetchJson(fullUrl, fetchParams)); }, retry_after);
+            });
+        }
+        if (response.status !== 200) {
             if (data.errcode === "M_UNKNOWN_TOKEN") {
                 console.log("unknown token, logging user out:", data);
                 // suppressLogout so we don't recursively call fetchJson
