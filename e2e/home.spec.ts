@@ -8,7 +8,7 @@ test('test navigation to details', async ({ page }, testInfo) => {
   page.on('console', msg => console.log(msg.text()));
 
   // Go to http://localhost:3000/
-  await page.goto('http://localhost:3000/en');
+  await page.goto('http://localhost:3000');
   // Check for the Home text
   await expect(page.locator('h1')).toContainText('Home');
   // Click text=Flowers@mtrnord:art.midnightthoughts.space
@@ -18,7 +18,7 @@ test('test navigation to details', async ({ page }, testInfo) => {
   ]);
 
 
-  await expect(page).toHaveURL('http://localhost:3000/en/post/%24xoIMe7tUMb2NhCBZaxsZr2CVkptCVu1GaJ_eJMKbJQo');
+  await expect(page).toHaveURL('http://localhost:3000/post/%24xoIMe7tUMb2NhCBZaxsZr2CVkptCVu1GaJ_eJMKbJQo');
 
 
   // Click svg
@@ -26,5 +26,5 @@ test('test navigation to details', async ({ page }, testInfo) => {
     page.waitForNavigation(/*{ url: 'http://localhost:3000/' }*/),
     page.click('#matrix-art-logo')
   ]);
-  await expect(page).toHaveURL('http://localhost:3000/en');
+  await expect(page).toHaveURL('http://localhost:3000');
 });
