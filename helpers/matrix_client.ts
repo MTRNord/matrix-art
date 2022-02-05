@@ -158,7 +158,7 @@ export default class MatrixClient {
     }
 
     async register(serverUrl: string, username: string, password: string) {
-        const data = await this.fetchJson(`${serverUrl}/r0/register`, {
+        const data = await this.fetchJson(`${serverUrl}/r0/register?kind=guest`, {
             method: "POST",
             body: JSON.stringify({
                 auth: {
