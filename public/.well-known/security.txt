@@ -1,0 +1,6 @@
+Contact: mailto:mtrnord@nordgedanken.dev
+Contact: matrix:u/mtrnord:nordgedanken.dev
+Contact: https://matrix.to/#/@mtrnord:nordgedanken.dev
+Expires: 2176-02-14T11:04:00.000Z
+Preferred-Languages: en
+Canonical: https://art.midnightthoughts.space/.well-known/security.txt
