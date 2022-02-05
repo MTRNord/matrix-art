@@ -50,7 +50,7 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps && npx playwright install msedge
       - name: Run Playwright tests
-        run: node --version && npx playwright --version && npx playwright test
+        run: (node --version && npx playwright --version) && npm run dev-tests & npx playwright test
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2
         if: always()
         with:
