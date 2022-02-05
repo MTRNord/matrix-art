@@ -108,6 +108,7 @@ const config: PlaywrightTestConfig = {
   webServer: {
     command: 'npm run dev-tests',
     port: 3000,
+    reuseExistingServer: !process.env.CI,
   },
 };
 export default config;

@@ -17,6 +17,7 @@ jobs:
           allowed-endpoints: "gitlab.nordgedanken.dev:443"
       - name: curl
         uses: wei/curl@012398a392d02480afa2720780031f8621d5f94c # master
+        if: ${{ github.event.workflow_run.conclusion == 'success' }}
         with:
           args: -X POST -F "token=$GITLAB_TOKEN" -F "ref=main" -F "variables[GITHUB_COMMIT_ID]=$GITHUB_SHA" https://gitlab.nordgedanken.dev/api/v4/projects/2/trigger/pipeline
         env:
