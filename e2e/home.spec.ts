@@ -5,6 +5,7 @@ test.use({
 });
 
 test('test navigation to details', async ({ page, baseURL }) => {
+  console.log(baseURL);
   page.on('console', msg => console.log(msg.text()));
 
   // Go to http://localhost:3000/

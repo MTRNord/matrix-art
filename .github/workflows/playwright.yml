@@ -33,7 +33,8 @@ jobs:
             telemetry.nextjs.org:443
             location.services.mozilla.com:443
             art.midnightthoughts.space:443
-            matrix.art.midnightthoughts.space:443"
+            matrix.art.midnightthoughts.space:443
+            localhost:80"
       - uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
         with:
           persist-credentials: false
@@ -49,7 +50,7 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps && npx playwright install msedge
       - name: Run Playwright tests
-        run: npx playwright test
+        run: node --version && npx playwright --version && npx playwright test
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2
         if: always()
         with:
