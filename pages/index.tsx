@@ -152,7 +152,12 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale }) =>
     // TODO fix this somehow. It is super inefficient.
     for (let user of data) {
       // We dont need many events
-      const roomId = await client?.followUser(user.public_user_room);
+      let roomId;
+      try {
+        roomId = await client?.followUser(user.public_user_room);
+      } catch {
+        console.error("Unbable to join room");
+      }
       const events = await client?.getTimeline(roomId, 100);
       // Filter events by type
       let images = events.filter((event) => (event.type == "m.image_gallery" || event.type == "m.image") && !event.unsigned?.redacted_because) as MatrixImageEvents[];

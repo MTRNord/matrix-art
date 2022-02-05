@@ -1,11 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.use({
-  storageState: 'e2e/auth.json'
-});
-
 test('test navigation to details', async ({ page, baseURL }) => {
-  console.log(baseURL);
   page.on('console', msg => console.log(msg.text()));
 
   // Go to http://localhost:3000/

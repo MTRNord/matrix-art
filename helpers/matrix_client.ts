@@ -73,16 +73,22 @@ export default class MatrixClient {
         let username = "matrix_art_guest_" + Date.now();
         let password = this.generateToken(32);
 
-        const data = await this.fetchJson(`${serverUrl}/r0/register?kind=guest`, {
-            method: "POST",
-            body: JSON.stringify({
-                auth: {
-                    type: "m.login.dummy",
-                },
-                username: username,
-                password: password,
-            }),
-        });
+        let data;
+        try {
+            data = await this.fetchJson(`${serverUrl}/r0/register?kind=guest`, {
+                method: "POST",
+                body: JSON.stringify({
+                    auth: {
+                        type: "m.login.dummy",
+                    },
+                    username: username,
+                    password: password,
+                }),
+            });
+        } catch (error) {
+            console.log(`${serverUrl}/r0/register?kind=guest`);
+            throw new Error("Failed to register new guest");
+        }
         this.serverUrl = serverUrl;
         this._userId = data.user_id;
         this._accessToken = data.access_token;
@@ -158,6 +164,7 @@ export default class MatrixClient {
     }
 
     async register(serverUrl: string, username: string, password: string) {
+        console.log(`${serverUrl}/r0/register`);
         const data = await this.fetchJson(`${serverUrl}/r0/register`, {
             method: "POST",
             body: JSON.stringify({
@@ -287,7 +294,16 @@ export default class MatrixClient {
                                 invite: 100,
                                 ban: 100,
                                 redact: 100,
-                            }
+                            },
+                            initial_state: [
+                                {
+                                    type: "m.room.guest_access",
+                                    content: {
+                                        guest_access: "can_join"
+                                    },
+                                    state_key: ""
+                                }
+                            ]
                         }),
                         headers: {
                             Authorization: `Bearer ${this.accessToken}`,

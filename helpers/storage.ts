@@ -1,3 +1,4 @@
+const STORAGE_VERSION = 2;
 export default class Storage {
     private prefix;
     private nodeLocalStorage?;
@@ -14,6 +15,15 @@ export default class Storage {
                 } catch { console.log("race while folder was checked"); }
             }
             this.nodeLocalStorage = new LocalStorage(dir);
+        }
+        if (this.getItem("version") === undefined || this.getItem("version") !== STORAGE_VERSION.toString()) {
+            if (typeof window !== "undefined") {
+                window.localStorage.clear();
+                window.localStorage.setItem("version", STORAGE_VERSION.toString());
+            } else {
+                this.nodeLocalStorage?.clear();
+                this.nodeLocalStorage?.setItem("version", STORAGE_VERSION.toString());
+            }
         }
     }
     getItem(key: string): any {

@@ -65,20 +65,21 @@ class Post extends PureComponent<Props, State> {
             try {
                 let serverUrl = constMatrixArtServer + "/_matrix/client";
                 await this.context.client?.registerAsGuest(serverUrl);
+            } catch (error) {
+                console.error("Failed to register as guest:", error);
+            }
+        } else {
+            console.log("Already logged in");
+        }
+        if (!this.context.guest_client?.accessToken) {
+            try {
+                let serverUrl = constMatrixArtServer + "/_matrix/client";
                 await this.context.guest_client?.registerAsGuest(serverUrl);
             } catch (error) {
                 console.error("Failed to register as guest:", error);
             }
         } else {
-            if (!this.context.guest_client?.accessToken) {
-                try {
-                    let serverUrl = constMatrixArtServer + "/_matrix/client";
-                    await this.context.guest_client?.registerAsGuest(serverUrl);
-                } catch (error) {
-                    console.error("Failed to register as guest:", error);
-                }
-            }
-            console.log("Already logged in");
+            console.log("Guest Already logged in");
         }
         if (this.props.directory_data && this.props.event_id && this.props.event_id.startsWith("$")) {
             await this.loadEvent(this.props.event_id);
@@ -99,7 +100,12 @@ class Post extends PureComponent<Props, State> {
             // TODO fix this. It is super inefficient.
             for (let user of this.props.directory_data) {
                 // We dont need many events
-                const roomId = await client?.followUser(user.public_user_room);
+                let roomId;
+                try {
+                    roomId = await client?.followUser(user.public_user_room);
+                } catch {
+                    console.error("Unbable to join room");
+                }
                 const events = await client?.getTimeline(roomId, 100); // Filter events by type
                 const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
                 if (image_event == undefined) {
@@ -481,7 +487,12 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale, quer
             for (let user of data) {
                 // TODO check what happens if this is a non public image.
                 // We dont need many events
-                const roomId = await client?.followUser(user.public_user_room);
+                let roomId;
+                try {
+                    roomId = await client?.followUser(user.public_user_room);
+                } catch {
+                    console.error("Unbable to join room");
+                }
                 const events = await client?.getTimeline(roomId, 100);
                 // Filter events by type
                 const image_event = events.find((event) => ((event.type == "m.image_gallery" || event.type == "m.image") && !event.unsigned?.redacted_because) && event.event_id === event_id);

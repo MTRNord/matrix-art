@@ -65,29 +65,32 @@ class Profile extends PureComponent<Props, State> {
         if (!this.context.client?.accessToken) {
             this.registerAsGuest();
         } else {
-            if (!this.context.guest_client?.accessToken) {
-                try {
-                    let serverUrl = constMatrixArtServer + "/_matrix/client";
-                    await this.context.guest_client?.registerAsGuest(serverUrl);
-                } catch (error) {
-                    console.error("Failed to register as guest:", error);
-                }
-            }
             console.log("Already logged in");
-            if (!this.props.mxid) {
-                return;
-            }
-            try {
-                const profile = await this.context.client.getProfile(this.props.mxid);
-                this.setState({
-                    displayname: profile.displayname,
-                    avatar_url: profile.avatar_url,
-                });
-            } catch (error) {
-                console.debug(`Failed to fetch profile for user ${this.props.mxid}:`, error);
-            }
-            await this.loadEvents();
         }
+        if (!this.context.guest_client?.accessToken) {
+            try {
+                let serverUrl = constMatrixArtServer + "/_matrix/client";
+                await this.context.guest_client?.registerAsGuest(serverUrl);
+            } catch (error) {
+                console.error("Failed to register as guest:", error);
+            }
+        } else {
+            console.log("Guest Already logged in");
+        }
+        if (!this.props.mxid) {
+            return;
+        }
+        try {
+            const profile = await this.context.client.getProfile(this.props.mxid);
+            this.setState({
+                displayname: profile.displayname,
+                avatar_url: profile.avatar_url,
+            });
+        } catch (error) {
+            console.debug(`Failed to fetch profile for user ${this.props.mxid}:`, error);
+        }
+        await this.loadEvents();
+
         this.setState({
             isLoggedInUser: this.props.mxid === this.context.client.userId && !this.context.client.isGuest
         });
@@ -120,7 +123,12 @@ class Profile extends PureComponent<Props, State> {
             isLoadingImages: true,
         });
         try {
-            const roomId = await client?.followUser("#" + this.props.mxid);
+            let roomId;
+            try {
+                roomId = await client?.followUser("#" + this.props.mxid);
+            } catch {
+                console.error("Unbable to join room");
+            }
             const events = await client?.getTimeline(roomId, 100, { limit: 30, types: ["m.image", "m.image_gallery", "matrixart.profile", "matrixart.profile_banner"] });
             const profile_event = events.find((event) => event.type === "matrixart.profile" && event.sender === this.props.mxid);
             const filtered_events = events.filter(event => event.type !== "m.room.member" && event.type !== "m.room.topic" && event.type !== "m.room.name" && event.type !== "m.room.power_levels");
