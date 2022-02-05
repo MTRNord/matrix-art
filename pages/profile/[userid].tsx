@@ -128,6 +128,7 @@ class Profile extends PureComponent<Props, State> {
                 roomId = await client?.followUser("#" + this.props.mxid);
             } catch {
                 console.error("Unbable to join room");
+                return;
             }
             const events = await client?.getTimeline(roomId, 100, { limit: 30, types: ["m.image", "m.image_gallery", "matrixart.profile", "matrixart.profile_banner"] });
             const profile_event = events.find((event) => event.type === "matrixart.profile" && event.sender === this.props.mxid);

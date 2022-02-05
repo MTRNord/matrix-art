@@ -1,7 +1,6 @@
 import '../styles/globals.css';
 import 'react-toastify/dist/ReactToastify.min.css';
 import type { AppProps } from 'next/app';
-import { useState } from 'react';
 import { client, ClientContext, guest_client } from '../components/ClientContext';
 import React from 'react';
 import Head from 'next/head';
@@ -9,10 +8,6 @@ import { ToastContainer } from 'react-toastify';
 import { appWithTranslation } from 'next-i18next';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const [value] = useState({
-    client: client,
-    guest_client: guest_client,
-  });
   return (
     <>
       <Head>
@@ -23,7 +18,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
       <React.StrictMode>
         <ClientContext.Provider
-          value={value}
+          value={{
+            client: client,
+            guest_client: guest_client,
+            is_generating_guest: false,
+          }}
         >
           <Component {...pageProps} />
         </ClientContext.Provider>

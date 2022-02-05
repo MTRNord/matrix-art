@@ -136,6 +136,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale }) =>
     if (!client?.accessToken) {
       try {
         let serverUrl = constMatrixArtServer + "/_matrix/client";
+        console.log(1);
         await client?.registerAsGuest(serverUrl);
       } catch (error) {
         console.error("Failed to register as guest:", error);
@@ -157,6 +158,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale }) =>
         roomId = await client?.followUser(user.public_user_room);
       } catch {
         console.error("Unbable to join room");
+        continue;
       }
       const events = await client?.getTimeline(roomId, 100);
       // Filter events by type

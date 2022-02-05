@@ -49,7 +49,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
     async componentDidMount() {
         // auto-register as a guest if not logged in
         if (!this.context.client?.accessToken) {
-            this.registerAsGuest();
+            this.registerAsGuest();;
         } else {
             console.log("Already logged in");
             if (!this.props.event) {
@@ -68,9 +68,15 @@ export default class FrontPageImage extends PureComponent<Props, State> {
     }
 
     async registerAsGuest() {
+        console.log(this.context.is_generating_guest);
+        if (this.context.is_generating_guest) {
+            return;
+        }
+        this.context.is_generating_guest = true;
         try {
             let serverUrl = constMatrixArtServer + "/_matrix/client";
             await this.context.client?.registerAsGuest(serverUrl);
+            this.context.is_generating_guest = false;
             if (typeof window !== "undefined") {
                 window.location.reload();
             }
@@ -80,6 +86,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
                 error: "Failed to register as guest: " + JSON.stringify(error),
             });
         }
+        this.context.is_generating_guest = false;
     }
 
     render() {

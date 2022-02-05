@@ -16,7 +16,14 @@ export default class Storage {
             }
             this.nodeLocalStorage = new LocalStorage(dir);
         }
-        if (this.getItem("version") === undefined || this.getItem("version") !== STORAGE_VERSION.toString()) {
+        let version;
+        if (typeof window !== "undefined") {
+            version = window.localStorage.getItem("version");
+        } else {
+            version = this.nodeLocalStorage?.getItem("version");
+        }
+        console.log("storage_version:", version);
+        if (version === undefined || version === null || version !== STORAGE_VERSION.toString()) {
             if (typeof window !== "undefined") {
                 window.localStorage.clear();
                 window.localStorage.setItem("version", STORAGE_VERSION.toString());

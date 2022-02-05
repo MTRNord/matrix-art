@@ -105,6 +105,7 @@ class Post extends PureComponent<Props, State> {
                     roomId = await client?.followUser(user.public_user_room);
                 } catch {
                     console.error("Unbable to join room");
+                    continue;
                 }
                 const events = await client?.getTimeline(roomId, 100); // Filter events by type
                 const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
