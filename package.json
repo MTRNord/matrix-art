@@ -5,14 +5,13 @@
     "cover 99.9%"
   ],
   "scripts": {
-    "dev-inspect": "cross-env NODE_OPTIONS='--inspect' next dev",
-    "dev-tests": "cross-env PLAYWRIGHT='1' next dev",
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "export": "next export",
-    "lint": "next lint",
-    "extractKeys": "i18next 'pages/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}'"
+    "build": "cross-env NODE_ENV='production' next build",
+    "start": "cross-env NODE_ENV='production' next start",
+    "export": "cross-env NODE_ENV='production' next export",
+    "lint": "cross-env NODE_ENV='production' next lint",
+    "extractKeys": "i18next 'pages/**/*.{ts,tsx}' 'components/**/*.{ts,tsx}'",
+    "test": "cross-env NODE_ENV='test' playwright test"
   },
   "engines": {
     "node": ">=17.0.0"

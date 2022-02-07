@@ -6,6 +6,7 @@ test.use({
 
 test('test navigation to details', async ({ page, baseURL }) => {
   page.on('console', msg => console.log(msg.text()));
+  await page.waitForLoadState("networkidle");
 
   // Go to http://localhost:3000/
   await page.goto(baseURL || "http://localhost:3000");
@@ -14,11 +15,11 @@ test('test navigation to details', async ({ page, baseURL }) => {
   // Click text=Flowers@mtrnord:art.midnightthoughts.space
   await Promise.all([
     page.waitForNavigation(/*{ url: 'http://localhost:3000/post/%24ugLG5srr5AyYCIhL1CnD6KikH8QYsDVMUHQ9jQRn990' }*/),
-    page.click('text=Flowers')
+    page.click('text=Test')
   ]);
 
 
-  await expect(page).toHaveURL(`${baseURL || "http://localhost:3000"}/post/%24xoIMe7tUMb2NhCBZaxsZr2CVkptCVu1GaJ_eJMKbJQo`);
+  await expect(page).toHaveURL(`${baseURL || "http://localhost:3000"}/post/%24QtbB-3JYAEOXJeC-mrZqFIEqon4uBLYVwTSw2SDWrJg`);
 
 
   // Click svg

@@ -114,7 +114,7 @@ class Post extends PureComponent<Props, State> {
                     const profile = await client.getProfile(image_event.sender);
                     this.setState({
                         image_event: image_event as MatrixImageEvents,
-                        displayname: profile.displayname,
+                        displayname: profile.displayname || image_event.sender,
                     });
 
                 } catch (error) {
@@ -491,6 +491,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale, quer
                     roomId = await client?.followUser(user.public_user_room);
                 } catch {
                     console.error("Unbable to join room");
+                    continue;
                 }
                 const events = await client?.getTimeline(roomId, 100);
                 // Filter events by type

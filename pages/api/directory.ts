@@ -22,12 +22,11 @@ const db = new Sequelize({
 db.addModels([User]);
 
 export const get_data = async () => {
-    if (process.env.PLAYWRIGHT === '1') {
-        console.log("Running in tests!");
+    if (process.env.NEXT_PUBLIC_ENV === "test") {
         return [
             new User({
-                "mxid": "@mtrnord:art.midnightthoughts.space",
-                "public_user_room": "#@mtrnord:art.midnightthoughts.space"
+                "mxid": "@test:art.midnightthoughts.space",
+                "public_user_room": "#@test:art.midnightthoughts.space"
             })
         ];
     }
@@ -66,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             user_room: string;
             access_token: string;
         } = JSON.parse(req.body);
-        if (await (new ServerOpenID().verify(data.user_id, data.access_token))) {
+        if (process.env.NEXT_PUBLIC_ENV === "test" ? data.access_token === "openid" : await (new ServerOpenID().verify(data.user_id, data.access_token))) {
             try {
                 await User.sync();
                 await User.create({
@@ -89,7 +88,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             user_id: string;
             access_token: string;
         } = JSON.parse(req.body);
-        if (await (new ServerOpenID().verify(data.user_id, data.access_token))) {
+        if (process.env.NEXT_PUBLIC_ENV === "test" ? data.access_token === "openid" : await (new ServerOpenID().verify(data.user_id, data.access_token))) {
             try {
                 await User.sync();
                 await User.destroy({

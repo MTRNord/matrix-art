@@ -22,7 +22,7 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
 
 type State = {
     displayname: string;
-    avatar_url: string;
+    avatar_url?: string;
     events: MatrixEvent[] | [];
     profile_event?: MatrixArtProfile;
     error?: string;
@@ -41,7 +41,6 @@ class Profile extends PureComponent<Props, State> {
 
         this.state = {
             displayname: this.props.mxid,
-            avatar_url: "",
             events: [],
             isLoadingImages: false,
             hasFullyLoaded: false,
@@ -83,7 +82,7 @@ class Profile extends PureComponent<Props, State> {
         try {
             const profile = await this.context.client.getProfile(this.props.mxid);
             this.setState({
-                displayname: profile.displayname,
+                displayname: profile.displayname || this.props.event.sender,
                 avatar_url: profile.avatar_url,
             });
         } catch (error) {

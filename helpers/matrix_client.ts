@@ -20,13 +20,11 @@ export default class MatrixClient {
     get accessToken(): string | undefined {
         return this._accessToken;
     }
-    get isGuest(): boolean | undefined {
-        return this._isGuest;
+    get isGuest(): boolean {
+        return this._isGuest === undefined ? true : this._isGuest;
     }
 
     get profileRoomId(): string | undefined {
-        console.log(this.joinedRooms);
-        console.log(this._profileRoomId);
         return this.joinedRooms.get(`#${this.userId}`) || this._profileRoomId;
     }
 
@@ -50,10 +48,10 @@ export default class MatrixClient {
             return;
         }
         this.storage.setOrDelete("serverUrl", this.serverUrl);
-        this.storage.setOrDelete("userId", this.userId);
-        this.storage.setOrDelete("accessToken", this.accessToken);
+        this.storage.setOrDelete("userId", this._userId);
+        this.storage.setOrDelete("accessToken", this._accessToken);
         this.storage.setOrDelete("serverName", this.serverName);
-        this.storage.setOrDelete("isGuest", this.isGuest);
+        this.storage.setOrDelete("isGuest", this._isGuest);
     }
 
     private generateToken(len: number) {
@@ -75,20 +73,28 @@ export default class MatrixClient {
         let password = this.generateToken(32);
 
         let data;
-        try {
-            data = await this.fetchJson(`${serverUrl}/r0/register?kind=guest`, {
-                method: "POST",
-                body: JSON.stringify({
-                    auth: {
-                        type: "m.login.dummy",
-                    },
-                    username: username,
-                    password: password,
-                }),
-            });
-        } catch (error) {
-            console.error(`${serverUrl}/r0/register?kind=guest:\n${error}`);
-            throw new Error("Failed to register new guest");
+        if (process.env.NEXT_PUBLIC_ENV !== "test") {
+            try {
+                data = await this.fetchJson(`${serverUrl}/r0/register?kind=guest`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        auth: {
+                            type: "m.login.dummy",
+                        },
+                        username: username,
+                        password: password,
+                    }),
+                });
+            } catch (error) {
+                console.error(`${serverUrl}/r0/register?kind=guest:\n${error}`);
+                throw new Error("Failed to register new guest");
+            }
+        } else {
+            data = {
+                user_id: "1",
+                access_token: "1",
+                home_server: "https://blub",
+            };
         }
         this.serverUrl = serverUrl;
         this._userId = data.user_id;
@@ -120,6 +126,11 @@ export default class MatrixClient {
     }
 
     private async fetchJson(fullUrl: string, fetchParams: any) {
+        // Do not execute requests in tests!
+        if (process.env.NEXT_PUBLIC_ENV === "test") {
+            return;
+        }
+
         const response = await fetch(fullUrl, fetchParams);
         const data = await response.json();
         if (response.status === 429) {
@@ -167,7 +178,7 @@ export default class MatrixClient {
             body: "{}",
             headers: { Authorization: `Bearer ${this.accessToken}` },
         });
-        return data.access_token;
+        return process.env.NEXT_PUBLIC_ENV !== "test" ? data.access_token : "openid";
     }
 
     async register(serverUrl: string, username: string, password: string) {
@@ -200,6 +211,17 @@ export default class MatrixClient {
     }
 
     async setDisplayname(newDisplayname: string) {
+        if (process.env.NEXT_PUBLIC_ENV === "test") {
+            if (this.userProfileCache.has(this.userId!)) {
+                const old = this.userProfileCache.get(this.userId!);
+                old.displayname = newDisplayname;
+                this.userProfileCache.set(this.userId!, old);
+            } else {
+                await this.getProfile(this.userId!);
+            }
+            return;
+        }
+
         await this.fetchJson(
             `${this.serverUrl}/r0/profile/${encodeURIComponent(this.userId!)}/displayname`,
             {
@@ -218,6 +240,17 @@ export default class MatrixClient {
     }
 
     async setAvatarUrl(newAvatarUrl: string) {
+        if (process.env.NEXT_PUBLIC_ENV === "test") {
+            if (this.userProfileCache.has(this.userId!)) {
+                const old = this.userProfileCache.get(this.userId!);
+                old.avatar_url = newAvatarUrl;
+                this.userProfileCache.set(this.userId!, old);
+            } else {
+                await this.getProfile(this.userId!);
+            }
+            return;
+        }
+
         await this.fetchJson(
             `${this.serverUrl}/r0/profile/${encodeURIComponent(this.userId!)}/avatar_url`,
             {
@@ -235,7 +268,14 @@ export default class MatrixClient {
         }
     }
 
-    async getProfile(userId: string) {
+    async getProfile(userId: string): Promise<{ displayname?: string; avatar_url?: string; }> {
+        if (process.env.NEXT_PUBLIC_ENV === "test") {
+            const data = {
+                displayname: "Test"
+            };
+            this.userProfileCache.set(userId, data);
+            return data;
+        }
         if (this.userProfileCache.has(userId)) {
             console.debug(`Returning cached copy of ${userId}'s profile`);
             return this.userProfileCache.get(userId);
@@ -258,7 +298,10 @@ export default class MatrixClient {
      * @param {string} roomAlias The room alias to join
      * @returns {string} The room ID of the joined room.
      */
-    async joinProfileRoom(roomAlias: string) {
+    async joinProfileRoom(roomAlias: string): Promise<string> {
+        if (process.env.NEXT_PUBLIC_ENV === "test") {
+            return "!1:blub";
+        }
         const roomId = this.joinedRooms.get(roomAlias);
         if (roomId) {
             return roomId;
@@ -352,6 +395,9 @@ export default class MatrixClient {
     }
 
     async sendEvent(roomId: string, event_type: string, content: MatrixContents): Promise<string> {
+        if (process.env.NEXT_PUBLIC_ENV === "test") {
+            return "$abcde";
+        }
         const txnId = Date.now();
         const data = await this.fetchJson(
             `${this.serverUrl}/r0/rooms/${encodeURIComponent(
@@ -367,6 +413,9 @@ export default class MatrixClient {
     }
 
     async uploadFile(file: File | Blob): Promise<string> {
+        if (process.env.NEXT_PUBLIC_ENV === "test") {
+            return "mxc://blub/blub";
+        }
         const fileName = (file as File).name || Date.now();
         const mediaUrl = this.serverUrl?.slice(0, -1 * "/client".length);
         const res = await fetch(
@@ -456,7 +505,47 @@ export default class MatrixClient {
         return info;
     }
 
-    async getTimeline(roomId: string, limit: number, filter: object = { limit: 30, types: ["m.image", "m.image_gallery"] }) {// eslint-disable-line unicorn/no-object-as-default-parameter
+    async getTimeline(roomId: string, limit: number, filter: object = { limit: 30, types: ["m.image", "m.image_gallery"] }): Promise<MatrixEvent[]> {// eslint-disable-line unicorn/no-object-as-default-parameter
+        if (process.env.NEXT_PUBLIC_ENV === "test") {
+            return [
+                {
+                    type: "m.image",
+                    room_id: '!hxnnsrGMUfcrXPEPZu:art.midnightthoughts.space',
+                    event_id: '$QtbB-3JYAEOXJeC-mrZqFIEqon4uBLYVwTSw2SDWrJg',
+                    origin_server_ts: 1643317935965,
+                    content: {
+                        "m.caption": [
+                            {
+                                "m.text": "Test2"
+                            }
+                        ],
+                        "m.thumbnail": [
+                            {
+                                "height": 500,
+                                "mimetype": "image/jpeg",
+                                "size": 126199,
+                                "url": "mxc://art.midnightthoughts.space/b73141659586a6d690fe2c3edd43776b19f51529",
+                                "width": 800
+                            }
+                        ],
+                        'm.file': {
+                            mimetype: 'image/png',
+                            name: '767-F_xp11 - 2021-04-13 20.23.07.png',
+                            size: 2129309,
+                            url: 'mxc://art.midnightthoughts.space/21a2b8190b756259510617d3c4c662d1e7c82141'
+                        },
+                        'm.image': { height: 1040, width: 1920 },
+                        'm.text': 'Test',
+                        'matrixart.description': 'test2',
+                        'matrixart.license': 'cc-by-4.0',
+                        'matrixart.nsfw': false,
+                        'matrixart.tags': ['test', 'test2'],
+                        'xyz.amorgan.blurhash': 'LJA0tGWES2oL~pWDayj[.8WBsAbH'
+                    },
+                    sender: '@test:art.midnightthoughts.space'
+                }
+            ];
+        }
         if (!this.accessToken) {
             console.error("No access token");
             return [];

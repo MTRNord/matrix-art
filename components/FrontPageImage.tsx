@@ -58,7 +58,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             try {
                 const profile = await this.context.client.getProfile(this.props.event.sender);
                 this.setState({
-                    displayname: profile.displayname,
+                    displayname: profile.displayname || this.props.event.sender,
                 });
             } catch (error) {
                 console.debug(`Failed to fetch profile for user ${this.props.event.sender}:`, error);
@@ -68,7 +68,6 @@ export default class FrontPageImage extends PureComponent<Props, State> {
     }
 
     async registerAsGuest() {
-        console.log(this.context.is_generating_guest);
         if (this.context.is_generating_guest) {
             return;
         }

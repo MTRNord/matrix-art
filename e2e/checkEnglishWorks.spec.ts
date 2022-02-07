@@ -8,12 +8,14 @@ test('test if we have english words', async ({ page, baseURL }) => {
     page.on('console', msg => console.log(msg.text()));
     // Go to http://localhost:3000/
     await page.goto(baseURL || 'http://localhost:3000/');
+    await page.waitForLoadState("networkidle");
 
     expect(await page.locator("text=Home").isVisible());
 });
 
 test('test if the header is there and english with correct state', async ({ page, baseURL }) => {
     page.on('console', msg => console.log(msg.text()));
+    await page.waitForLoadState("networkidle");
     // Go to http://localhost:3000/
     await page.goto(baseURL || 'http://localhost:3000/');
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Component } from "react";
+import { PureComponent } from "react";
 import User from "../helpers/db/Users";
 import { ClientContext } from "./ClientContext";
 import { i18n } from 'next-i18next';
@@ -12,28 +12,16 @@ type State = {
     directory_data: User[];
     loading: boolean;
     error?: string;
-    loggedIn?: boolean;
 };
-export default class Header extends Component<Props, State> {
+export default class Header extends PureComponent<Props, State> {
     declare context: React.ContextType<typeof ClientContext>;
     constructor(props: Props) {
         super(props);
 
         this.state = {
             directory_data: [],
-            loading: true,
-            loggedIn: undefined
+            loading: true
         } as State;
-    }
-
-    shouldComponentUpdate(nextProps: Readonly<Props>, nextState: Readonly<State>, nextContext: React.ContextType<typeof ClientContext>) {
-        if (typeof window !== "undefined" && (nextState.loggedIn === undefined || nextState.loggedIn !== !nextContext.client.isGuest)) {
-            return true;
-        }
-        if (nextState !== this.state || nextContext !== this.context) {
-            return true;
-        }
-        return false;
     }
 
     componentDidUpdate(prevProps: Props, prevState: State) {
@@ -59,7 +47,8 @@ export default class Header extends Component<Props, State> {
         if (this.state.loading) {
             return <></>;
         }
-        const loggedIn = (typeof window === "undefined") ? undefined : this.context.client.isGuest !== undefined ? (!this.context.client.isGuest) : undefined;
+        const loggedIn = (typeof window === "undefined") ? undefined : !this.context.client.isGuest;
+        console.log("loggedIn:", loggedIn);
         return (
             <>
                 <header className='bg-[#f8f8f8] dark:bg-[#06070D] flex fixed top-0 left-0 right-0 lg:h-20 h-auto z-[100] items-center lg:flex-row flex-col shadow-black drop-shadow-xl'>
@@ -91,19 +80,19 @@ export default class Header extends Component<Props, State> {
                         </div>
 
                         <nav className='flex lg:flex-shrink-0 my-4'>
-                            {!loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/register">{i18n?.t('Join')}</Link></span> : undefined}
-                            {!loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/login">{i18n?.t('Log in')}</Link></span> : undefined}
-                            {loggedIn && this.state.directory_data.some(thing => thing.mxid == this.context.client.userId) ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>{i18n?.t('Profile')}</Link></span> : undefined}
-                            {loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout')}</Link></span> : undefined}
+                            {loggedIn !== undefined && !loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/register">{i18n?.t('Join')}</Link></span> : undefined}
+                            {loggedIn !== undefined && !loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/login">{i18n?.t('Log in')}</Link></span> : undefined}
+                            {loggedIn !== undefined && loggedIn && this.state.directory_data.some(thing => thing.mxid == this.context.client.userId) ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>{i18n?.t('Profile')}</Link></span> : undefined}
+                            {loggedIn !== undefined && loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout')}</Link></span> : undefined}
                         </nav>
                     </div>
-                    {loggedIn ? <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] lg:h-7 h-0'></span> : <span className="mr-4"></span>}
+                    {loggedIn !== undefined && loggedIn ? <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] lg:h-7 h-0'></span> : <span className="mr-4"></span>}
                     <div className='relative lg:m-0'>
                         <div className='flex'>
                             {
                                 this.state.directory_data.some(thing => thing.mxid == this.context.client.userId) ?
-                                    (loggedIn ? <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Submit')}</a></Link> : undefined) :
-                                    (loggedIn ? <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Setup Account')}</a> : undefined)
+                                    (loggedIn !== undefined && loggedIn ? <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Submit')}</a></Link> : undefined) :
+                                    (loggedIn !== undefined && loggedIn ? <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Setup Account')}</a> : undefined)
                             }
                         </div>
                     </div>
