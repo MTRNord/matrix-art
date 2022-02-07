@@ -5,8 +5,13 @@ on:
       - "main"
   pull_request:
 
+# Declare default permissions as read only.
+permissions: read-all
+
 jobs:
   run:
+    permissions:
+      contents: read # for actions/checkout to fetch code
     name: Spell Check with Typos
     runs-on: ubuntu-latest
     steps:
