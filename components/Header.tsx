@@ -30,7 +30,7 @@ export default class Header extends Component<Props, State> {
         if (typeof window !== "undefined" && (nextState.loggedIn === undefined || nextState.loggedIn !== !nextContext.client.isGuest)) {
             return true;
         }
-        if (nextProps !== this.props || nextState !== this.state || nextContext !== this.context) {
+        if (nextState !== this.state || nextContext !== this.context) {
             return true;
         }
         return false;
