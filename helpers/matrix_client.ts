@@ -86,7 +86,7 @@ export default class MatrixClient {
                 }),
             });
         } catch (error) {
-            console.log(`${serverUrl}/r0/register?kind=guest`);
+            console.error(`${serverUrl}/r0/register?kind=guest:\n${error}`);
             throw new Error("Failed to register new guest");
         }
         this.serverUrl = serverUrl;
