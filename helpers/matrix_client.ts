@@ -40,7 +40,7 @@ export default class MatrixClient {
         this.serverUrl = storage.getItem("serverUrl");
         this._userId = storage.getItem("userId");
         this._accessToken = storage.getItem("accessToken");
-        this._isGuest = (this.userId || "").indexOf("@matrix_art_guest_") === 0;
+        this._isGuest = storage.getItem("isGuest");
         this.serverName = storage.getItem("serverName");
         this._profileRoomId = storage.getItem("profileRoomId");
     }
@@ -53,6 +53,7 @@ export default class MatrixClient {
         this.storage.setOrDelete("userId", this.userId);
         this.storage.setOrDelete("accessToken", this.accessToken);
         this.storage.setOrDelete("serverName", this.serverName);
+        this.storage.setOrDelete("isGuest", this.isGuest);
     }
 
     private generateToken(len: number) {

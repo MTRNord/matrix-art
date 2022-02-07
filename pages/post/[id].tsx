@@ -17,14 +17,12 @@ import { isImageEvent, isImageGalleryEvent } from '../../components/FrontPageIma
 import Link from 'next/link';
 import Footer from '../../components/Footer';
 import { Blurhash } from 'react-blurhash';
-import User from '../../helpers/db/Users';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next';
 import { toast } from 'react-toastify';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
-    directory_data: User[];
 };
 
 type State = {

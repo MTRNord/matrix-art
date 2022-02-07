@@ -78,7 +78,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             await this.context.client?.registerAsGuest(serverUrl);
             this.context.is_generating_guest = false;
             if (typeof window !== "undefined") {
-                window.location.reload();
+                //    window.location.reload();
             }
         } catch (error) {
             console.error("Failed to register as guest:", error);
@@ -155,13 +155,15 @@ export default class FrontPageImage extends PureComponent<Props, State> {
         return (
             <li style={{ height: this.state.imageHeight }} key={id}>
                 <Link href={direct_link} passHref>
-                    <div style={{ height: this.state.imageHeight }} className={`relative cursor-pointer`}>
-                        {image}
-                        <div style={{ height: this.state.imageHeight }} className={`flex-col max-w-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4`}>
-                            <h2 className='truncate max-w-full text-base font-semibold'>{caption}</h2>
-                            <p className='truncate max-w-full text-sm'>{this.state.displayname}</p>
+                    <a title={caption}>
+                        <div style={{ height: this.state.imageHeight }} className={`relative cursor-pointer`}>
+                            {image}
+                            <div style={{ height: this.state.imageHeight }} className={`flex-col max-w-full opacity-0 hover:opacity-100 duration-300 absolute bg-gradient-to-b from-transparent to-black/[.25] inset-0 z-10 flex justify-end items-start text-white p-4`}>
+                                <h2 className='truncate max-w-full text-base font-semibold'>{caption}</h2>
+                                <p className='truncate max-w-full text-sm'>{this.state.displayname}</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </Link>
             </li>
         );

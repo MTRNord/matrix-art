@@ -1,4 +1,4 @@
-const STORAGE_VERSION = 2;
+const STORAGE_VERSION = 3;
 export default class Storage {
     private prefix;
     private nodeLocalStorage?: any;
