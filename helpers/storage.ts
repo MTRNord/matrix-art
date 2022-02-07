@@ -16,13 +16,14 @@ export default class Storage {
             }
             this.nodeLocalStorage = new LocalStorage(dir);
         }
+    }
+    private ensureVersion() {
         let version;
         if (typeof window !== "undefined") {
             version = window.localStorage.getItem("version");
         } else {
             version = this.nodeLocalStorage?.getItem("version");
         }
-        console.log("storage_version:", version);
         if (version === undefined || version === null || version !== STORAGE_VERSION.toString()) {
             if (typeof window !== "undefined") {
                 window.localStorage.clear();
@@ -33,7 +34,9 @@ export default class Storage {
             }
         }
     }
+
     getItem(key: string): any {
+        this.ensureVersion();
         if (typeof window !== "undefined") {
             return window.localStorage.getItem(this.prefix + key);
         } else {
@@ -42,6 +45,7 @@ export default class Storage {
     }
 
     setItem(key: string, value: any): any {
+        this.ensureVersion();
         if (typeof window !== "undefined") {
             return window.localStorage.setItem(this.prefix + key, value);
         } else {
@@ -50,6 +54,7 @@ export default class Storage {
     }
 
     removeItem(key: string): any {
+        this.ensureVersion();
         if (typeof window !== "undefined") {
             return window.localStorage.removeItem(this.prefix + key);
         } else {
