@@ -77,9 +77,6 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             let serverUrl = constMatrixArtServer + "/_matrix/client";
             await this.context.client?.registerAsGuest(serverUrl);
             this.context.is_generating_guest = false;
-            if (typeof window !== "undefined") {
-                //    window.location.reload();
-            }
         } catch (error) {
             console.error("Failed to register as guest:", error);
             this.setState({

@@ -101,9 +101,6 @@ class Profile extends PureComponent<Props, State> {
             let serverUrl = constMatrixArtServer + "/_matrix/client";
             await this.context.client?.registerAsGuest(serverUrl);
             await this.context.guest_client?.registerAsGuest(serverUrl);
-            if (typeof window !== "undefined") {
-                window.location.reload();
-            }
         } catch (error) {
             console.error("Failed to register as guest:", error);
             this.setState({
