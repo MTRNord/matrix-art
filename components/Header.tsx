@@ -41,7 +41,7 @@ export default class Header extends PureComponent<Props, State> {
             const data = await fetch("/api/directory", { method: "GET" });
             const data_parsed = await data.json();
             const directory_data = data_parsed.data;
-            this.setState({ directory_data: directory_data, loading: false, loggedIn: this.context.client.isGuest ? !this.context.client.isGuest : false });
+            this.setState({ directory_data: directory_data, loading: false, loggedIn: !this.context.client.isGuest});
         } catch {
             console.error("Failed to get directory");
             this.setState({ error: "Failed to get directory" });
