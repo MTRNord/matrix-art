@@ -512,7 +512,7 @@ export default class MatrixClient {
                     type: "m.image",
                     room_id: '!hxnnsrGMUfcrXPEPZu:art.midnightthoughts.space',
                     event_id: '$QtbB-3JYAEOXJeC-mrZqFIEqon4uBLYVwTSw2SDWrJg',
-                    origin_server_ts: 1643317935965,
+                    origin_server_ts: 1_643_317_935_965,
                     content: {
                         "m.caption": [
                             {
@@ -523,7 +523,7 @@ export default class MatrixClient {
                             {
                                 "height": 500,
                                 "mimetype": "image/jpeg",
-                                "size": 126199,
+                                "size": 126_199,
                                 "url": "mxc://art.midnightthoughts.space/b73141659586a6d690fe2c3edd43776b19f51529",
                                 "width": 800
                             }
@@ -531,7 +531,7 @@ export default class MatrixClient {
                         'm.file': {
                             mimetype: 'image/png',
                             name: '767-F_xp11 - 2021-04-13 20.23.07.png',
-                            size: 2129309,
+                            size: 2_129_309,
                             url: 'mxc://art.midnightthoughts.space/21a2b8190b756259510617d3c4c662d1e7c82141'
                         },
                         'm.image': { height: 1040, width: 1920 },
