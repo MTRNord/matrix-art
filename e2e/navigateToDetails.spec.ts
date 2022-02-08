@@ -6,10 +6,11 @@ test.use({
 
 test('test navigation to details', async ({ page, baseURL }) => {
   page.on('console', msg => console.log(msg.text()));
-  await page.waitForLoadState("networkidle");
-
   // Go to http://localhost:3000/
-  await page.goto(baseURL || "http://localhost:3000");
+  await Promise.all([
+    await page.waitForLoadState("networkidle"),
+    await page.goto(baseURL || 'http://localhost:3000/'),
+  ]);
   // Check for the Home text
   await expect(page.locator('h1')).toContainText('Home');
   // Click text=Flowers@mtrnord:art.midnightthoughts.space
