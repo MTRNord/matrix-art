@@ -13,10 +13,11 @@ test('test if the header is there and english with correct state', async ({ page
     ]);
 
     // Make sure that we have the Hader
-    (await Promise.all([
+    const locator = await Promise.all([
         await page.waitForTimeout(5000),
         await page.locator('header')
-    ]))[1].isVisible();
+    ]);
+    locator[1].isVisible();
     expect(await page.locator('header').isVisible()).toBeTruthy();
 
     // Make sure unauthenticated state is correct
