@@ -2,7 +2,7 @@
 import { MatrixContents, MatrixEvent } from './event_types';
 import Storage from './storage';
 
-export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL || "https://matrix.art.midnightthoughts.space";
+export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL ?? "https://matrix.art.midnightthoughts.space";
 
 export default class MatrixClient {
     private joinedRooms: Map<string, string> = new Map<string, string>(); // room alias -> room ID
@@ -24,7 +24,7 @@ export default class MatrixClient {
     }
 
     get profileRoomId(): string | undefined {
-        return this.joinedRooms.get(`#${this.userId}`) || this._profileRoomId;
+        return this.joinedRooms.get(`#${this.userId}`) ?? this._profileRoomId;
     }
 
     constructor(private storage: Storage) {
@@ -409,7 +409,7 @@ export default class MatrixClient {
         if (process.env.NEXT_PUBLIC_ENV === "test") {
             return "mxc://blub/blub";
         }
-        const fileName = (file as File).name || Date.now();
+        const fileName = (file as File).name ?? Date.now();
         const mediaUrl = this.serverUrl?.slice(0, -1 * "/client".length);
         const res = await fetch(
             `${mediaUrl}/media/r0/upload?filename=${encodeURIComponent(
@@ -543,7 +543,7 @@ export default class MatrixClient {
             console.error("No access token");
             return [];
         }
-        limit = limit || 100;
+        limit = limit ?? 100;
         let seenEvents = 0;
         let from;
         let msgs: MatrixEvent[] = [];

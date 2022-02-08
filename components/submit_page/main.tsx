@@ -466,28 +466,28 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                         <form className="flex flex-col w-full">
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t('Image Title')}</span>
-                                <input required name="title" value={this.state[`${this.state.currentFileIndex}_title`] || ""} type="text" placeholder={i18n?.t("Set an image title")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
+                                <input required name="title" value={this.state[`${this.state.currentFileIndex}_title`] ?? ""} type="text" placeholder={i18n?.t("Set an image title")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("Description")}</span>
-                                <textarea name="description" value={this.state[`${this.state.currentFileIndex}_description`] || ""} placeholder={i18n?.t("Description Text of the current image")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
+                                <textarea name="description" value={this.state[`${this.state.currentFileIndex}_description`] ?? ""} placeholder={i18n?.t("Description Text of the current image")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("Image Tags")}</span>
-                                <input name="tags" type="text" value={this.state[`${this.state.currentFileIndex}_tags`] || ""} placeholder={i18n?.t("Enter tags (Separate with a comma)")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
+                                <input name="tags" type="text" value={this.state[`${this.state.currentFileIndex}_tags`] ?? ""} placeholder={i18n?.t("Enter tags (Separate with a comma)")} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)} />
                             </label>
 
                             <span className="h-4"></span>
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("License")}</span>
-                                <select defaultValue="" required name="license" value={this.state[`${this.state.currentFileIndex}_license`] || ""} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
+                                <select defaultValue="" required name="license" value={this.state[`${this.state.currentFileIndex}_license`] ?? ""} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
                                     <option value="" disabled>{i18n?.t("Select an Creative Commons License")}</option>
                                     <option value="cc-by-4.0">Attribution 4.0 International (CC BY 4.0)</option>
                                     <option value="cc-by-sa-4.0">Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)</option>
@@ -503,7 +503,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
                             <label className="inner-flex flex-col">
                                 <span className="text-xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("Mature/NSFW Content?")}</span>
-                                <select defaultValue="" required name="nsfw" value={this.state[`${this.state.currentFileIndex}_nsfw`] || ""} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
+                                <select defaultValue="" required name="nsfw" value={this.state[`${this.state.currentFileIndex}_nsfw`] ?? ""} className="min-w-full placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" onChange={this.handleInputChange.bind(this)}>
                                     <option value="" disabled>{i18n?.t("Select Yes or No")}</option>
                                     <option value="no">{i18n?.t("No")}</option>
                                     <option value="yes">{i18n?.t("Yes")}</option>

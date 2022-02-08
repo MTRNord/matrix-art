@@ -28,11 +28,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const feed = new Feed({
         title: "Matrix-Art",
         description: "Matrix-Art is a Deviantart style application for posting media based on Matrix.",
-        id: "https://" + (req.headers.host || "art.midnightthoughts.space"),
-        link: "https://" + (req.headers.host || "art.midnightthoughts.space"),
+        id: "https://" + (req.headers.host ?? "art.midnightthoughts.space"),
+        link: "https://" + (req.headers.host ?? "art.midnightthoughts.space"),
         language: "en",
         copyright: "",
-        feed: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/posts.rss",
+        feed: "https://" + (req.headers.host ?? "art.midnightthoughts.space") + "/posts.rss",
         namespaces: {
             "xmlns:creativeCommons": "http://backend.userland.com/creativeCommonsRssModule",
             "xmlns:media": "https://search.yahoo.com/mrss/"
@@ -84,13 +84,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 for (let image of imageEvent.content["m.image_gallery"]) {
                     feed.addItem({
                         title: image["m.text"],
-                        id: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/post/" + imageEvent.event_id + "_" + image["m.file"].url,
-                        link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
+                        id: "https://" + (req.headers.host ?? "art.midnightthoughts.space") + "/post/" + imageEvent.event_id + "_" + image["m.file"].url,
+                        link: "https://" + (req.headers.host ?? "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
                         description: `<img src="${client?.downloadLink(image["m.file"].url)!}"/>`,
                         author: [
                             {
                                 name: imageEvent.content.displayname,
-                                link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/profile/" + imageEvent.sender
+                                link: "https://" + (req.headers.host ?? "art.midnightthoughts.space") + "/profile/" + imageEvent.sender
                             }
                         ],
                         // TODO extract real time
@@ -139,13 +139,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             } else {
                 feed.addItem({
                     title: imageEvent.content["m.text"],
-                    id: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
-                    link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
+                    id: "https://" + (req.headers.host ?? "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
+                    link: "https://" + (req.headers.host ?? "art.midnightthoughts.space") + "/post/" + imageEvent.event_id,
                     description: `<img src="${client?.downloadLink(imageEvent.content["m.file"].url)!}"/>`,
                     author: [
                         {
                             name: imageEvent.content.displayname,
-                            link: "https://" + (req.headers.host || "art.midnightthoughts.space") + "/profile/" + imageEvent.sender
+                            link: "https://" + (req.headers.host ?? "art.midnightthoughts.space") + "/profile/" + imageEvent.sender
                         }
                     ],
                     date: new Date(imageEvent.origin_server_ts),

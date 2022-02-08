@@ -26,7 +26,7 @@ export type SearchMedia = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const client = new MeiliSearch({
-        host: process.env.SEARCH_URL || 'http://127.0.0.1:7700', apiKey: process.env.MEILI_MASTER_KEY || 'xxx'
+        host: process.env.SEARCH_URL ?? 'http://127.0.0.1:7700', apiKey: process.env.MEILI_MASTER_KEY ?? 'xxx'
     });
 
     // Run cors

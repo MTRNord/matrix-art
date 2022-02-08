@@ -17,8 +17,8 @@ export class UploadIcon extends PureComponent<Props, State> {
         super(props);
 
         this.state = {
-            className: (props.className || "") + " dark:fill-white fill-black",
-            onClick: props.onClick || (() => {/*noop*/ })
+            className: (props.className ?? "") + " dark:fill-white fill-black",
+            onClick: props.onClick ?? (() => {/*noop*/ })
         };
     }
 

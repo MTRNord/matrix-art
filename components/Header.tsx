@@ -86,20 +86,20 @@ export default class Header extends PureComponent<Props, State> {
                                     if (typeof window !== "undefined" && isGuest) {
                                         return (
                                             <>
-                                                <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/register">{i18n?.t('Join')}</Link></span>
-                                                <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/login">{i18n?.t('Log in')}</Link></span>
+                                                <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/register">{i18n?.t('Join') ?? 'Join'}</Link></span>
+                                                <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/login">{i18n?.t('Log in') ?? 'Log in'}</Link></span>
                                             </>
                                         );
                                     } else if (typeof window !== "undefined") {
                                         if (this.state.directory_data.some(thing => thing.mxid == this.context.client.userId)) {
                                             return (
                                                 <>
-                                                    <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>{i18n?.t('Profile')}</Link></span>
-                                                    <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout')}</Link></span>
+                                                    <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>{i18n?.t('Profile') ?? 'Profile'}</Link></span>
+                                                    <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout') ?? 'Logout'}</Link></span>
                                                 </>
                                             );
                                         }
-                                        return <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout')}</Link></span>;
+                                        return <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout') ?? 'Logout'}</Link></span>;
 
                                     }
                                 }}
@@ -127,9 +127,9 @@ export default class Header extends PureComponent<Props, State> {
                                     console.log("isGuest3:", isGuest);
                                     if (typeof window !== "undefined" && !isGuest) {
                                         if (this.state.directory_data.some(thing => thing.mxid == this.context.client.userId)) {
-                                            return <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Submit')}</a></Link>;
+                                            return <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Submit') ?? 'Submit'}</a></Link>;
                                         } else {
-                                            return <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Setup Account')}</a>;
+                                            return <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Setup Account') ?? 'Setup Account'}</a>;
                                         }
                                     }
                                 }}

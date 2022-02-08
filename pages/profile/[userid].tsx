@@ -80,7 +80,7 @@ class Profile extends PureComponent<Props, State> {
         try {
             const profile = await this.context.client.getProfile(this.props.mxid);
             this.setState({
-                displayname: profile.displayname || this.props.event.sender,
+                displayname: profile.displayname ?? this.props.event.sender,
                 avatar_url: profile.avatar_url,
             });
         } catch (error) {
@@ -358,21 +358,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         try {
             return {
                 props: {
-                    ...(await serverSideTranslations(locale || 'en', ['common'])),
+                    ...(await serverSideTranslations(locale ?? 'en', ['common'])),
                     mxid: mxid
                 }
             };
         } catch {
             return {
                 notFound: true, props: {
-                    ...(await serverSideTranslations(locale || 'en', ['common'])),
+                    ...(await serverSideTranslations(locale ?? 'en', ['common'])),
                 }
             };
         }
     }
     return {
         notFound: true, props: {
-            ...(await serverSideTranslations(locale || 'en', ['common'])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         }
     };
 

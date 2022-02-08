@@ -124,7 +124,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale }) =>
     'Cache-Control',
     'public, s-maxage=10, stale-while-revalidate=59'
   );
-  console.log(`locale: ${locale || 'en'}`);
+  console.log(`locale: ${locale ?? 'en'}`);
   try {
     const data = await get_data();
     if (!client?.accessToken) {
@@ -136,7 +136,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale }) =>
         console.error("Failed to register as guest:", error);
         return {
           props: {
-            ...(await serverSideTranslations(locale || 'en', ['common'])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
             image_events: []
           }
         };
@@ -173,7 +173,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale }) =>
 
     return {
       props: {
-        ...(await serverSideTranslations(locale || 'en', ['common'])),
+        ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         image_events: image_events
       }
     };

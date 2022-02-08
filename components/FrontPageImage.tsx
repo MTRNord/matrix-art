@@ -58,7 +58,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
             try {
                 const profile = await this.context.client.getProfile(this.props.event.sender);
                 this.setState({
-                    displayname: profile.displayname || this.props.event.sender,
+                    displayname: profile.displayname ?? this.props.event.sender,
                 });
             } catch (error) {
                 console.debug(`Failed to fetch profile for user ${this.props.event.sender}:`, error);
@@ -99,7 +99,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
         const caption_text = event.content['m.caption'].filter(cap => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
             const possible_text_caption = (cap as { "m.text": string; });
-            return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") || possible_text_caption["m.text"];
+            return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") ?? possible_text_caption["m.text"];
         }).map(cap => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
             const possible_text_caption = (cap as { "m.text": string; });
@@ -122,7 +122,7 @@ export default class FrontPageImage extends PureComponent<Props, State> {
         const caption_text = event.content['m.caption'].filter(cap => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
             const possible_text_caption = (cap as { "m.text": string; });
-            return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") || possible_text_caption["m.text"];
+            return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") ?? possible_text_caption["m.text"];
         }).map(cap => {
             const possible_html_caption = (cap as { body: string; mimetype: string; });
             const possible_text_caption = (cap as { "m.text": string; });

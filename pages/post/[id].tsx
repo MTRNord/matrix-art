@@ -112,7 +112,7 @@ class Post extends PureComponent<Props, State> {
                     const profile = await client.getProfile(image_event.sender);
                     this.setState({
                         image_event: image_event as MatrixImageEvents,
-                        displayname: profile.displayname || image_event.sender,
+                        displayname: profile.displayname ?? image_event.sender,
                     });
 
                 } catch (error) {
@@ -456,7 +456,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale, quer
                     console.error("Failed to register as guest:", error);
                     return {
                         props: {
-                            ...(await serverSideTranslations(locale || 'en', ['common'])),
+                            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
                             directory_data: JSON.stringify(data),
                             event_id: event_id,
                             hasFullyLoaded: false,
@@ -485,19 +485,19 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale, quer
                     const profile = await client.getProfile(image_event.sender);
                     return {
                         props: {
-                            ...(await serverSideTranslations(locale || 'en', ['common'])),
+                            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
                             image_event: image_event as MatrixImageEvents,
                             event_id: event_id,
                             hasFullyLoaded: true,
                             displayname: profile.displayname,
-                            avatar_url: profile.avatar_url || null // eslint-disable-line unicorn/no-null
+                            avatar_url: profile.avatar_url ?? null // eslint-disable-line unicorn/no-null
                         }
                     };
                 } catch (error) {
                     console.debug(`Failed to fetch profile for user ${image_event.sender}:`, error);
                     return {
                         props: {
-                            ...(await serverSideTranslations(locale || 'en', ['common'])),
+                            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
                             image_event: image_event as MatrixImageEvents,
                             event_id: event_id,
                             hasFullyLoaded: true,
@@ -509,14 +509,14 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale, quer
         } catch {
             return {
                 notFound: true, props: {
-                    ...(await serverSideTranslations(locale || 'en', ['common'])),
+                    ...(await serverSideTranslations(locale ?? 'en', ['common'])),
                 }
             };
         }
     }
     return {
         notFound: true, props: {
-            ...(await serverSideTranslations(locale || 'en', ['common'])),
+            ...(await serverSideTranslations(locale ?? 'en', ['common'])),
         }
     };
 
