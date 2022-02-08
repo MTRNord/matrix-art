@@ -4,7 +4,13 @@ import { PureComponent, ReactNode } from "react";
 
 class Custom500 extends PureComponent {
     render(): ReactNode {
-        return <h1>500 - Server-side error occurred</h1>;
+        return (
+            <div className="m-0 w-full">
+                <div className="text-base text-white flex flex-row justify-center">
+                    <h1>500 - Server-side error occurred</h1>
+                </div>
+            </div>
+        );
     }
 }
 

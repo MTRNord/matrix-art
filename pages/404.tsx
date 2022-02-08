@@ -4,7 +4,14 @@ import { PureComponent, ReactNode } from "react";
 
 class Custom404 extends PureComponent {
     render(): ReactNode {
-        return <h1>404 - Page Not Found</h1>;
+        return (
+            <div className="m-0 w-full">
+                <div className="text-base text-white flex flex-row justify-center">
+                    <h1 className="text-2xl">404 - Page Not Found</h1>
+                </div>
+            </div>
+        );
+        return;
     }
 }
 
