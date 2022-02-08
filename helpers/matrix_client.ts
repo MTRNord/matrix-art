@@ -31,7 +31,7 @@ export default class MatrixClient {
         this.serverUrl = this.storage.getItem("serverUrl");
         this._userId = this.storage.getItem("userId");
         this._accessToken = this.storage.getItem("accessToken");
-        this._isGuest = this.storage.getItem("isGuest");
+        this._isGuest = this.storage.getItem("isGuest") === undefined ? undefined : (this.storage.getItem("isGuest") === "true");
         this.serverName = this.storage.getItem("serverName");
         this._profileRoomId = this.storage.getItem("profileRoomId");
     }
@@ -44,7 +44,7 @@ export default class MatrixClient {
         this.storage.setOrDelete("userId", this._userId);
         this.storage.setOrDelete("accessToken", this._accessToken);
         this.storage.setOrDelete("serverName", this.serverName);
-        this.storage.setOrDelete("isGuest", this._isGuest);
+        this.storage.setOrDelete("isGuest", this._isGuest?.toString());
     }
 
     private generateToken(len: number) {

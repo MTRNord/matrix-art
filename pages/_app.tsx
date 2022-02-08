@@ -30,7 +30,8 @@ function MyApp({ Component, pageProps }: AppProps) {
             guest_client: guest_client,
             is_generating_guest: false,
           }}
-        ><div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
+        >
+          <div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
             <HeaderNoSSR></HeaderNoSSR>
             <main className='mb-auto lg:pt-20 pt-52 z-0'>
               <Component {...pageProps} />

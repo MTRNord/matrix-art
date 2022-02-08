@@ -22,7 +22,11 @@ export default class Storage {
         if (typeof window !== "undefined") {
             version = window.localStorage.getItem("version");
         } else {
-            version = this.nodeLocalStorage?.getItem("version");
+            try {
+                version = this.nodeLocalStorage?.getItem("version");
+            } catch {
+                //No-op
+            }
         }
         if (version === undefined || version === null || version !== STORAGE_VERSION.toString()) {
             if (typeof window !== "undefined") {
@@ -35,35 +39,51 @@ export default class Storage {
         }
     }
 
-    getItem(key: string): any {
+    getItem(key: string): string | undefined {
         this.ensureVersion();
         if (typeof window !== "undefined") {
-            return window.localStorage.getItem(this.prefix + key);
+            const item = window.localStorage.getItem(this.prefix + key);
+            if (item === null) {
+                return undefined;
+            }
+            return item;
         } else {
-            return this.nodeLocalStorage?.getItem(this.prefix + key);
+            try {
+                return this.nodeLocalStorage?.getItem(this.prefix + key);
+            } catch {
+                //No-op
+            }
         }
     }
 
-    setItem(key: string, value: any): any {
+    setItem(key: string, value: string): void {
         this.ensureVersion();
         if (typeof window !== "undefined") {
             return window.localStorage.setItem(this.prefix + key, value);
         } else {
-            return this.nodeLocalStorage?.setItem(this.prefix + key, value);
+            try {
+                return this.nodeLocalStorage?.setItem(this.prefix + key, value);
+            } catch {
+                //No-op
+            }
         }
     }
 
-    removeItem(key: string): any {
+    removeItem(key: string): void {
         this.ensureVersion();
         if (typeof window !== "undefined") {
             return window.localStorage.removeItem(this.prefix + key);
         } else {
-            return this.nodeLocalStorage?.removeItem(this.prefix + key);
+            try {
+                return this.nodeLocalStorage?.removeItem(this.prefix + key);
+            } catch {
+                //No-op
+            }
         }
     }
 
-    setOrDelete(key: string, value: any) {
-        if (value !== null || value !== undefined) {
+    setOrDelete(key: string, value: string | undefined): void {
+        if (value) {
             this.setItem(key, value);
         } else {
             this.removeItem(key);
