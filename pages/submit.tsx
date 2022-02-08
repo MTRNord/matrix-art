@@ -7,8 +7,6 @@ import { PureComponent, ReactNode } from "react";
 import { FileRejection } from "react-dropzone";
 import { toast } from "react-toastify";
 import { ClientContext } from "../components/ClientContext";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
 import MainSubmissionForm from "../components/submit_page/main";
 import { DropCallbacks, StartSubmit } from "../components/submit_page/start";
 
@@ -95,7 +93,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
 
     render(): ReactNode {
         return (
-            <div className='min-h-full flex flex-col bg-[#f8f8f8] dark:bg-[#06070D]'>
+            <>
                 <Head>
                     <title key="title">Matrix Art | {i18n?.t("Submit Post")}</title>
                     <meta property="og:title" content="Matrix Art | Submit Post" key="og-title" />
@@ -103,7 +101,6 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
                     <meta name="twitter:title" content="Matrix Art | Submit Post" key="og-twitter-title" />
                     <meta property="og:type" content="website" key="og-type" />
                 </Head>
-                <Header></Header>
                 <div className='z-[100] sticky lg:top-[4.9rem] top-[12.5rem] bg-[#fefefe]/[.95] dark:bg-[#12161D]'>
                     <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
                         <h1 className='text-xl text-gray-900 dark:text-gray-200 font-bold'>{i18n?.t("Submit Image")}</h1>
@@ -111,8 +108,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
                 </div>
                 {this.renderStage()}
                 <div className="flex-grow"></div>
-                <Footer></Footer>
-            </div>
+            </>
         );
     }
     renderStage(): ReactNode {

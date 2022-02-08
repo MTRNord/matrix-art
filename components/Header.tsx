@@ -4,6 +4,7 @@ import User from "../helpers/db/Users";
 import { ClientContext } from "./ClientContext";
 import { i18n } from 'next-i18next';
 import { toast } from "react-toastify";
+import dynamic from "next/dynamic";
 
 type Props = {
 };
@@ -47,8 +48,6 @@ export default class Header extends PureComponent<Props, State> {
         if (this.state.loading) {
             return <></>;
         }
-        const loggedIn = (typeof window === "undefined") ? undefined : !this.context.client.isGuest;
-        console.log("loggedIn:", loggedIn);
         return (
             <>
                 <header className='bg-[#f8f8f8] dark:bg-[#06070D] flex fixed top-0 left-0 right-0 lg:h-20 h-auto z-[100] items-center lg:flex-row flex-col shadow-black drop-shadow-xl'>
@@ -80,20 +79,61 @@ export default class Header extends PureComponent<Props, State> {
                         </div>
 
                         <nav className='flex lg:flex-shrink-0 my-4'>
-                            {loggedIn !== undefined && !loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/register">{i18n?.t('Join')}</Link></span> : undefined}
-                            {loggedIn !== undefined && !loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/login">{i18n?.t('Log in')}</Link></span> : undefined}
-                            {loggedIn !== undefined && loggedIn && this.state.directory_data.some(thing => thing.mxid == this.context.client.userId) ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>{i18n?.t('Profile')}</Link></span> : undefined}
-                            {loggedIn !== undefined && loggedIn ? <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout')}</Link></span> : undefined}
+                            <ClientContext.Consumer>
+                                {value => {
+                                    const isGuest = value.client.isGuest === null || value.client.isGuest === undefined ? true : value.client.isGuest;
+                                    console.log("isGuest1:", isGuest);
+                                    if (typeof window !== "undefined" && isGuest) {
+                                        return (
+                                            <>
+                                                <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/register">{i18n?.t('Join')}</Link></span>
+                                                <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/login">{i18n?.t('Log in')}</Link></span>
+                                            </>
+                                        );
+                                    } else if (typeof window !== "undefined") {
+                                        if (this.state.directory_data.some(thing => thing.mxid == this.context.client.userId)) {
+                                            return (
+                                                <>
+                                                    <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>{i18n?.t('Profile')}</Link></span>
+                                                    <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout')}</Link></span>
+                                                </>
+                                            );
+                                        }
+                                        return <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout')}</Link></span>;
+
+                                    }
+                                }}
+                            </ClientContext.Consumer>
                         </nav>
                     </div>
-                    {loggedIn !== undefined && loggedIn ? <span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] lg:h-7 h-0'></span> : <span className="mr-4"></span>}
+
+                    <ClientContext.Consumer>
+                        {value => {
+                            const isGuest = value.client.isGuest === null || value.client.isGuest === undefined ? true : value.client.isGuest;
+                            console.log("isGuest2:", isGuest);
+                            if (typeof window !== "undefined" && !isGuest) {
+                                return (<span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] lg:h-7 h-0'></span>);
+                            } else {
+                                return (<span className="mr-4"></span>);
+                            }
+                        }}
+                    </ClientContext.Consumer>
+
                     <div className='relative lg:m-0'>
                         <div className='flex'>
-                            {
-                                this.state.directory_data.some(thing => thing.mxid == this.context.client.userId) ?
-                                    (loggedIn !== undefined && loggedIn ? <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Submit')}</a></Link> : undefined) :
-                                    (loggedIn !== undefined && loggedIn ? <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Setup Account')}</a> : undefined)
-                            }
+                            <ClientContext.Consumer>
+                                {value => {
+                                    const isGuest = value.client.isGuest === null || value.client.isGuest === undefined ? true : value.client.isGuest;
+                                    console.log("isGuest3:", isGuest);
+                                    if (typeof window !== "undefined" && !isGuest) {
+                                        if (this.state.directory_data.some(thing => thing.mxid == this.context.client.userId)) {
+                                            return <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Submit')}</a></Link>;
+                                        } else {
+                                            return <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Setup Account')}</a>;
+                                        }
+                                    }
+                                }}
+                            </ClientContext.Consumer>
                         </div>
                     </div>
                 </header>

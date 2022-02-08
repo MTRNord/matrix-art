@@ -8,9 +8,7 @@ import { PureComponent } from "react";
 import { toast } from "react-toastify";
 import { ClientContext } from "../../components/ClientContext";
 import { EditIcon } from "../../components/editIcon";
-import Footer from "../../components/Footer";
 import FrontPageImage from "../../components/FrontPageImage";
-import Header from "../../components/Header";
 import { UploadIcon } from "../../components/uploadIcon";
 import { BannerEvent, MatrixArtProfile, MatrixEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import { constMatrixArtServer } from "../../helpers/matrix_client";
@@ -148,7 +146,7 @@ class Profile extends PureComponent<Props, State> {
 
     renderNotFound() {
         return (
-            <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+            <>
                 <Head>
                     <title key="title">Matrix Art | {i18n?.t("User not Found")}</title>
                     <meta property="og:title" content="Matrix Art | User not Found" key="og-title" />
@@ -156,11 +154,8 @@ class Profile extends PureComponent<Props, State> {
                     <meta name="twitter:title" content="Matrix Art | User not Found" key="og-twitter-title" />
                     <meta property="og:type" content="website" key="og-type" />
                 </Head>
-                <Header></Header>
-                <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
-                    <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The User you wanted does not exist!")}</h1>
-                </main>
-            </div>
+                <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The User you wanted does not exist!")}</h1>
+            </>
         );
     }
 
@@ -208,7 +203,7 @@ class Profile extends PureComponent<Props, State> {
         const image_events = events.filter((event) => (event.type == "m.image_gallery" || event.type == "m.image") && !event.unsigned?.redacted_because) as MatrixImageEvents[];
         // TODO opengraph shows mxid instead of displayname
         return (
-            <div className="min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]">
+            <>
                 <Head>
                     <title key="title">Matrix Art | {displayname}</title>
                     <meta property="og:title" content={`Matrix Art | ${displayname}`} key="og-title" />
@@ -216,129 +211,126 @@ class Profile extends PureComponent<Props, State> {
                     <meta name="twitter:title" content={`Matrix Art | ${displayname}`} key="og-twitter-title" />
                     <meta property="og:type" content="website" key="og-type" />
                 </Head>
-                <Header></Header>
-                <main className='w-full mb-auto lg:pt-20 pt-56 z-0 bg-[#f8f8f8] dark:bg-[#06070D]'>
-                    {banner_event ? <div style={{
-                        backgroundImage: `url(${this.context.client.thumbnailLink((banner_event as BannerEvent).content["m.file"].url, "scale", (banner_event as BannerEvent).content["m.image"].width - 1, (banner_event as BannerEvent).content["m.image"].height - 1)})`
-                    }}
-                        className="fixed top-14 w-full h-[32.5rem] bg-cover lg:bg-[position:50%]"
-                    ></div> : undefined}
-                    <div className="relative w-full">
-                        <div className="relative mb-0 min-h-[43.75rem]">
-                            <div id="transparent_gradient" className="absolute left-0 right-0 top-[39rem] bottom-0 bg-[#f8f8f8] dark:bg-[#06070D]"></div>
-                            <div className="px-14 relative pt-[8.5rem] lg:pt-[15.5rem] pb-96 ">
-                                <div className="relative mt-0">
-                                    <div className="relative inline-flex z-[1] mb-10">
-                                        <span>
-                                            <div className="block relative">
-                                                {/* TODO fallback*/}
-                                                {
-                                                    isLoggedInUser ?
-                                                        (
-                                                            avatar_url ? (
-                                                                <>
-                                                                    <label htmlFor="avatar-upload" className="rounded-md flex justify-center items-center cursor-pointer grayscale-0 hover:grayscale transition-all ease-in-out duration-300" style={{ height: "100px", width: "100px" }}>
-                                                                        <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
-                                                                        <div className="min-h-[48px] min-w-[48px] absolute left-[20%] rounded-full bg-slate-700/40 p-1 flex justify-center items-center"><EditIcon className="invert-0 duration-300 transition-all ease-in-out hover:invert" /></div>
-                                                                    </label>
-                                                                    <input className="hidden" id="avatar-upload" type="file" accept="image/*" onChange={this.handleAvatarUpload.bind(this)} />
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <label htmlFor="avatar-upload" className="rounded-md bg-slate-500 flex justify-center items-center cursor-pointer" style={{ height: "100px", width: "100px" }}>
-                                                                        <UploadIcon />
-                                                                    </label>
-                                                                    <input className="hidden" id="avatar-upload" type="file" accept="image/*" onChange={this.handleAvatarUpload.bind(this)} />
-                                                                </>
-                                                            )
+                {banner_event ? <div style={{
+                    backgroundImage: `url(${this.context.client.thumbnailLink((banner_event as BannerEvent).content["m.file"].url, "scale", (banner_event as BannerEvent).content["m.image"].width - 1, (banner_event as BannerEvent).content["m.image"].height - 1)})`
+                }}
+                    className="fixed top-14 w-full h-[32.5rem] bg-cover lg:bg-[position:50%]"
+                ></div> : undefined}
+                <div className="relative w-full">
+                    <div className="relative mb-0 min-h-[43.75rem]">
+                        <div id="transparent_gradient" className="absolute left-0 right-0 top-[39rem] bottom-0 bg-[#f8f8f8] dark:bg-[#06070D]"></div>
+                        <div className="px-14 relative pt-[8.5rem] lg:pt-[15.5rem] pb-96 ">
+                            <div className="relative mt-0">
+                                <div className="relative inline-flex z-[1] mb-10">
+                                    <span>
+                                        <div className="block relative">
+                                            {/* TODO fallback*/}
+                                            {
+                                                isLoggedInUser ?
+                                                    (
+                                                        avatar_url ? (
+                                                            <>
+                                                                <label htmlFor="avatar-upload" className="rounded-md flex justify-center items-center cursor-pointer grayscale-0 hover:grayscale transition-all ease-in-out duration-300" style={{ height: "100px", width: "100px" }}>
+                                                                    <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
+                                                                    <div className="min-h-[48px] min-w-[48px] absolute left-[20%] rounded-full bg-slate-700/40 p-1 flex justify-center items-center"><EditIcon className="invert-0 duration-300 transition-all ease-in-out hover:invert" /></div>
+                                                                </label>
+                                                                <input className="hidden" id="avatar-upload" type="file" accept="image/*" onChange={this.handleAvatarUpload.bind(this)} />
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <label htmlFor="avatar-upload" className="rounded-md bg-slate-500 flex justify-center items-center cursor-pointer" style={{ height: "100px", width: "100px" }}>
+                                                                    <UploadIcon />
+                                                                </label>
+                                                                <input className="hidden" id="avatar-upload" type="file" accept="image/*" onChange={this.handleAvatarUpload.bind(this)} />
+                                                            </>
                                                         )
-                                                        : (avatar_url ?
-                                                            <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
-                                                            :
-                                                            <div className="rounded-md bg-slate-500 flex justify-center items-center" style={{ height: "100px", width: "100px" }}></div>
-                                                        )
-                                                }
-                                            </div>
-                                        </span>
-                                        <div className="ml-5 flex flex-col justify-center">
-                                            <h1 className="font-extrabold text-3xl lg:text-5xl text-gray-200 mt-[-1rem] flex items-center gap-1">{editingUsername ? <input onChange={this.handleUsernameInputChange.bind(this)} className="placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" type="text" placeholder={i18n?.t("Set a displayname")} value={displayname}></input> : <span>{displayname}</span>}{isLoggedInUser ? <EditIcon className="cursor-pointer" onClick={this.onClickEditUsername.bind(this)} /> : undefined}</h1>
+                                                    )
+                                                    : (avatar_url ?
+                                                        <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
+                                                        :
+                                                        <div className="rounded-md bg-slate-500 flex justify-center items-center" style={{ height: "100px", width: "100px" }}></div>
+                                                    )
+                                            }
                                         </div>
+                                    </span>
+                                    <div className="ml-5 flex flex-col justify-center">
+                                        <h1 className="font-extrabold text-3xl lg:text-5xl text-gray-200 mt-[-1rem] flex items-center gap-1">{editingUsername ? <input onChange={this.handleUsernameInputChange.bind(this)} className="placeholder:text-gray-900 text-gray-900 rounded py-1.5 px-2" type="text" placeholder={i18n?.t("Set a displayname")} value={displayname}></input> : <span>{displayname}</span>}{isLoggedInUser ? <EditIcon className="cursor-pointer" onClick={this.onClickEditUsername.bind(this)} /> : undefined}</h1>
                                     </div>
                                 </div>
-                                <div className="relative w-full h-14">
-                                    <div className="min-h-0">
-                                        <nav className="w-full h-14 box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D] overflow-scroll lg:overflow-hidden">
-                                            <span id="magic-spacer"></span>
-                                            <div className="flex items-center w-full h-full overflow-hidden whitespace-nowrap box-border min-w-fit">
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("Home")}</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("Gallery")}</a></Link>
-                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("About")}</a></Link>
-                                            </div>
-                                            <div className="pr-4">
-                                                {/*TODO Share menu here*/}
-                                            </div>
+                            </div>
+                            <div className="relative w-full h-14">
+                                <div className="min-h-0">
+                                    <nav className="w-full h-14 box-border flex items-center bg-[#f8f8f8] dark:bg-[#06070D] overflow-scroll lg:overflow-hidden">
+                                        <span id="magic-spacer"></span>
+                                        <div className="flex items-center w-full h-full overflow-hidden whitespace-nowrap box-border min-w-fit">
+                                            <Link href={`/profile/${encodeURIComponent(mxid)}`} passHref><a className={`text-base font-bold text-gray-900 dark:text-gray-200 capitalize ml-2 px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("Home")}</a></Link>
+                                            <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("Gallery")}</a></Link>
+                                            <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`text-base font-bold text-gray-900 dark:text-[#b1b1b9] capitalize px-8 relative box-border inline-flex grow-0 shrink-[1] basis-auto items-center h-full decoration-[none] brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all`}>{i18n?.t("About")}</a></Link>
+                                        </div>
+                                        <div className="pr-4">
+                                            {/*TODO Share menu here*/}
+                                        </div>
+                                        <div>
+                                            <button id="reflection" className="min-w-[7.75rem] h-14 min-h-[2.5rem] box-border m-0 shadow-none rounded-none relative overflow-hidden z-0 border-none outline-none px-5 flex items-center justify-center cursor-pointer bg-teal-400 text-gray-900 text-sm font-bold">{i18n?.t("Follow")}</button>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </div>
+                            <div className="w-full bg-transparent">
+                                <div className="pt-5">
+                                    <div className="flex flex-col-reverse lg:flex-row">
+                                        <div className="mr-16 overflow-hidden pb-4 flex-[auto]">
                                             <div>
-                                                <button id="reflection" className="min-w-[7.75rem] h-14 min-h-[2.5rem] box-border m-0 shadow-none rounded-none relative overflow-hidden z-0 border-none outline-none px-5 flex items-center justify-center cursor-pointer bg-teal-400 text-gray-900 text-sm font-bold">{i18n?.t("Follow")}</button>
+                                                <section className="pb-4 block">
+                                                    <div className="w-full flex items-center mt-8 mb-4">
+                                                        <h2 className="font-bold text-lg tracking-[.3px] leading-[1.22] text-gray-900 dark:text-gray-200">{i18n?.t("Gallery")}</h2>
+                                                        <div className="ml-4 flex flex-[1] items-center relative justify-end">
+                                                            <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>See All</a></Link>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <ul className='flex flex-wrap gap-1'>{image_events.map(event => <FrontPageImage show_nsfw={true} event={event} imageHeight="286px" key={(event as MatrixEventBase).event_id} />)}
+                                                            <li className='grow-[10]'></li>
+                                                        </ul>
+                                                    </div>
+                                                </section>
                                             </div>
-                                        </nav>
-                                    </div>
-                                </div>
-                                <div className="w-full bg-transparent">
-                                    <div className="pt-5">
-                                        <div className="flex flex-col-reverse lg:flex-row">
-                                            <div className="mr-16 overflow-hidden pb-4 flex-[auto]">
-                                                <div>
-                                                    <section className="pb-4 block">
-                                                        <div className="w-full flex items-center mt-8 mb-4">
-                                                            <h2 className="font-bold text-lg tracking-[.3px] leading-[1.22] text-gray-900 dark:text-gray-200">{i18n?.t("Gallery")}</h2>
-                                                            <div className="ml-4 flex flex-[1] items-center relative justify-end">
-                                                                <Link href={`/profile/${encodeURIComponent(mxid)}/gallery`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>See All</a></Link>
+                                        </div>
+                                        <div className="lg:w-[37.5rem] w-full flex-none">
+                                            <div>
+                                                <section className="pb-4 block">
+                                                    <div className="w-full flex items-center mt-8 mb-4">
+                                                        <h2 className="font-bold text-gray-900 dark:text-gray-200 text-lg tracking--[.3px] leading-[1.22] max-w-[90%] mr-auto overflow-hidden text-ellipsis whitespace-nowrap">{i18n?.t("About {{displayname}}", { displayname: displayname })}</h2>
+                                                        <div className="ml-4 flex flex-[1] items-center relative justify-end">
+                                                            <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>{i18n?.t("More")}</a></Link>
+                                                        </div>
+                                                    </div>
+                                                    <div className="bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95] pt-7 w-ull flex flex-col box-border tracking--[.3px] text-gray-900 dark:text-gray-200">
+                                                        {profile_event?.content["matrixart.profile.description"] ? <div className="px-8">
+                                                            <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
+                                                                {profile_event ? profile_event.content["matrixart.profile.description"] : undefined}
                                                             </div>
-                                                        </div>
-                                                        <div>
-                                                            <ul className='flex flex-wrap gap-1'>{image_events.map(event => <FrontPageImage show_nsfw={true} event={event} imageHeight="286px" key={(event as MatrixEventBase).event_id} />)}
-                                                                <li className='grow-[10]'></li>
-                                                            </ul>
-                                                        </div>
-                                                    </section>
-                                                </div>
-                                            </div>
-                                            <div className="lg:w-[37.5rem] w-full flex-none">
-                                                <div>
-                                                    <section className="pb-4 block">
-                                                        <div className="w-full flex items-center mt-8 mb-4">
-                                                            <h2 className="font-bold text-gray-900 dark:text-gray-200 text-lg tracking--[.3px] leading-[1.22] max-w-[90%] mr-auto overflow-hidden text-ellipsis whitespace-nowrap">{i18n?.t("About {{displayname}}", { displayname: displayname })}</h2>
-                                                            <div className="ml-4 flex flex-[1] items-center relative justify-end">
-                                                                <Link href={`/profile/${encodeURIComponent(mxid)}/about`} passHref><a className={`font-regular text-xs tracking-[1.3px] leading-[1.22] ml-6 uppercase whitespace-nowrap text-gray-900 dark:text-gray-200 hover:opacity-100 opacity-0 transition-opacity duration-[25ms]`}>{i18n?.t("More")}</a></Link>
+                                                        </div> : undefined}
+                                                        {profile_event?.content["matrixart.profile.pronouns"] ? <div className="px-8">
+                                                            <div className="mb-8 flex items-start justify-between flex-wrap w-full">
+                                                                <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("Pronouns")}</div>
+                                                                <div className="w-full justify-items-end">{profile_event ? profile_event.content["matrixart.profile.pronouns"] : undefined}</div>
                                                             </div>
-                                                        </div>
-                                                        <div className="bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95] pt-7 w-ull flex flex-col box-border tracking--[.3px] text-gray-900 dark:text-gray-200">
-                                                            {profile_event?.content["matrixart.profile.description"] ? <div className="px-8">
-                                                                <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
-                                                                    {profile_event ? profile_event.content["matrixart.profile.description"] : undefined}
-                                                                </div>
-                                                            </div> : undefined}
-                                                            {profile_event?.content["matrixart.profile.pronouns"] ? <div className="px-8">
-                                                                <div className="mb-8 flex items-start justify-between flex-wrap w-full">
-                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("Pronouns")}</div>
-                                                                    <div className="w-full justify-items-end">{profile_event ? profile_event.content["matrixart.profile.pronouns"] : undefined}</div>
-                                                                </div>
-                                                            </div> : undefined}
-                                                            {profile_event?.content["matrixart.profile.links"] ? <div className="px-8">
-                                                                <div className="mb-8 flex items-start justify-between flex-wrap w-full">
-                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("Follow me on")}</div>
-                                                                    <div className="w-full max-w-[21.5rem] grid gap-4 auto-cols-[2.75rem] auto-rows-[2.75rem] grid-flow-col justify-items-end">{/*TODO Social Icons */}</div>
-                                                                </div>
-                                                            </div> : undefined}
-                                                            {profile_event?.content["matrixart.profile.biography"] ? <div className="px-8">
-                                                                <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
-                                                                    <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("My Bio")}</div>
-                                                                    <div className="text-base font-regular">{profile_event ? profile_event.content["matrixart.profile.biography"] : undefined}</div>
-                                                                </div>
-                                                            </div> : undefined}
-                                                        </div>
-                                                    </section>
-                                                </div>
+                                                        </div> : undefined}
+                                                        {profile_event?.content["matrixart.profile.links"] ? <div className="px-8">
+                                                            <div className="mb-8 flex items-start justify-between flex-wrap w-full">
+                                                                <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("Follow me on")}</div>
+                                                                <div className="w-full max-w-[21.5rem] grid gap-4 auto-cols-[2.75rem] auto-rows-[2.75rem] grid-flow-col justify-items-end">{/*TODO Social Icons */}</div>
+                                                            </div>
+                                                        </div> : undefined}
+                                                        {profile_event?.content["matrixart.profile.biography"] ? <div className="px-8">
+                                                            <div className="mb-8 font-regular text-base leading-[1.22] whitespace-pre-wrap">
+                                                                <div className="h-11 mb-0 text-xs flex items-center uppercase text-gray-700 dark:text-gray-400">{i18n?.t("My Bio")}</div>
+                                                                <div className="text-base font-regular">{profile_event ? profile_event.content["matrixart.profile.biography"] : undefined}</div>
+                                                            </div>
+                                                        </div> : undefined}
+                                                    </div>
+                                                </section>
                                             </div>
                                         </div>
                                     </div>
@@ -346,9 +338,8 @@ class Profile extends PureComponent<Props, State> {
                             </div>
                         </div>
                     </div>
-                </main>
-                <Footer></Footer>
-            </div>
+                </div>
+            </>
         );
     }
 

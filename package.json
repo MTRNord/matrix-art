@@ -25,7 +25,7 @@
     "next": "12.0.10",
     "next-i18next": "10.2.0",
     "node-localstorage": "2.2.1",
-    "png-chunks-extract": "^1.0.0",
+    "png-chunks-extract": "1.0.0",
     "prop-types": "15.8.1",
     "react": "17.0.2",
     "react-blurhash": "0.1.3",

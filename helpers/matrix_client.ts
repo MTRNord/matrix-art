@@ -5,9 +5,8 @@ import Storage from './storage';
 export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL || "https://matrix.art.midnightthoughts.space";
 
 export default class MatrixClient {
-    private joinedRooms: Map<string, string>;
-    private userProfileCache: Map<string, any>;
-    private storage!: Storage;
+    private joinedRooms: Map<string, string> = new Map<string, string>(); // room alias -> room ID
+    private userProfileCache: Map<string, { displayname?: string; avatar_url?: string; }> = new Map(); // user_id -> {display_name; avatar;}
     private serverUrl?: string;
     private _userId?: string;
     private _accessToken?: string;
@@ -20,27 +19,21 @@ export default class MatrixClient {
     get accessToken(): string | undefined {
         return this._accessToken;
     }
-    get isGuest(): boolean {
-        return this._isGuest === undefined ? true : this._isGuest;
+    get isGuest(): boolean | undefined {
+        return this._isGuest;
     }
 
     get profileRoomId(): string | undefined {
         return this.joinedRooms.get(`#${this.userId}`) || this._profileRoomId;
     }
 
-    constructor(storage: Storage) {
-        this.joinedRooms = new Map(); // room alias -> room ID
-        this.userProfileCache = new Map(); // user_id -> {display_name; avatar;}
-        if (!storage) {
-            return;
-        }
-        this.storage = storage;
-        this.serverUrl = storage.getItem("serverUrl");
-        this._userId = storage.getItem("userId");
-        this._accessToken = storage.getItem("accessToken");
-        this._isGuest = storage.getItem("isGuest");
-        this.serverName = storage.getItem("serverName");
-        this._profileRoomId = storage.getItem("profileRoomId");
+    constructor(private storage: Storage) {
+        this.serverUrl = this.storage.getItem("serverUrl");
+        this._userId = this.storage.getItem("userId");
+        this._accessToken = this.storage.getItem("accessToken");
+        this._isGuest = this.storage.getItem("isGuest");
+        this.serverName = this.storage.getItem("serverName");
+        this._profileRoomId = this.storage.getItem("profileRoomId");
     }
 
     private saveAuthState() {
@@ -213,7 +206,7 @@ export default class MatrixClient {
     async setDisplayname(newDisplayname: string) {
         if (process.env.NEXT_PUBLIC_ENV === "test") {
             if (this.userProfileCache.has(this.userId!)) {
-                const old = this.userProfileCache.get(this.userId!);
+                const old = this.userProfileCache.get(this.userId!)!;
                 old.displayname = newDisplayname;
                 this.userProfileCache.set(this.userId!, old);
             } else {
@@ -231,7 +224,7 @@ export default class MatrixClient {
             }
         );
         if (this.userProfileCache.has(this.userId!)) {
-            const old = this.userProfileCache.get(this.userId!);
+            const old = this.userProfileCache.get(this.userId!)!;
             old.displayname = newDisplayname;
             this.userProfileCache.set(this.userId!, old);
         } else {
@@ -242,7 +235,7 @@ export default class MatrixClient {
     async setAvatarUrl(newAvatarUrl: string) {
         if (process.env.NEXT_PUBLIC_ENV === "test") {
             if (this.userProfileCache.has(this.userId!)) {
-                const old = this.userProfileCache.get(this.userId!);
+                const old = this.userProfileCache.get(this.userId!)!;
                 old.avatar_url = newAvatarUrl;
                 this.userProfileCache.set(this.userId!, old);
             } else {
@@ -260,7 +253,7 @@ export default class MatrixClient {
             }
         );
         if (this.userProfileCache.has(this.userId!)) {
-            const old = this.userProfileCache.get(this.userId!);
+            const old = this.userProfileCache.get(this.userId!)!;
             old.avatar_url = newAvatarUrl;
             this.userProfileCache.set(this.userId!, old);
         } else {
@@ -278,7 +271,7 @@ export default class MatrixClient {
         }
         if (this.userProfileCache.has(userId)) {
             console.debug(`Returning cached copy of ${userId}'s profile`);
-            return this.userProfileCache.get(userId);
+            return this.userProfileCache.get(userId)!;
         }
         console.debug(`Fetching fresh copy of ${userId}'s profile`);
         const data = await this.fetchJson(
@@ -318,7 +311,7 @@ export default class MatrixClient {
                 }
             );
             if (isMyself) {
-                this.storage.setOrDelete("profileRoomId", data.room_id);
+                this.storage?.setOrDelete("profileRoomId", data.room_id);
             }
             this.joinedRooms.set(roomAlias, data.room_id);
             return data.room_id;
@@ -362,7 +355,7 @@ export default class MatrixClient {
                 );
                 this.joinedRooms.set(roomAlias, data.room_id);
 
-                this.storage.setOrDelete("profileRoomId", data.room_id);
+                this.storage?.setOrDelete("profileRoomId", data.room_id);
                 return data.room_id;
             } else {
                 throw error;

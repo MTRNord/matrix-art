@@ -6,6 +6,13 @@ import React from 'react';
 import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import { appWithTranslation } from 'next-i18next';
+import Footer from '../components/Footer';
+import dynamic from 'next/dynamic';
+
+const HeaderNoSSR = dynamic(
+  () => import('../components/Header'),
+  { ssr: false }
+);
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -23,8 +30,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             guest_client: guest_client,
             is_generating_guest: false,
           }}
-        >
-          <Component {...pageProps} />
+        ><div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
+            <HeaderNoSSR></HeaderNoSSR>
+            <main className='mb-auto lg:pt-20 pt-52 z-0'>
+              <Component {...pageProps} />
+            </main>
+            <Footer></Footer>
+          </div>
         </ClientContext.Provider>
       </React.StrictMode>
       <ToastContainer

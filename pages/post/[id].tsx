@@ -9,13 +9,11 @@ import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { PureComponent, ReactNode } from "react";
 import { client, ClientContext } from "../../components/ClientContext";
-import Header from "../../components/Header";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
 import { constMatrixArtServer } from "../../helpers/matrix_client";
 import { get_data } from "../api/directory";
 import { isImageEvent, isImageGalleryEvent } from '../../components/FrontPageImage';
 import Link from 'next/link';
-import Footer from '../../components/Footer';
 import { Blurhash } from 'react-blurhash';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next';
@@ -184,7 +182,7 @@ class Post extends PureComponent<Props, State> {
 
         if (!hasFullyLoaded) {
             return (
-                <div className='min-h-full bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]'>
+                <>
                     <Head>
                         <title key="title">Matrix Art | {i18n?.t("Post not Found")}</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
@@ -192,19 +190,16 @@ class Post extends PureComponent<Props, State> {
                         <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
                         <meta property="og:type" content="website" key="og-type" />
                     </Head>
-                    <Header></Header>
-                    <main className='w-full lg:pt-20 pt-52 z-0'>
-                        <div className="m-0 w-full">
-                            <div className="loader">{i18n?.t("Loading")}...</div>
-                        </div>
-                    </main>
-                </div>
+                    <div className="m-0 w-full">
+                        <div className="loader">{i18n?.t("Loading")}...</div>
+                    </div>
+                </>
             );
         }
 
         if (!this.props.event_id || !this.props.event_id?.startsWith("$")) {
             return (
-                <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <>
                     <Head>
                         <title key="title">Matrix Art | {i18n?.t("Post not Found")}</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
@@ -212,12 +207,8 @@ class Post extends PureComponent<Props, State> {
                         <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
                         <meta property="og:type" content="website" key="og-type" />
                     </Head>
-                    <Header></Header>
-                    <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
-                        <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The Post you wanted does not exist!")}</h1>
-                    </main>
-                    <Footer></Footer>
-                </div>
+                    <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The Post you wanted does not exist!")}</h1>
+                </>
             );
         }
 
@@ -232,7 +223,7 @@ class Post extends PureComponent<Props, State> {
                 return (possible_html_caption.body && possible_html_caption.mimetype === "text/html") ? possible_html_caption.body : possible_text_caption["m.text"];
             })[0];
             return (
-                <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <>
                     <Head>
                         <title key="title">Matrix Art | {post_title}</title>
                         <meta property="og:title" content={`Matrix Art | ${post_title}`} key="og-title" />
@@ -243,28 +234,23 @@ class Post extends PureComponent<Props, State> {
                         <meta name="citation_authors" content={displayname} />
                         <meta name="citation_journal_title" content="Matrix-Art" />
                     </Head>
-                    <Header></Header>
-
-                    <main className='mb-auto lg:pt-20 pt-56 z-0'>
-                        {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : (isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>)}
-                        <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[25rem] flex flex-col items-center">
-                            <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
-                                <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
-                                <h3 className="cursor-pointer mt-0 mb-4 text-xl text-gray-900 dark:text-gray-200 font-normal inline-flex">
-                                    {avatar_url ? <span className="block object-cover rounded-full mr-4"> <img className="object-cover rounded-full" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> </span> : undefined}
-                                    <Link href={"/profile/" + encodeURIComponent(image_event.sender)} passHref><span className='hover:text-teal-400'>{displayname}</span></Link>
-                                </h3>
-                                {isImageEvent(image_event) ? (image_event.content['matrixart.license'] ? <h3 className='cursor-pointer mt-0 mb-4 text-l text-gray-600 dark:text-gray-400 font-normal'>{i18n?.t("License:")} <a href={this.getLicenseUrl(image_event.content['matrixart.license'])} title={this.getLicenseName(image_event.content['matrixart.license'])}>{this.getLicenseName(image_event.content['matrixart.license'])}</a></h3> : undefined) : undefined}
-                                {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : (isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>)}
-                            </div>
+                    {isImageGalleryEvent(image_event) ? this.renderImageGalleryEvent(image_event, post_title) : (isImageEvent(image_event) ? this.renderSingleImageEvent(image_event, post_title) : <div key={(image_event as MatrixEventBase).event_id}></div>)}
+                    <div className="grow bg-[#f8f8f8] dark:bg-[#06070D] min-h-[25rem] flex flex-col items-center">
+                        <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
+                            <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
+                            <h3 className="cursor-pointer mt-0 mb-4 text-xl text-gray-900 dark:text-gray-200 font-normal inline-flex">
+                                {avatar_url ? <span className="block object-cover rounded-full mr-4"> <img className="object-cover rounded-full" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> </span> : undefined}
+                                <Link href={"/profile/" + encodeURIComponent(image_event.sender)} passHref><span className='hover:text-teal-400'>{displayname}</span></Link>
+                            </h3>
+                            {isImageEvent(image_event) ? (image_event.content['matrixart.license'] ? <h3 className='cursor-pointer mt-0 mb-4 text-l text-gray-600 dark:text-gray-400 font-normal'>{i18n?.t("License:")} <a href={this.getLicenseUrl(image_event.content['matrixart.license'])} title={this.getLicenseName(image_event.content['matrixart.license'])}>{this.getLicenseName(image_event.content['matrixart.license'])}</a></h3> : undefined) : undefined}
+                            {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : (isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>)}
                         </div>
-                    </main>
-                    <Footer></Footer>
-                </div>
+                    </div>
+                </>
             );
         } else {
             return (
-                <div className="min-h-full flex flex-col justify-between bg-[#fefefe]/[.95] dark:bg-[#14181E]/[.95]">
+                <>
                     <Head>
                         <title key="title">Matrix Art | {i18n?.t("Post not Found")}</title>
                         <meta property="og:title" content="Matrix Art | Post not Found" key="og-title" />
@@ -272,12 +258,8 @@ class Post extends PureComponent<Props, State> {
                         <meta name="twitter:title" content="Matrix Art | Post not Found" key="og-twitter-title" />
                         <meta property="og:type" content="website" key="og-type" />
                     </Head>
-                    <Header></Header>
-                    <main className='mb-auto lg:pt-20 pt-56 z-0 flex items-center justify-center'>
-                        <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The Post you wanted does not exist!")}</h1>
-                    </main>
-                    <Footer></Footer>
-                </div>
+                    <h1 className="text-6xl text-gray-900 dark:text-gray-200 font-bold">{i18n?.t("The Post you wanted does not exist!")}</h1>
+                </>
             );
         }
 

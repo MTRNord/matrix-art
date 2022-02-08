@@ -1,4 +1,4 @@
-const STORAGE_VERSION = 3;
+const STORAGE_VERSION = 4;
 export default class Storage {
     private prefix;
     private nodeLocalStorage?: any;
@@ -63,7 +63,7 @@ export default class Storage {
     }
 
     setOrDelete(key: string, value: any) {
-        if (value) {
+        if (value !== null || value !== undefined) {
             this.setItem(key, value);
         } else {
             this.removeItem(key);
