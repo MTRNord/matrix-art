@@ -14,6 +14,7 @@ WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 RUN npx browserslist@latest --update-db
+RUN mkdir ./localstorage && echo "4" >> ./localstorage/version
 RUN npm run build && npm install --only=production --ignore-scripts --prefer-offline
 
 # Production image, copy all the files and run next
