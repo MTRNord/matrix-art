@@ -15,6 +15,12 @@
     "unicorn/prefer-ternary": "off",
     "unicorn/no-lonely-if": "off",
     "unicorn/empty-brace-spaces": "off",
-    "unicorn/prefer-node-protocol": "off"
+    "unicorn/prefer-node-protocol": "off",
+    "unicorn/import-style": [
+      "error",
+      {
+        "checkDynamicImport": false
+      }
+    ]
   }
 }
