@@ -58,9 +58,10 @@ class Profile extends PureComponent<Props, State> {
     }
 
     async componentDidMount() {
+        console.log(`client: ${this.context.client}`);
         // auto-register as a guest if not logged in
         if (!this.context.client?.accessToken) {
-            this.registerAsGuest();
+            await this.registerAsGuest();
         } else {
             console.log("Already logged in");
         }
@@ -80,7 +81,7 @@ class Profile extends PureComponent<Props, State> {
         try {
             const profile = await this.context.client?.getProfile(this.props.mxid);
             this.setState({
-                displayname: profile?.displayname ?? this.props.event.sender,
+                displayname: profile?.displayname ?? this.props.mxid,
                 avatar_url: profile?.avatar_url,
             });
         } catch (error) {

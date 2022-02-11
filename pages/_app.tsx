@@ -5,7 +5,7 @@ import { ClientContext, } from '../components/ClientContext';
 import React, { PureComponent } from 'react';
 import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
-import { appWithTranslation } from 'next-i18next';
+import { appWithTranslation, i18n } from 'next-i18next';
 import Footer from '../components/Footer';
 import dynamic from 'next/dynamic';
 import MatrixClient from "../helpers/matrix_client";
@@ -41,6 +41,13 @@ class MyApp extends PureComponent<AppProps, State> {
 
   render() {
     const Component = this.props.Component;
+    if (!this.state.client || !this.state.guest_client) {
+      return (
+        <div className="m-0 w-full">
+          <div className="loader">{i18n?.t("Loading")}...</div>
+        </div>
+      );
+    }
     return (
       <>
         <Head>
