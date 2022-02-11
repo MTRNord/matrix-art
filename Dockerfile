@@ -1,6 +1,6 @@
 # Install dependencies only when needed
 # Use node:17-slim
-FROM node@sha256:7c6fb786d7a9f38f5c0f0fa4845615c91441ab7406b13c808357b3b53e599bb2 AS deps
+FROM node@sha256:5e1c50b7686bcaf01b800966bf52d83a2530ea521290bba6eb0fd4eae3025055 AS deps
 # for some reason the $PATH get lost inside kaniko, if we re-set it by hand it seems to work. 
 ENV PATH="$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 WORKDIR /app
@@ -9,7 +9,7 @@ RUN npm ci
 
 # Rebuild the source code only when needed
 # Use node:17-slim
-FROM node@sha256:7c6fb786d7a9f38f5c0f0fa4845615c91441ab7406b13c808357b3b53e599bb2 AS builder
+FROM node@sha256:5e1c50b7686bcaf01b800966bf52d83a2530ea521290bba6eb0fd4eae3025055 AS builder
 WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
@@ -19,7 +19,7 @@ RUN npm run build && npm install --only=production --ignore-scripts --prefer-off
 
 # Production image, copy all the files and run next
 # Use node:17-slim
-FROM node@sha256:7c6fb786d7a9f38f5c0f0fa4845615c91441ab7406b13c808357b3b53e599bb2 AS runner
+FROM node@sha256:5e1c50b7686bcaf01b800966bf52d83a2530ea521290bba6eb0fd4eae3025055 AS runner
 WORKDIR /app
 
 ENV NODE_ENV production
