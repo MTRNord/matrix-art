@@ -150,7 +150,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
         toast.dismiss();
 
 
-        if (this.context.client.isGuest) {
+        if (this.context.client?.isGuest) {
             toast.error(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{i18n?.t("You are not logged in!")}</div>, {
                 autoClose: false
             });
@@ -184,7 +184,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
             const nsfw = `${index}_nsfw`;
             const file = this.props.files[index];
 
-            if (!this.context.client.profileRoomId) {
+            if (!this.context.client?.profileRoomId) {
                 toast.error(() => <div><h2 className="text-xl text-white">{i18n?.t("Error")}</h2><br />{i18n?.t("Unable to find your profile Room. Please log in again!")}</div>, {
                     autoClose: false
                 });
@@ -229,8 +229,14 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                 sender: this.context.client.userId!
             });
         }
-        const token = await this.context.client.getOpenidToken();
-        await fetch("/api/submitSearch", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, docs: posts_for_search }) });
+        const token = await this.context.client?.getOpenidToken();
+        await fetch("/api/submitSearch", {
+            method: "POST", body: JSON.stringify({
+                access_token: token,
+                user_id: this.context.client?.userId,
+                docs: posts_for_search
+            })
+        });
         await this.props.router.replace("/");
         this.setState({ submit_in_process: false });
     }
@@ -374,7 +380,7 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
     private async generateThumbnailsAndUpload(image_infos: { width: number; height: number; img: HTMLImageElement; }[]): Promise<{ index: number; meta: ThumbnailData; }[]> {
         const thumbnails = [];
-        if (!this.context.client.isGuest) {
+        if (!this.context.client?.isGuest) {
             const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
             for (const index of range) {
                 const file = this.props.files[index];
@@ -399,8 +405,10 @@ class MainSubmissionForm extends PureComponent<Props, State> {
                     thumbnails.push({ index: index, meta: thumbnail_data.thumbnail_meta });
                 }
 
-                const result = await this.context.client.uploadFile(thumbnail_data.thumbnail);
-                thumbnail_data.thumbnail_meta["m.thumbnail"]![0].url = result;
+                const result = await this.context.client?.uploadFile(thumbnail_data.thumbnail);
+                if (result) {
+                    thumbnail_data.thumbnail_meta["m.thumbnail"]![0].url = result;
+                }
                 thumbnails.push({ index: index, meta: thumbnail_data.thumbnail_meta });
             }
         }
@@ -409,11 +417,11 @@ class MainSubmissionForm extends PureComponent<Props, State> {
 
     private async doUpload() {
         const urls = [];
-        if (!this.context.client.isGuest) {
+        if (!this.context.client?.isGuest) {
             const range = [...Array(this.props.files.length).keys()]; // eslint-disable-line unicorn/new-for-builtins
             for (const index of range) {
                 const file = this.props.files[index];
-                const result = await this.context.client.uploadFile(file);
+                const result = await this.context.client?.uploadFile(file);
                 urls.push({ index: index, url: result });
             }
         }

@@ -81,8 +81,7 @@ export default class Header extends PureComponent<Props, State> {
                         <nav className='flex lg:flex-shrink-0 my-4'>
                             <ClientContext.Consumer>
                                 {value => {
-                                    const isGuest = value.client.isGuest === null || value.client.isGuest === undefined ? true : value.client.isGuest;
-                                    console.log("isGuest1:", isGuest);
+                                    const isGuest = value.client?.isGuest === null || value.client?.isGuest === undefined ? true : value.client.isGuest;
                                     if (typeof window !== "undefined" && isGuest) {
                                         return (
                                             <>
@@ -91,10 +90,10 @@ export default class Header extends PureComponent<Props, State> {
                                             </>
                                         );
                                     } else if (typeof window !== "undefined") {
-                                        if (this.state.directory_data.some(thing => thing.mxid == this.context.client.userId)) {
+                                        if (this.state.directory_data.some(thing => thing.mxid == this.context.client?.userId)) {
                                             return (
                                                 <>
-                                                    <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href={"/profile/" + encodeURIComponent(this.context.client.userId!)}>{i18n?.t('Profile') ?? 'Profile'}</Link></span>
+                                                    <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href={"/profile/" + encodeURIComponent(this.context.client?.userId ?? "")}>{i18n?.t('Profile') ?? 'Profile'}</Link></span>
                                                     <span className='px-4 h-auto min-w-[1.5rem] flex items-center whitespace-nowrap cursor-pointer text-gray-900 dark:text-gray-200 font-medium brightness-100 hover:brightness-75 duration-200 ease-in-out transition-all'><Link href="/logout/">{i18n?.t('Logout') ?? 'Logout'}</Link></span>
                                                 </>
                                             );
@@ -109,8 +108,7 @@ export default class Header extends PureComponent<Props, State> {
 
                     <ClientContext.Consumer>
                         {value => {
-                            const isGuest = value.client.isGuest === null || value.client.isGuest === undefined ? true : value.client.isGuest;
-                            console.log("isGuest2:", isGuest);
+                            const isGuest = value.client?.isGuest === null || value.client?.isGuest === undefined ? true : value.client.isGuest;
                             if (typeof window !== "undefined" && !isGuest) {
                                 return (<span className='lg:opacity-100 opacity-0 inline-block bg-gray-900 dark:bg-gray-200 w-[1px] lg:h-7 h-0'></span>);
                             } else {
@@ -123,10 +121,9 @@ export default class Header extends PureComponent<Props, State> {
                         <div className='flex'>
                             <ClientContext.Consumer>
                                 {value => {
-                                    const isGuest = value.client.isGuest === null || value.client.isGuest === undefined ? true : value.client.isGuest;
-                                    console.log("isGuest3:", isGuest);
+                                    const isGuest = value.client?.isGuest === null || value.client?.isGuest === undefined ? true : value.client.isGuest;
                                     if (typeof window !== "undefined" && !isGuest) {
-                                        if (this.state.directory_data.some(thing => thing.mxid == this.context.client.userId)) {
+                                        if (this.state.directory_data.some(thing => thing.mxid == this.context.client?.userId)) {
                                             return <Link href="/submit"><a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Submit') ?? 'Submit'}</a></Link>;
                                         } else {
                                             return <a className='inline-flex justify-center items-center text-teal-400 hover:text-teal-200 bg-transparent relative h-14 min-w-[9.25rem] z-[2] cursor-pointer font-bold'>{i18n?.t('Setup Account') ?? 'Setup Account'}</a>;

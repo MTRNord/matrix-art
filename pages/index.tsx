@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import { MatrixEventBase, MatrixImageEvents } from '../helpers/event_types';
 import Head from 'next/head';
-import { client, ClientContext } from '../components/ClientContext';
+import { ClientContext } from '../components/ClientContext';
 import FrontPageImage, { isImageGalleryEvent } from '../components/FrontPageImage';
 import { GetServerSideProps, InferGetServerSidePropsType, } from 'next';
 import { get_data } from './api/directory';
-import { constMatrixArtServer } from '../helpers/matrix_client';
+import MatrixClient, { constMatrixArtServer } from '../helpers/matrix_client';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n, WithTranslation } from 'next-i18next';
+import Storage from "../helpers/storage";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & WithTranslation & {
 };
@@ -124,7 +125,8 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale }) =>
     'Cache-Control',
     'public, s-maxage=10, stale-while-revalidate=59'
   );
-  console.log(`locale: ${locale ?? 'en'}`);
+
+  const client = await MatrixClient.init(await Storage.init("main"));
   try {
     const data = await get_data();
     if (!client?.accessToken) {

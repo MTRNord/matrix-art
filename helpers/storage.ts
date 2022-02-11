@@ -1,92 +1,128 @@
-const STORAGE_VERSION = 4;
+const STORAGE_VERSION = 5;
 export default class Storage {
-    private prefix;
-    private nodeLocalStorage?: any;
-    constructor(prefix: string) {
-        this.prefix = prefix;
+    private constructor(private prefix: string, private localFolder?: string) { }
+
+    public static async init(prefix: string): Promise<Storage> {
         if (typeof window === "undefined") {
-            var LocalStorage = require('node-localstorage').LocalStorage; // eslint-disable-line unicorn/prefer-module
-            var path = require('node:path'); // eslint-disable-line unicorn/prefer-module
-            var fs = require('node:fs'); // eslint-disable-line unicorn/prefer-module
+            const path = await import('path');
+            const fs = await import('fs');
             const dir = path.join(process.cwd(), "localstorage");
-            if (!fs.existsSync(dir)) {
+            const dir_with_prefix = path.join(dir, prefix);
+            try {
+                await fs.promises.stat(dir);
+                await fs.promises.stat(dir_with_prefix);
+            } catch {
                 try {
-                    fs.mkdirSync(dir);
+                    await fs.promises.mkdir(dir);
+                    await fs.promises.mkdir(dir_with_prefix);
                 } catch { console.log("race while folder was checked"); }
             }
-            this.nodeLocalStorage = new LocalStorage(dir);
+            return new Storage(prefix, dir);
+        } else {
+            return new Storage(prefix);
         }
     }
-    private ensureVersion() {
+
+    private async ensureVersion() {
         let version;
         if (typeof window !== "undefined") {
-            version = window.localStorage.getItem("version");
+            const localforage = await import('localforage');
+            version = await localforage.getItem("version");
         } else {
             try {
-                version = this.nodeLocalStorage?.getItem("version");
+                const fs = await import('fs');
+                const path = await import('path');
+                version = await fs.promises.readFile(path.join(this.localFolder!, "version"), { encoding: "utf8" });
             } catch {
                 //No-op
             }
         }
         if (version === undefined || version === null || version !== STORAGE_VERSION.toString()) {
             if (typeof window !== "undefined") {
-                window.localStorage.clear();
-                window.localStorage.setItem("version", STORAGE_VERSION.toString());
+                const localforage = await import('localforage');
+                await localforage.clear();
+                await localforage.setItem("version", STORAGE_VERSION.toString());
             } else {
-                this.nodeLocalStorage?.clear();
-                this.nodeLocalStorage?.setItem("version", STORAGE_VERSION.toString());
+                const fs = await import('fs');
+                const path = await import('path');
+                try {
+                    const stat = await fs.promises.stat(path.join(this.localFolder!, "version"));
+                    if (stat.isFile()) {
+                        await fs.promises.unlink(path.join(this.localFolder!, "version"));
+                    }
+                } catch { }
+                await fs.promises.writeFile(path.join(this.localFolder!, "version"), STORAGE_VERSION.toString(), { encoding: "utf8", flag: "w+" });
             }
         }
     }
 
-    getItem(key: string): string | undefined {
+    async getItem(key: string): Promise<string | undefined> {
         this.ensureVersion();
         if (typeof window !== "undefined") {
-            const item = window.localStorage.getItem(this.prefix + key);
+            const localforage = await import('localforage');
+            const item = await localforage.getItem(this.prefix + key) as string | null;
             if (item === null) {
                 return undefined;
             }
             return item;
         } else {
             try {
-                return this.nodeLocalStorage?.getItem(this.prefix + key);
+                const fs = await import('fs');
+                const path = await import('path');
+                try {
+                    const stat = await fs.promises.stat(path.join(this.localFolder!, this.prefix, key));
+                    if (stat.isFile()) {
+                        return fs.promises.readFile(path.join(this.localFolder!, this.prefix, key), { encoding: "utf8" });
+                    }
+                } catch { }
             } catch {
                 //No-op
             }
         }
     }
 
-    setItem(key: string, value: string): void {
+    async setItem(key: string, value: string): Promise<void> {
         this.ensureVersion();
         if (typeof window !== "undefined") {
-            return window.localStorage.setItem(this.prefix + key, value);
+            const localforage = await import('localforage');
+            await localforage.setItem(this.prefix + key, value);
         } else {
             try {
-                return this.nodeLocalStorage?.setItem(this.prefix + key, value);
+                const fs = await import('fs');
+                const path = await import('path');
+                return await fs.promises.writeFile(path.join(this.localFolder!, this.prefix, key), value, { encoding: "utf8", flag: "w+" });
             } catch {
                 //No-op
             }
         }
     }
 
-    removeItem(key: string): void {
+    async removeItem(key: string): Promise<void> {
         this.ensureVersion();
         if (typeof window !== "undefined") {
-            return window.localStorage.removeItem(this.prefix + key);
+            const localforage = await import('localforage');
+            await localforage.removeItem(this.prefix + key);
         } else {
             try {
-                return this.nodeLocalStorage?.removeItem(this.prefix + key);
+                const fs = await import('fs');
+                const path = await import('path');
+                try {
+                    const stat = await fs.promises.stat(path.join(this.localFolder!, this.prefix, key));
+                    if (stat.isFile()) {
+                        await fs.promises.unlink(path.join(this.localFolder!, this.prefix, key));
+                    }
+                } catch { }
             } catch {
                 //No-op
             }
         }
     }
 
-    setOrDelete(key: string, value: string | undefined): void {
+    async setOrDelete(key: string, value: string | undefined): Promise<void> {
         if (value) {
-            this.setItem(key, value);
+            await this.setItem(key, value);
         } else {
-            this.removeItem(key);
+            await this.removeItem(key);
         }
     }
 }

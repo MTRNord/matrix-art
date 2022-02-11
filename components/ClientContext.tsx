@@ -1,12 +1,16 @@
 import React, { Context } from "react";
-import Client from "../helpers/matrix_client";
-import Storage from "../helpers/storage";
+import MatrixClient from "../helpers/matrix_client";
 
-// Actual user client
-const client = new Client(new Storage("main"));
+type ContextData = {
+    client?: MatrixClient;
+    guest_client?: MatrixClient;
+    is_generating_guest: boolean;
+};
 
-// Client used if logged in for the Homepage to prevent excessive room joining
-const guest_client = new Client(new Storage("guest"));
-const ClientContext: Context<{ client: Client; guest_client: Client; is_generating_guest: boolean; }> = React.createContext<{ client: Client; guest_client: Client; is_generating_guest: boolean; }>({ client: client, guest_client: guest_client, is_generating_guest: false });
+const ClientContext: Context<ContextData> = React.createContext<ContextData>({
+    client: undefined,
+    guest_client: undefined,
+    is_generating_guest: false
+});
 
-export { ClientContext, client, guest_client };
+export { ClientContext };

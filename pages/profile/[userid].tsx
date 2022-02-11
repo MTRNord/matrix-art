@@ -78,10 +78,10 @@ class Profile extends PureComponent<Props, State> {
             return;
         }
         try {
-            const profile = await this.context.client.getProfile(this.props.mxid);
+            const profile = await this.context.client?.getProfile(this.props.mxid);
             this.setState({
-                displayname: profile.displayname ?? this.props.event.sender,
-                avatar_url: profile.avatar_url,
+                displayname: profile?.displayname ?? this.props.event.sender,
+                avatar_url: profile?.avatar_url,
             });
         } catch (error) {
             console.debug(`Failed to fetch profile for user ${this.props.mxid}:`, error);
@@ -89,7 +89,7 @@ class Profile extends PureComponent<Props, State> {
         await this.loadEvents();
 
         this.setState({
-            isLoggedInUser: this.props.mxid === this.context.client.userId && !this.context.client.isGuest
+            isLoggedInUser: this.props.mxid === this.context.client?.userId && !this.context.client.isGuest
         });
     }
 
@@ -112,7 +112,7 @@ class Profile extends PureComponent<Props, State> {
         if (isLoadingImages || hasFullyLoaded) {
             return;
         }
-        const client = this.context.client.isGuest ? this.context.client : this.context.guest_client;
+        const client = this.context.client?.isGuest ? this.context.client : this.context.guest_client;
         this.setState({
             isLoadingImages: true,
         });
@@ -121,15 +121,26 @@ class Profile extends PureComponent<Props, State> {
             try {
                 roomId = await client?.followUser("#" + this.props.mxid);
             } catch {
+                this.setState({
+                    hasFullyLoaded: true,
+                    isLoadingImages: false
+                });
                 console.error("Unbable to join room");
                 return;
             }
+            if (!roomId) {
+                this.setState({
+                    hasFullyLoaded: true,
+                    isLoadingImages: false
+                });
+                return;
+            }
             const events = await client?.getTimeline(roomId, 100, { limit: 30, types: ["m.image", "m.image_gallery", "matrixart.profile", "matrixart.profile_banner"] });
-            const profile_event = events.find((event) => event.type === "matrixart.profile" && event.sender === this.props.mxid);
-            const filtered_events = events.filter(event => event.type !== "m.room.member" && event.type !== "m.room.topic" && event.type !== "m.room.name" && event.type !== "m.room.power_levels");
-            console.log("Adding", filtered_events.length, "items");
+            const profile_event = events?.find((event) => event.type === "matrixart.profile" && event.sender === this.props.mxid);
+            const filtered_events = events?.filter(event => event.type !== "m.room.member" && event.type !== "m.room.topic" && event.type !== "m.room.name" && event.type !== "m.room.power_levels");
+            console.log("Adding", filtered_events?.length, "items");
             this.setState({
-                events: filtered_events,
+                events: filtered_events ?? [],
                 profile_event: profile_event as MatrixArtProfile | undefined,
             });
         } catch (error) {
@@ -171,7 +182,7 @@ class Profile extends PureComponent<Props, State> {
                 editingUsername: true
             });
         } else {
-            await this.context.client.setDisplayname(this.state.displayname);
+            await this.context.client?.setDisplayname(this.state.displayname);
             this.setState({
                 editingUsername: false
             });
@@ -185,8 +196,11 @@ class Profile extends PureComponent<Props, State> {
             return;
         }
         const file = files[0];
-        const mxc = await this.context.client.uploadFile(file);
-        await this.context.client.setAvatarUrl(mxc);
+        const mxc = await this.context.client?.uploadFile(file);
+        if (!mxc) {
+            return;
+        }
+        await this.context.client?.setAvatarUrl(mxc);
         this.setState({
             avatar_url: mxc,
         });
@@ -212,7 +226,7 @@ class Profile extends PureComponent<Props, State> {
                     <meta property="og:type" content="website" key="og-type" />
                 </Head>
                 {banner_event ? <div style={{
-                    backgroundImage: `url(${this.context.client.thumbnailLink((banner_event as BannerEvent).content["m.file"].url, "scale", (banner_event as BannerEvent).content["m.image"].width - 1, (banner_event as BannerEvent).content["m.image"].height - 1)})`
+                    backgroundImage: `url(${this.context.client?.thumbnailLink((banner_event as BannerEvent).content["m.file"].url, "scale", (banner_event as BannerEvent).content["m.image"].width - 1, (banner_event as BannerEvent).content["m.image"].height - 1)})`
                 }}
                     className="fixed top-14 w-full h-[32.5rem] bg-cover lg:bg-[position:50%]"
                 ></div> : undefined}
@@ -231,7 +245,7 @@ class Profile extends PureComponent<Props, State> {
                                                         avatar_url ? (
                                                             <>
                                                                 <label htmlFor="avatar-upload" className="rounded-md flex justify-center items-center cursor-pointer grayscale-0 hover:grayscale transition-all ease-in-out duration-300" style={{ height: "100px", width: "100px" }}>
-                                                                    <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
+                                                                    <img className="block object-cover rounded-md" src={this.context.client?.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
                                                                     <div className="min-h-[48px] min-w-[48px] absolute left-[20%] rounded-full bg-slate-700/40 p-1 flex justify-center items-center"><EditIcon className="invert-0 duration-300 transition-all ease-in-out hover:invert" /></div>
                                                                 </label>
                                                                 <input className="hidden" id="avatar-upload" type="file" accept="image/*" onChange={this.handleAvatarUpload.bind(this)} />
@@ -246,7 +260,7 @@ class Profile extends PureComponent<Props, State> {
                                                         )
                                                     )
                                                     : (avatar_url ?
-                                                        <img className="block object-cover rounded-md" src={this.context.client.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
+                                                        <img className="block object-cover rounded-md" src={this.context.client?.downloadLink(avatar_url)!} height="100" width="100" alt={displayname} title={displayname} />
                                                         :
                                                         <div className="rounded-md bg-slate-500 flex justify-center items-center" style={{ height: "100px", width: "100px" }}></div>
                                                     )

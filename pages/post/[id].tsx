@@ -8,9 +8,9 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { NextRouter, withRouter } from "next/router";
 import { PureComponent, ReactNode } from "react";
-import { client, ClientContext } from "../../components/ClientContext";
+import { ClientContext } from "../../components/ClientContext";
 import { ImageEvent, ImageGalleryEvent, MatrixEventBase, MatrixImageEvents } from "../../helpers/event_types";
-import { constMatrixArtServer } from "../../helpers/matrix_client";
+import MatrixClient, { constMatrixArtServer } from "../../helpers/matrix_client";
 import { get_data } from "../api/directory";
 import { isImageEvent, isImageGalleryEvent } from '../../components/FrontPageImage';
 import Link from 'next/link';
@@ -18,6 +18,7 @@ import { Blurhash } from 'react-blurhash';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next';
 import { toast } from 'react-toastify';
+import Storage from "../../helpers/storage";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
@@ -88,7 +89,7 @@ class Post extends PureComponent<Props, State> {
             return;
         }
         console.log("hi");
-        const client = this.context.client.isGuest ? this.context.client : this.context.guest_client;
+        const client = this.context.client?.isGuest ? this.context.client : this.context.guest_client;
         this.setState({
             isLoadingImages: true,
         });
@@ -100,19 +101,30 @@ class Post extends PureComponent<Props, State> {
                 try {
                     roomId = await client?.followUser(user.public_user_room);
                 } catch {
+                    this.setState({
+                        isLoadingImages: false,
+                        hasFullyLoaded: true
+                    });
                     console.error("Unbable to join room");
                     continue;
                 }
+                if (!roomId) {
+                    this.setState({
+                        isLoadingImages: false,
+                        hasFullyLoaded: true
+                    });
+                    return;
+                }
                 const events = await client?.getTimeline(roomId, 100); // Filter events by type
-                const image_event = events.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
-                if (image_event == undefined) {
+                const image_event = events?.find((event) => (event.type === "m.image_gallery" || event.type === "m.image") && event.event_id === event_id);
+                if (!image_event) {
                     continue;
                 }
                 try {
-                    const profile = await client.getProfile(image_event.sender);
+                    const profile = await client?.getProfile(image_event.sender);
                     this.setState({
                         image_event: image_event as MatrixImageEvents,
-                        displayname: profile.displayname ?? image_event.sender,
+                        displayname: profile?.displayname ?? image_event.sender,
                     });
 
                 } catch (error) {
@@ -239,7 +251,7 @@ class Post extends PureComponent<Props, State> {
                         <div className="flex flex-col items-start lg:min-w-[60rem] lg:w-[60rem]">
                             <h1 className="my-4 text-6xl text-gray-900 dark:text-gray-200 font-bold">{post_title}</h1>
                             <h3 className="cursor-pointer mt-0 mb-4 text-xl text-gray-900 dark:text-gray-200 font-normal inline-flex">
-                                {avatar_url ? <span className="block object-cover rounded-full mr-4"> <img className="object-cover rounded-full" src={this.context.client.downloadLink(avatar_url)!} height="24" width="24" alt={displayname} title={displayname} /> </span> : undefined}
+                                {avatar_url ? <span className="block object-cover rounded-full mr-4"> <img className="object-cover rounded-full" src={this.context.client?.downloadLink(avatar_url)} height="24" width="24" alt={displayname} title={displayname} /> </span> : undefined}
                                 <Link href={"/profile/" + encodeURIComponent(image_event.sender)} passHref><span className='hover:text-teal-400'>{displayname}</span></Link>
                             </h3>
                             {isImageEvent(image_event) ? (image_event.content['matrixart.license'] ? <h3 className='cursor-pointer mt-0 mb-4 text-l text-gray-600 dark:text-gray-400 font-normal'>{i18n?.t("License:")} <a href={this.getLicenseUrl(image_event.content['matrixart.license'])} title={this.getLicenseName(image_event.content['matrixart.license'])}>{this.getLicenseName(image_event.content['matrixart.license'])}</a></h3> : undefined) : undefined}
@@ -289,7 +301,7 @@ class Post extends PureComponent<Props, State> {
 
     renderSingleImageEvent(imageEvent: ImageEvent, caption: string) {
         const url = this.context.client?.downloadLink(imageEvent.content["m.file"].url);
-        const thumbnail_url = this.context.client.thumbnailLink(imageEvent.content['m.file'].url, "scale", imageEvent.content['m.image'].width - 1, imageEvent.content['m.image'].height - 1);
+        const thumbnail_url = this.context.client?.thumbnailLink(imageEvent.content['m.file'].url, "scale", imageEvent.content['m.image'].width - 1, imageEvent.content['m.image'].height - 1);
 
         if (!url || !thumbnail_url) {
             return <></>;
@@ -445,6 +457,8 @@ export const getServerSideProps: GetServerSideProps = async ({ res, locale, quer
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'
     );
+
+    const client = await MatrixClient.init(await Storage.init("main"));
     if (event_id && event_id.startsWith("$")) {
         try {
             const data = await get_data();

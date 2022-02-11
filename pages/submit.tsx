@@ -31,7 +31,7 @@ class Submit extends PureComponent<Props, State> implements DropCallbacks {
     onDropError: (fileRejections: FileRejection[]) => void;
 
     async componentDidMount() {
-        if (this.context.client.isGuest) {
+        if (this.context.client?.isGuest) {
             this.props.router.replace("/login");
         }
     }

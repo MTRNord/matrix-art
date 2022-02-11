@@ -21,7 +21,7 @@ export type SearchMedia = {
     license: string;
     sender: string;
     nsfw: string;
-    mxc_url: string;
+    mxc_url?: string;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

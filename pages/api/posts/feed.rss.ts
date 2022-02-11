@@ -3,10 +3,10 @@ import Cors from 'cors';
 import { NextApiRequest, NextApiResponse } from "next";
 import { Feed } from "feed";
 import { get_data } from "../directory";
-import { client } from "../../../components/ClientContext";
-import { constMatrixArtServer } from "../../../helpers/matrix_client";
+import MatrixClient, { constMatrixArtServer } from "../../../helpers/matrix_client";
 import { MatrixImageEvents } from "../../../helpers/event_types";
 import { isImageGalleryEvent } from "../../../components/FrontPageImage";
+import Storage from "../../../helpers/storage";
 
 // Initialize the cors middleware
 const cors = initMiddleware(
@@ -41,6 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const directory = await get_data();
+        const client = await MatrixClient.init(await Storage.init("main"));
 
         if (!client?.accessToken) {
             try {

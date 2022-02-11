@@ -7,12 +7,6 @@ export const constMatrixArtServer = process.env.NEXT_PUBLIC_DEFAULT_SERVER_URL ?
 export default class MatrixClient {
     private joinedRooms: Map<string, string> = new Map<string, string>(); // room alias -> room ID
     private userProfileCache: Map<string, { displayname?: string; avatar_url?: string; }> = new Map(); // user_id -> {display_name; avatar;}
-    private serverUrl?: string;
-    private _userId?: string;
-    private _accessToken?: string;
-    private _isGuest?: boolean;
-    private _profileRoomId?: string;
-    private serverName?: string;
     get userId(): string | undefined {
         return this._userId;
     }
@@ -27,32 +21,42 @@ export default class MatrixClient {
         return this.joinedRooms.get(`#${this.userId}`) ?? this._profileRoomId;
     }
 
-    constructor(private storage: Storage) {
-        this.serverUrl = this.storage.getItem("serverUrl");
-        this._userId = this.storage.getItem("userId");
-        this._accessToken = this.storage.getItem("accessToken");
-        this._isGuest = this.storage.getItem("isGuest") === undefined ? undefined : (this.storage.getItem("isGuest") === "true");
-        this.serverName = this.storage.getItem("serverName");
-        this._profileRoomId = this.storage.getItem("profileRoomId");
+    private constructor(
+        private storage: Storage,
+        private serverUrl?: string,
+        private _userId?: string,
+        private _accessToken?: string,
+        private _isGuest?: boolean,
+        private serverName?: string,
+        private _profileRoomId?: string
+    ) {
     }
 
-    private saveAuthState() {
-        if (!this.storage) {
-            return;
-        }
-        this.storage.setOrDelete("serverUrl", this.serverUrl);
-        this.storage.setOrDelete("userId", this._userId);
-        this.storage.setOrDelete("accessToken", this._accessToken);
-        this.storage.setOrDelete("serverName", this.serverName);
-        this.storage.setOrDelete("isGuest", this._isGuest?.toString());
+    public static async init(storage: Storage): Promise<MatrixClient> {
+        const serverUrl = await storage.getItem("serverUrl");
+        const _userId = await storage.getItem("userId");
+        const _accessToken = await storage.getItem("accessToken");
+        const _isGuest = await storage.getItem("isGuest") === undefined ? undefined : (await storage.getItem("isGuest") === "true");
+        const serverName = await storage.getItem("serverName");
+        const _profileRoomId = await storage.getItem("profileRoomId");
+        return new MatrixClient(storage, serverUrl, _userId, _accessToken, _isGuest, serverName, _profileRoomId);
     }
 
-    private generateToken(len: number) {
+    private async saveAuthState() {
+        await this.storage.setOrDelete("serverUrl", this.serverUrl);
+        await this.storage.setOrDelete("userId", this._userId);
+        await this.storage.setOrDelete("accessToken", this._accessToken);
+        await this.storage.setOrDelete("serverName", this.serverName);
+        await this.storage.setOrDelete("isGuest", this._isGuest?.toString());
+    }
+
+    private async generateToken(len: number) {
         var arr = new Uint8Array(len / 2);
         if (typeof window !== "undefined") {
             window.crypto.getRandomValues(arr);
         } else {
-            require("crypto").randomFillSync(arr); // eslint-disable-line unicorn/prefer-module
+            const crypto = await import("crypto");
+            crypto.randomFillSync(arr);
         }
         /* eslint-disable unicorn/prefer-spread */
         return Array.from(arr, (num) => {
@@ -311,7 +315,7 @@ export default class MatrixClient {
                 }
             );
             if (isMyself) {
-                this.storage?.setOrDelete("profileRoomId", data.room_id);
+                await this.storage?.setOrDelete("profileRoomId", data.room_id);
             }
             this.joinedRooms.set(roomAlias, data.room_id);
             return data.room_id;
@@ -355,7 +359,7 @@ export default class MatrixClient {
                 );
                 this.joinedRooms.set(roomAlias, data.room_id);
 
-                this.storage?.setOrDelete("profileRoomId", data.room_id);
+                await this.storage?.setOrDelete("profileRoomId", data.room_id);
                 return data.room_id;
             } else {
                 throw error;

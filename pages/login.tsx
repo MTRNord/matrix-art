@@ -76,18 +76,24 @@ class Login extends PureComponent<Props, State> {
             this.setState({
                 loading: true
             });
-            await this.context.client.login(serverUrl, this.state.mxid, this.state.password, true);
+            await this.context.client?.login(serverUrl, this.state.mxid, this.state.password, true);
             if (this.state.generateProfile) {
                 try {
-                    await this.context.client.followUser(`#${this.context.client.userId}`);
+                    await this.context.client?.followUser(`#${this.context.client?.userId}`);
                 } catch (error: any) {
                     this.setState(
                         { error: error.message }
                     );
                 }
                 try {
-                    const token = await this.context.client.getOpenidToken();
-                    const resp = await fetch("/api/directory", { method: "POST", body: JSON.stringify({ access_token: token, user_id: this.context.client.userId, user_room: `#${this.context.client.userId}` }) });
+                    const token = await this.context.client?.getOpenidToken();
+                    const resp = await fetch("/api/directory", {
+                        method: "POST", body: JSON.stringify({
+                            access_token: token,
+                            user_id: this.context.client?.userId,
+                            user_room: `#${this.context.client?.userId}`
+                        })
+                    });
                     const body = await resp.json();
                     if (body.error_code) {
                         if (body.error_code !== "001") {
