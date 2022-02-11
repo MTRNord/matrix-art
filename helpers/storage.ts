@@ -12,10 +12,8 @@ export default class Storage {
                 await fs.promises.stat(dir);
                 await fs.promises.stat(dir_with_prefix);
             } catch {
-                try {
-                    await fs.promises.mkdir(dir);
-                    await fs.promises.mkdir(dir_with_prefix);
-                } catch { console.log("race while folder was checked"); }
+                await fs.promises.mkdir(dir);
+                await fs.promises.mkdir(dir_with_prefix);
             }
             return new Storage(prefix, dir);
         } else {
