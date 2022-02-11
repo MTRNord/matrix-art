@@ -1,4 +1,4 @@
-const STORAGE_VERSION = 5;
+const STORAGE_VERSION = 6;
 export default class Storage {
     private constructor(private prefix: string, private localFolder?: string) { }
 
