@@ -9,11 +9,9 @@ export default class Storage {
             const dir = path.join(process.cwd(), "localstorage");
             const dir_with_prefix = path.join(dir, prefix);
             try {
-                await fs.promises.stat(dir);
                 await fs.promises.stat(dir_with_prefix);
             } catch {
-                await fs.promises.mkdir(dir);
-                await fs.promises.mkdir(dir_with_prefix);
+                await fs.promises.mkdir(dir_with_prefix, { recursive: true });
             }
             return new Storage(prefix, dir);
         } else {
