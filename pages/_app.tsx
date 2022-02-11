@@ -43,9 +43,45 @@ class MyApp extends PureComponent<AppProps, State> {
     const Component = this.props.Component;
     if (!this.state.client || !this.state.guest_client) {
       return (
-        <div className="m-0 w-full">
-          <div className="loader">{i18n?.t("Loading")}...</div>
-        </div>
+        <>
+          <Head>
+            <title key="title">Matrix Art</title>
+            <meta property="og:title" content="Matrix Art" key="og-title" />
+            <meta property="og:type" content="website" key="og-type" />
+            <meta key="viewport" name="viewport" content="initial-scale=1.0, width=device-width" />
+          </Head>
+          <React.StrictMode>
+            <ClientContext.Provider
+              value={{
+                client: this.state.client,
+                guest_client: this.state.guest_client,
+                is_generating_guest: false,
+              }}
+            >
+              <div className='min-h-full flex flex-col justify-between bg-[#f8f8f8] dark:bg-[#06070D]'>
+                <HeaderNoSSR></HeaderNoSSR>
+                <main className='mb-auto lg:pt-20 pt-52 z-0'>
+                  <div className="m-0 w-full">
+                    <div className="loader">{i18n?.t("Loading")}...</div>
+                  </div>
+                </main>
+                <Footer></Footer>
+              </div>
+            </ClientContext.Provider>
+          </React.StrictMode>
+          <ToastContainer
+            position="top-center"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
+        </>
       );
     }
     return (
