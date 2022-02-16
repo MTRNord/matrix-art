@@ -17,7 +17,7 @@
     "node": ">=17.0.0"
   },
   "dependencies": {
-    "blurhash": "1.1.4",
+    "blurhash": "1.1.5",
     "cors": "2.8.5",
     "feed": "yshrsmz/feed#c50d7a82c5b6141039830d615b19b760e173e231",
     "lightgallery": "2.4.0",
