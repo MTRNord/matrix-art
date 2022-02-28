@@ -47,7 +47,7 @@
     "@types/validator": "13.7.1",
     "autoprefixer": "10.4.2",
     "cross-env": "7.0.3",
-    "eslint": "8.9.0",
+    "eslint": "8.10.0",
     "eslint-config-next": "12.1.0",
     "eslint-plugin-jsx-a11y": "6.5.1",
     "eslint-plugin-unicorn": "41.0.0",
