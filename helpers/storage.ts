@@ -103,9 +103,14 @@ export default class Storage {
                 const fs = await import('fs');
                 const path = await import('path');
                 try {
-                    const stat = await fs.promises.stat(path.join(this.localFolder!, this.prefix, key));
+                    const file_path = path.join(this.localFolder!, this.prefix, key);
+                    const stat = await fs.promises.stat(file_path);
+                    console.log("file_path:", file_path);
+                    console.log("stat:", stat.isFile());
                     if (stat.isFile()) {
-                        await fs.promises.unlink(path.join(this.localFolder!, this.prefix, key));
+                        console.log("unlink");
+                        await fs.promises.unlink(file_path);
+                        console.log("unlinked");
                     }
                 } catch { }
             } catch {
@@ -114,7 +119,7 @@ export default class Storage {
         }
     }
 
-    async setOrDelete(key: string, value: string | undefined): Promise<void> {
+    async setOrDelete(key: string, value?: string): Promise<void> {
         if (value) {
             await this.setItem(key, value);
         } else {
