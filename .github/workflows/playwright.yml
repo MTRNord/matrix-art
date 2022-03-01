@@ -50,7 +50,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright
-        run: npx playwright install --with-deps && npx playwright install msedge
+        run: npx playwright install --with-deps && npx playwright install msedge && npx playwright install chrome
       - name: Run Playwright tests
         run: npm run test
       - uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # v2
