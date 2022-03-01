@@ -3,7 +3,7 @@
 
 # Matrix-Art
 
-Matrix Art is an experimental Devianart Fediverse version which tries to be close to Devianart.
+Matrix-Art is an image gallery for Matrix.
 
 ![Screenshot](.github/images/screenshot.png)
 

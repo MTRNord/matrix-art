@@ -100,7 +100,7 @@ class Home extends PureComponent<Props, State>{
           <meta property="og:title" content="Matrix Art | Home" key="og-title" />
           <meta property="og:type" content="website" key="og-type" />
           <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(metadata) }} />
-          <meta name="description" content="Matrix-Art is a Deviantart style application for posting media based on Matrix."></meta>
+          <meta name="description" content="Matrix-Art is an image gallery for Matrix."></meta>
         </Head>
         <div className='z-[100] sticky lg:top-20 top-[12.5rem] bg-[#fefefe]/[.95] dark:bg-[#12161D]'>
           <div className='h-16 px-10 w-full relative grid grid-cols-[1fr_auto_1fr] items-center' id='section-grid'>
