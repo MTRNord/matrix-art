@@ -35,6 +35,8 @@ jobs:
             art.midnightthoughts.space:443
             matrix.art.midnightthoughts.space:443
             localhost:80"
+        env:
+          USER: runner
       - uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
         with:
           persist-credentials: false
