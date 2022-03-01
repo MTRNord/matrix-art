@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: read # for actions/checkout to fetch code
     name: Spell Check with Typos
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@14dc64f30986eaa2ad2dddcec073f5aab18e5a24 # v1
