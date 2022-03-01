@@ -24,7 +24,7 @@ updates:
       - "MTRNord"
     assignees:
       - "MTRNord"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 10
 
   # Enable version updates for GitHub Actions
   - package-ecosystem: "github-actions"
@@ -36,4 +36,4 @@ updates:
       - "MTRNord"
     assignees:
       - "MTRNord"
-    open-pull-requests-limit: 0
+    open-pull-requests-limit: 10
