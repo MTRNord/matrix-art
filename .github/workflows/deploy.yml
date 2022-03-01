@@ -11,12 +11,12 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@bdb12b622a910dfdc99a31fdfe6f45a16bc287a4 # v1
-        with:
-          allowed-endpoints: "gitlab.nordgedanken.dev:443"
-        env:
-          USER: runner
+      # - name: Harden Runner
+      #   uses: step-security/harden-runner@bdb12b622a910dfdc99a31fdfe6f45a16bc287a4 # v1
+      #   with:
+      #     allowed-endpoints: "gitlab.nordgedanken.dev:443"
+      #   env:
+      #     USER: runner
       - name: curl
         uses: wei/curl@012398a392d02480afa2720780031f8621d5f94c # master
         if: ${{ github.event.workflow_run.conclusion == 'success' }}
