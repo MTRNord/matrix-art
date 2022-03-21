@@ -26,6 +26,7 @@ const securityHeaders = [
 
 module.exports = {
   i18n,
+  swcMinify: true,
   reactStrictMode: true,
   webpack: (config) => {
     config.resolve.fallback = {

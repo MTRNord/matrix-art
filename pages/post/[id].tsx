@@ -19,6 +19,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { i18n } from 'next-i18next';
 import { toast } from 'react-toastify';
 import Storage from "../../helpers/storage";
+import { getLicenseName, getLicenseUrl } from '../../helpers/utils';
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps> & {
     router: NextRouter;
@@ -147,48 +148,6 @@ class Post extends PureComponent<Props, State> {
         }
     }
 
-    getLicenseUrl(license_type: string): string {
-        switch (license_type) {
-            case "cc-by-4.0":
-                return "https://creativecommons.org/licenses/by/4.0/";
-            case "cc-by-sa-4.0":
-                return "https://creativecommons.org/licenses/by-sa/4.0/";
-            case "cc-by-nc-4.0":
-                return "https://creativecommons.org/licenses/by-nc/4.0/";
-            case "cc-by-nc-sa-4.0":
-                return "https://creativecommons.org/licenses/by-nc-sa/4.0/";
-            case "cc-by-nd-4.0":
-                return "https://creativecommons.org/licenses/by-nd/4.0/";
-            case "cc-by-nc-nd-4.0":
-                return "https://creativecommons.org/licenses/by-nc-nd/4.0/";
-            case "CC0-1.0":
-                return "https://creativecommons.org/publicdomain/zero/1.0/";
-            default:
-                return "";
-        }
-    }
-
-    getLicenseName(license_type: string): string {
-        switch (license_type) {
-            case "cc-by-4.0":
-                return "Attribution 4.0 International (CC BY 4.0)";
-            case "cc-by-sa-4.0":
-                return "Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)";
-            case "cc-by-nc-4.0":
-                return "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)";
-            case "cc-by-nc-sa-4.0":
-                return "Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)";
-            case "cc-by-nd-4.0":
-                return "Attribution-NoDerivatives 4.0 International (CC BY-ND 4.0)";
-            case "cc-by-nc-nd-4.0":
-                return "Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)";
-            case "CC0-1.0":
-                return "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication";
-            default:
-                return "Unknown License";
-        }
-    }
-
     render() {
         const { hasFullyLoaded, image_event, displayname, avatar_url } = this.state;
 
@@ -254,7 +213,7 @@ class Post extends PureComponent<Props, State> {
                                 {avatar_url ? <span className="block object-cover rounded-full mr-4"> <img className="object-cover rounded-full" src={this.context.client?.downloadLink(avatar_url)} height="24" width="24" alt={displayname} title={displayname} /> </span> : undefined}
                                 <Link href={"/profile/" + encodeURIComponent(image_event.sender)} passHref><span className='hover:text-teal-400'>{displayname}</span></Link>
                             </h3>
-                            {isImageEvent(image_event) ? (image_event.content['matrixart.license'] ? <h3 className='cursor-pointer mt-0 mb-4 text-l text-gray-600 dark:text-gray-400 font-normal'>{i18n?.t("License:")} <a href={this.getLicenseUrl(image_event.content['matrixart.license'])} title={this.getLicenseName(image_event.content['matrixart.license'])}>{this.getLicenseName(image_event.content['matrixart.license'])}</a></h3> : undefined) : undefined}
+                            {isImageEvent(image_event) ? (image_event.content['matrixart.license'] ? <h3 className='cursor-pointer mt-0 mb-4 text-l text-gray-600 dark:text-gray-400 font-normal'>{i18n?.t("License:")} <a href={getLicenseUrl(image_event.content['matrixart.license'])} title={getLicenseName(image_event.content['matrixart.license'])}>{getLicenseName(image_event.content['matrixart.license'])}</a></h3> : undefined) : undefined}
                             {isImageGalleryEvent(image_event) ? this.renderImageGalleryTags(image_event) : (isImageEvent(image_event) ? this.renderSingleImageTags(image_event) : <div key={(image_event as MatrixEventBase).event_id + "tags"}></div>)}
                         </div>
                     </div>

@@ -7,6 +7,7 @@ import MatrixClient, { constMatrixArtServer } from "../../../helpers/matrix_clie
 import { MatrixImageEvents } from "../../../helpers/event_types";
 import { isImageGalleryEvent } from "../../../components/FrontPageImage";
 import Storage from "../../../helpers/storage";
+import { getLicenseName, getLicenseUrl } from "../../../helpers/utils";
 
 // Initialize the cors middleware
 const cors = initMiddleware(
@@ -126,13 +127,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                                 },
                                 _text: image["m.text"],
                             },
-                            'creativeCommons:license': "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                            'creativeCommons:license': getLicenseUrl(image['matrixart.license']),
                             'media:license': {
                                 _attributes: {
-                                    href: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                                    href: getLicenseUrl(image['matrixart.license']),
                                     type: "text/html"
                                 },
-                                _text: "Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)"
+                                _text: getLicenseName(image['matrixart.license'])
                             }
                         }
                     });
@@ -180,13 +181,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                             },
                             _text: imageEvent.content["m.text"],
                         },
-                        'creativeCommons:license': "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                        'creativeCommons:license': getLicenseUrl(imageEvent.content['matrixart.license']),
                         'media:license': {
                             _attributes: {
-                                href: "https://creativecommons.org/licenses/by-nc-nd/4.0/",
+                                href: getLicenseUrl(imageEvent.content['matrixart.license']),
                                 type: "text/html"
                             },
-                            _text: "Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)"
+                            _text: getLicenseName(imageEvent.content['matrixart.license']),
                         }
                     }
                 });
