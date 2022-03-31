@@ -6,6 +6,10 @@
   <link rel="icon" type="image/svg+xml" href="/Logo.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matrix Art</title>
+  <script>
+    global = globalThis // fix for "global not defined" error
+    globalThis.OLM_OPTIONS = undefined; // Fix missing var for olm
+  </script>
 </head>
 
 <body>
