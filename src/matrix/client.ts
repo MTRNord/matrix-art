@@ -3,8 +3,6 @@ import { M_IMAGE } from './events/ImageEvent';
 // @ts-ignore - `.ts` is needed here to make TS happy
 import IndexedDBWorker from "./workers/indexeddb.worker.ts?worker";
 
-const ROOM_CRYPTO_CONFIG = { algorithm: 'm.megolm.v1.aes-sha2' };
-
 export class MatrixClient {
     private constructor(private client: MatrixClientSdk) { }
 

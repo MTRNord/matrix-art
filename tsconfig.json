@@ -22,12 +22,15 @@
     "jsxFactory": "h",
     "jsxFragmentFactory": "Fragment"
   },
-  "include": [
-    "src"
+  "exclude": [
+    "./src/**/*"
   ],
   "references": [
     {
       "path": "./tsconfig.node.json"
+    },
+    {
+      "path": "./tsconfig.browser.json"
     }
   ]
 }
