@@ -1,4 +1,6 @@
+import Router from 'preact-router';
 import { PureComponent } from 'preact/compat';
+import { Home } from './Home';
 import { MatrixClient } from "./matrix/client";
 
 export class App extends PureComponent {
@@ -8,9 +10,9 @@ export class App extends PureComponent {
   }
   render() {
     return (
-      <div>
-        <h1>Hello World</h1>
-      </div>
+      <Router>
+        <Home path="/" />
+      </Router>
     );
   }
 }
