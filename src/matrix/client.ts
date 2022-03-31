@@ -33,7 +33,12 @@ export class MatrixClient {
             userId: user_id,
             accessToken: access_token,
             deviceId: device_id,
-            sessionStore: new IndexedDBStore({ indexedDB: window.indexedDB, dbName: "matrix-art-sync", localStorage: window.localStorage, workerFactory: () => new IndexedDBWorker(), }),
+            sessionStore: new IndexedDBStore({
+                indexedDB: window.indexedDB,
+                dbName: "matrix-art-sync",
+                localStorage: window.localStorage,
+                workerFactory: () => new IndexedDBWorker(),
+            }),
             cryptoStore: new IndexedDBCryptoStore(
                 window.indexedDB, "matrix-art:crypto",
             ),
