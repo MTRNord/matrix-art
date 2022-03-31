@@ -1,4 +1,4 @@
-import { createClient, IndexedDBCryptoStore, IndexedDBStore, MatrixClient as MatrixClientSdk, MatrixEvent, MatrixEventEvent, PREFIX_MEDIA_R0 } from 'matrix-js-sdk';
+import { createClient, IndexedDBCryptoStore, IndexedDBStore, MatrixClient as MatrixClientSdk, MatrixEvent, MatrixEventEvent } from 'matrix-js-sdk';
 import { M_IMAGE } from './events/ImageEvent';
 // @ts-ignore - `.ts` is needed here to make TS happy
 import IndexedDBWorker from "./workers/indexeddb.worker.ts?worker";
