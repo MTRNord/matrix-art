@@ -9,10 +9,16 @@
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
-    "preact": "^10.5.15"
+    "buffer": "^6.0.3",
+    "events": "^3.3.0",
+    "matrix-events-sdk": "^0.0.1-beta.7",
+    "matrix-js-sdk": "^16.0.1",
+    "preact": "^10.5.15",
+    "@matrix-org/olm": "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.8.tgz"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.1.5",
+    "@types/events": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.17.0",
     "@typescript-eslint/parser": "^5.17.0",
     "autoprefixer": "^10.4.4",
