@@ -8,7 +8,7 @@ import olmWasmPath from "@matrix-org/olm/olm.wasm?url";
 import OlmLegacy from '@matrix-org/olm/olm_legacy.js?url';
 import Olm from '@matrix-org/olm';
 
-if (import.meta.env.NODE_ENV === 'development') {
+if (import.meta.env.DEV) {
     // Must use require here as import statements are only allowed
     // to exist at top-level.
     // @ts-ignore No types
