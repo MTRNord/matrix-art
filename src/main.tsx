@@ -8,6 +8,13 @@ import olmWasmPath from "@matrix-org/olm/olm.wasm?url";
 import OlmLegacy from '@matrix-org/olm/olm_legacy.js?url';
 import Olm from '@matrix-org/olm';
 
+if (import.meta.env.NODE_ENV === 'development') {
+    // Must use require here as import statements are only allowed
+    // to exist at top-level.
+    // @ts-ignore No types
+    import("preact/debug");
+}
+
 function loadOlm(): Promise<void> {
     /* Load Olm. We try the WebAssembly version first, and then the legacy,
      * asm.js version if that fails. For this reason we need to wait for this
