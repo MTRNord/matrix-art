@@ -52,7 +52,11 @@ function loadOlm(): Promise<void> {
     });
 };
 
-await loadOlm();
+loadOlm().then((): void => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    render(<App />, document.querySelector('#app')!);
+}).catch(() => {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    render(<App />, document.querySelector('#app')!);
+});
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-render(<App />, document.querySelector('#app')!);
