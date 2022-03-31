@@ -28,6 +28,7 @@ export class MatrixClient {
         const { user_id, device_id, access_token } = await tmpClient.registerGuest();
 
         const client = createClient({
+            useAuthorizationHeader: true,
             baseUrl: import.meta.env.VITE_MATRIX_SERVER_URL,
             userId: user_id,
             accessToken: access_token,
