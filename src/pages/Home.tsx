@@ -19,7 +19,7 @@ export class Home extends PureComponent<any, State> {
     }
 
     // TODO: Factor in the amount of images
-    // If we have less than the result then only use the numver of images as columns
+    // If we have less than the result then only use the number of images as columns
     private settingColumns(): number {
         if (window.innerWidth >= 1400) {
             return 4;
