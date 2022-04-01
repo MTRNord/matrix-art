@@ -1,26 +1,23 @@
-name: Deploy to server
-on:
-  workflow_run:
-    workflows: ["Playwright Tests"]
-    branches: [main]
-    types:
-      - completed
+name: Build and Deploy
 permissions: read-all
-
+on:
+  push:
+    branches: [main]
 jobs:
-  deploy:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
     runs-on: self-hosted
     steps:
-      # - name: Harden Runner
-      #   uses: step-security/harden-runner@bdb12b622a910dfdc99a31fdfe6f45a16bc287a4 # v1
-      #   with:
-      #     allowed-endpoints: "gitlab.nordgedanken.dev:443"
-      #   env:
-      #     USER: runner
-      - name: curl
-        uses: wei/curl@012398a392d02480afa2720780031f8621d5f94c # master
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Install and Build 🔧
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4.2.5
         with:
-          args: -X POST -F "token=$GITLAB_TOKEN" -F "ref=main" -F "variables[GITHUB_COMMIT_ID]=$GITHUB_SHA" https://gitlab.nordgedanken.dev/api/v4/projects/2/trigger/pipeline
-        env:
-          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          branch: gh-pages # The branch the action should deploy to.
+          folder: dist # The folder the action should deploy.
