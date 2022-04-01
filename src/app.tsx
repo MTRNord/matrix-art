@@ -1,6 +1,6 @@
 import Router from 'preact-router';
 import { PureComponent } from 'preact/compat';
-import { Home } from './Home';
+import { Home } from './pages/Home';
 import { MatrixClient } from "./matrix/client";
 
 export class App extends PureComponent {
