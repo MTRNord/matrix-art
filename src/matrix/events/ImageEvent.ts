@@ -62,7 +62,7 @@ export type M_IMAGE_EVENT_CONTENT = M_MESSAGE_EVENT_CONTENT
     | MATRIX_ART_NSFW_EVENT
     | MATRIX_ART_LICENSE_EVENT;
 
-class ImageEvent extends ExtensibleEvent<M_IMAGE_EVENT_CONTENT> {
+export class ImageEvent extends ExtensibleEvent<M_IMAGE_EVENT_CONTENT> {
     public readonly image!: ImageFields;
     public readonly text!: string;
     public readonly thumbnails?: ThumbnailFileEvent[];
