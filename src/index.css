@@ -86,3 +86,47 @@
         url(/fonts/Inter-VariableFont_slnt,wght.woff2) format("woff2-variations");
   }
 }
+
+
+html, body, #app {
+    margin: 0;
+    @apply h-full;
+}
+
+body {
+  background-color:#424555;
+}
+
+/* Masrony layout (GRID)
+From https://stackoverflow.com/questions/66914169/can-i-create-a-masonry-layout-using-tailwind-css-utility-classes
+*/
+@layer utilities {
+    @variants responsive {
+        .masonry-3-col {
+            column-count: 3;
+            column-gap: 1em;
+        }
+        .masonry-2-col {
+            column-count: 2;
+            column-gap: 1em;
+        }
+        .break-inside {
+            break-inside: avoid;
+        }
+    }
+}
+
+/*Logo gradient*/
+.logo-bg {
+  background: linear-gradient(90deg, #751796 -58.41%, #FE7223 152.47%);
+}
+
+/*Search bg gradient*/
+.search-bg {
+  background: linear-gradient(90deg, rgba(196, 196, 196, 0.11) -33.43%, rgba(196, 196, 196, 0.07) 184.14%);
+}
+
+/*data text*/
+.text-data {
+  color: #AAB3CF;
+}
