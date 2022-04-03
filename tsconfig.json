@@ -23,7 +23,8 @@
     "jsxFragmentFactory": "Fragment"
   },
   "exclude": [
-    "./src/**/*"
+    "./src/**/*",
+    "./scripts/**/*"
   ],
   "references": [
     {
