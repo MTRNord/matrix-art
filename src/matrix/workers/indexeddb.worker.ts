@@ -10,7 +10,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-import { IndexedDBStoreWorker } from "matrix-js-sdk/src/indexeddb-worker";
+import { IndexedDBStoreWorker } from "matrix-js-sdk/lib/indexeddb-worker";
 
 const ctx: Worker = self as any;
 

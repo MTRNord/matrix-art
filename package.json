@@ -12,10 +12,12 @@
     "@matrix-org/olm": "https://gitlab.matrix.org/api/v4/projects/27/packages/npm/@matrix-org/olm/-/@matrix-org/olm-3.2.8.tgz",
     "buffer": "^6.0.3",
     "events": "^3.3.0",
+    "inquirer": "^8.2.2",
     "matrix-events-sdk": "^0.0.1-beta.7",
     "matrix-js-sdk": "^16.0.1",
     "preact": "^10.5.15",
     "preact-router": "^4.0.1",
+    "react-photoswipe-gallery": "^1.3.10",
     "react-plock": "^1.2.0"
   },
   "devDependencies": {

@@ -14,14 +14,14 @@ export class Post extends PureComponent<Props> {
     render({ user, post }: Props) {
         return (
             <div class="flex flex-col">
-                <a href="#"><img class="rounded-3xl shadow object-cover" src={post.content.file.url} /></a>
+                <a href="#" class="w-full"><img class="rounded-3xl shadow object-cover transform transition-transform ease-in-out duration-300 hover:scale-105" src={post.content.file.url} /></a>
                 <div class="flex items-center justify-between py-4">
                     <a class="flex items-center" href="#">
                         <img class="w-11 h-11 rounded-full mr-4 border-2 border-[#AAB3CF]" src={user.avatar_url} />
-                        <p class="text-data shadow text-xl font-medium">{user.display_name}</p>
+                        <p class="text-data shadow text-lg font-medium">{user.display_name}</p>
                     </a>
-                    <div class="flex text-data items-center">
-                        <a class="mr-4 flex" href="#">
+                    <div class="flex text-data text-lg items-center">
+                        <a class="mr-4 flex items-center" href="#">
                             <span class="mr-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#AAB3CF">
                                     <path d="M0 0h24v24H0V0z" fill="none" />
@@ -30,7 +30,7 @@ export class Post extends PureComponent<Props> {
                             </span>
                             <span>5</span>
                         </a>
-                        <a class="flex" href="#">
+                        <a class="flex items-center" href="#">
                             <span class="mr-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#AAB3CF">
                                     <path d="M0 0h24v24H0V0z" fill="none" />

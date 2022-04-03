@@ -1,12 +1,16 @@
+import { Link } from "preact-router";
 import { PureComponent } from "preact/compat";
+import { Client } from "../context";
+import { MatrixClient } from "../matrix/client";
 
 export class Header extends PureComponent {
     render() {
+        const client: MatrixClient | undefined = this.context;
         return (
             <div class="m-12 flex flex-col lg:flex-row items-center justify-between">
-                <img alt="Matrix Art" src="Logo_colored.svg" />
+                <Link href="/"><img alt="Matrix Art" src="Logo_colored.svg" class="ease-in-out hover:scale-105 trandform transition-transform duration-300" /></Link>
                 <div class="flex items-center mt-8 lg:mt-0 flex-col sm:flex-row">
-                    <div class="flex items-center justify-between w-80 max-w-80 mx-6">
+                    <div class="flex items-center justify-between w-80 max-w-80 mx-6 ease-in-out hover:scale-105 trandform transition-transform duration-300">
                         <div class="absolute ml-4">
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#AAB3CF">
                                 <path d="M0 0h24v24H0V0z" fill="none" />
@@ -15,9 +19,16 @@ export class Header extends PureComponent {
                         </div>
                         <input class="search-bg shadow rounded-2xl border-0 py-3 px-4 pl-10 text-data" placeholder="Search"></input>
                     </div>
-                    <button class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0">Join</button>
+                    {
+
+                        !client?.isLoggedIn() ? <Link href="/join" class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Join</Link> :
+                            <Link class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Post</Link>
+                    }
+
                 </div>
             </div>
         );
     }
 }
+
+Header.contextType = Client;
