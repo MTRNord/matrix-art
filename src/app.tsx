@@ -1,18 +1,37 @@
 import Router from 'preact-router';
-import { PureComponent } from 'preact/compat';
+import { lazy, PureComponent, Suspense } from 'preact/compat';
 import { Home } from './pages/Home';
-import { MatrixClient } from "./matrix/client";
+import { Client } from './context';
+import { Header } from './components/header';
+
+const Join = lazy(() => import("./pages/Join"));
 
 export class App extends PureComponent {
-  async componentDidMount() {
-    const client = await MatrixClient.new();
-    await client.start();
-  }
+
   render() {
     return (
-      <Router>
-        <Home path="/" />
-      </Router>
+
+      <Suspense fallback={
+        <div class="flex flex-col">
+          <header>
+            <Header />
+          </header>
+          <main class="m-12 mt-6 flex items-center justify-center">
+            <p class="text-lg text-data font-bold">Loading...</p>
+          </main>
+        </div>
+      }>
+
+        <Client.Provider value={
+          // @ts-ignore its fine... 
+          window.client
+        }>
+          <Router>
+            <Home path="/" />
+            <Join path="/join" />
+          </Router>
+        </Client.Provider>
+      </Suspense>
     );
   }
 }

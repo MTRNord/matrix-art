@@ -130,3 +130,6 @@ From https://stackoverflow.com/questions/66914169/can-i-create-a-masonry-layout-
 .text-data {
   color: #AAB3CF;
 }
+.placeholder-data::placeholder {
+  color: #AAB3CF;
+}
