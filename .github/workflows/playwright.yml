@@ -44,7 +44,7 @@ jobs:
         run: >
           git config --global url."https://github.com/".insteadOf
           ssh://git@github.com/
-      - uses: actions/setup-node@9ced9a43a244f3ac94f13bfd896db8c8f30da67a # v2
+      - uses: actions/setup-node@5b52f097d36d4b0b2f94ed6de710023fbb8b2236 # v2
         with:
           node-version: "17.x"
       - name: Install dependencies
