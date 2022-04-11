@@ -18,6 +18,6 @@ jobs:
       #   env:
       #     USER: runner
       - uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
-      - uses: fossas/fossa-action@3764c5c941b43a8fdce352db1891f7e26e2e3cda # main
+      - uses: fossas/fossa-action@88bec1fd3c4652f3929fdde3774eae9e9fcdb6ee # main
         with:
           api-key: ${{secrets.fossaApiKey}}
