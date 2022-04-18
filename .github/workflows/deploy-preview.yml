@@ -44,14 +44,14 @@ jobs:
       - name: Create env file
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
-          VITE_MATRIX_SERVER_URL="https://matrix.art.midnightthoughts.space" > .env.local
-          VITE_MATRIX_INSTANCE_ADMIN="@administrator:art.midnightthoughts.space" >> .env.local
-          VITE_MATRIX_ROOT_FOLDER="#Matrix_Art:art.midnightthoughts.space" >> .env.local
+          echo "VITE_MATRIX_SERVER_URL=https://matrix.art.midnightthoughts.space" > .env.local
+          echo "VITE_MATRIX_INSTANCE_ADMIN=@administrator:art.midnightthoughts.space" >> .env.local
+          echo "VITE_MATRIX_ROOT_FOLDER=#Matrix_Art:art.midnightthoughts.space" >> .env.local
       - name: Install and Build 🔧
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
           npm ci
-          npx tsc && npx vite build --base /pr-${{ github.event.pull_request.number }}
+          npx tsc && npx vite build --base /pr-${{ github.event.pull_request.number }}/
       - name: Deploy to gh-pages
         if: ${{ github.ref != 'refs/heads/main' }}
         uses: peaceiris/actions-gh-pages@v3
