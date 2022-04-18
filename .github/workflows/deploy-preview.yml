@@ -2,11 +2,6 @@ name: Build and Deploy
 permissions: read-all
 on:
   pull_request_target:
-    types:
-      - opened
-      - synchronize
-      - reopened
-
 jobs:
   build-and-deploy:
     concurrency: ci-${{ github.ref }}
