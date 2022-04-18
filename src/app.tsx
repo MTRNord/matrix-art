@@ -27,8 +27,8 @@ export class App extends PureComponent {
           window.client
         }>
           <Router>
-            <Home path="/" />
-            <Join path="/join" />
+            <Home path={`${import.meta.env.BASE_URL}/`} />
+            <Join path={`${import.meta.env.BASE_URL}/join`} />
           </Router>
         </Client.Provider>
       </Suspense>
