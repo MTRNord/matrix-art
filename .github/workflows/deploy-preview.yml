@@ -1,0 +1,48 @@
+name: Build and Deploy
+permissions: read-all
+on:
+  pull_request_target:
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: self-hosted
+    steps:
+      - name: Edit PR Description
+        uses: Beakyn/gha-comment-pull-request@2167a7aee24f9e61ce76a23039f322e49a990409
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          pull-request-number: ${{ steps.readctx.outputs.prnumber }}
+          description-message: |
+            ⌛ Deploy Preview - Build in Progress
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Install and Build 🔧
+        run: |
+          npm ci
+          npm run build
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./pr-${{ github.event.pull_request.number }}
+          cname: preview.art.midnightthoughts.space
+          external_repository: MTRNord/matrix-art-preview
+      - name: Edit PR Description
+        uses: Beakyn/gha-comment-pull-request@2167a7aee24f9e61ce76a23039f322e49a990409
+        env:
+          BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          description-message: |
+            ----
+            😎 Browse the preview: https://preview.art.midnightthoughts.space/pr-${{ github.event.pull_request.number }} !
+            🔍 Inspect the deploy log: ${{ env.BUILD_URL }}
+            ⚠️ Do you trust the author of this PR? Maybe this build will steal your keys or give you malware. Exercise caution. Use test accounts.

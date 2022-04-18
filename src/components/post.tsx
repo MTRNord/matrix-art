@@ -14,7 +14,9 @@ export class Post extends PureComponent<Props> {
     render({ user, post }: Props) {
         return (
             <div class="flex flex-col">
-                <a href="#" class="w-full"><img class="rounded-3xl shadow object-cover transform transition-transform ease-in-out duration-300 hover:scale-105" src={post.content.file.url} /></a>
+                <a id="gallery_click" href={post.content.file.url} class="w-full" target="_blank" rel="noreferrer">
+                    <img class="rounded-3xl shadow object-cover transform transition-transform ease-in-out duration-300 hover:scale-105" src={post.content.file.url} />
+                </a>
                 <div class="flex items-center justify-between py-4">
                     <a class="flex items-center" href="#">
                         <img class="w-11 h-11 rounded-full mr-4 border-2 border-[#AAB3CF]" src={user.avatar_url} />

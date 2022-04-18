@@ -97,25 +97,6 @@ body {
   background-color:#424555;
 }
 
-/* Masrony layout (GRID)
-From https://stackoverflow.com/questions/66914169/can-i-create-a-masonry-layout-using-tailwind-css-utility-classes
-*/
-@layer utilities {
-    @variants responsive {
-        .masonry-3-col {
-            column-count: 3;
-            column-gap: 1em;
-        }
-        .masonry-2-col {
-            column-count: 2;
-            column-gap: 1em;
-        }
-        .break-inside {
-            break-inside: avoid;
-        }
-    }
-}
-
 /*Logo gradient*/
 .logo-bg {
   background: linear-gradient(90deg, #751796 -58.41%, #FE7223 152.47%);
