@@ -49,7 +49,8 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./pr-${{ github.event.pull_request.number }}
+          publish_dir: ./dist
+          destination_dir: ./pr-${{ github.event.pull_request.number }}
           cname: preview.art.midnightthoughts.space
           external_repository: MTRNord/matrix-art-preview
       - name: Edit PR Description
