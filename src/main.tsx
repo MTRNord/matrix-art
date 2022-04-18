@@ -46,7 +46,9 @@ function load() {
     MatrixClient.new().then((client) => {
         // @ts-ignore its fine...
         window.client = client;
+        console.log("Client loaded");
         client.start().then(() => {
+            console.log("Client started");
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             render(<App />, document.querySelector('#app')!);
         });
@@ -54,7 +56,9 @@ function load() {
 }
 
 loadOlm().then((): void => {
+    console.log("Olm loaded");
     load();
 }).catch(() => {
+    console.log("Olm not loaded");
     load();
 });
