@@ -1,6 +1,9 @@
 name: Build and Deploy
 permissions: read-all
 on:
+  push:
+    branches:
+      - "main"
   pull_request_target:
 jobs:
   build-and-deploy:
