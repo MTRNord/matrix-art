@@ -37,9 +37,16 @@ jobs:
         if: ${{ github.ref != 'refs/heads/main' }}
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-        name: ${{ github.ref != 'refs/heads/main' }}
+        name: Setup node
+        if: ${{ github.ref != 'refs/heads/main' }}
         with:
           node-version: "16"
+      - name: Create env file
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |
+          VITE_MATRIX_SERVER_URL="https://matrix.art.midnightthoughts.space" > .env.local
+          VITE_MATRIX_INSTANCE_ADMIN="@administrator:art.midnightthoughts.space" >> .env.local
+          VITE_MATRIX_ROOT_FOLDER="#Matrix_Art:art.midnightthoughts.space" >> .env.local
       - name: Install and Build 🔧
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
