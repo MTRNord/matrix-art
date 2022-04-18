@@ -31,6 +31,7 @@ jobs:
         with:
           pull-request-number: ${{ steps.readctx.outputs.prnumber }}
           description-message: |
+            ----
             ⌛ Deploy Preview - Build in Progress
       - name: Checkout 🛎️
         if: ${{ github.ref != 'refs/heads/main' }}
