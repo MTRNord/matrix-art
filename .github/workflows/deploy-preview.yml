@@ -24,7 +24,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Edit PR Description
-        if: ${{ github.event.workflow_run.event == 'pull_request' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
         uses: Beakyn/gha-comment-pull-request@2167a7aee24f9e61ce76a23039f322e49a990409
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -33,15 +33,15 @@ jobs:
           description-message: |
             ⌛ Deploy Preview - Build in Progress
       - name: Checkout 🛎️
-        if: ${{ github.event.workflow_run.event == 'pull_request' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
         uses: actions/checkout@v3
       - name: Install and Build 🔧
-        if: ${{ github.event.workflow_run.event == 'pull_request' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
         run: |
           npm ci
           npm run build
       - name: Deploy to gh-pages
-        if: ${{ github.event.workflow_run.event == 'pull_request' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
@@ -49,7 +49,7 @@ jobs:
           cname: preview.art.midnightthoughts.space
           external_repository: MTRNord/matrix-art-preview
       - name: Edit PR Description
-        if: ${{ github.event.workflow_run.event == 'pull_request' }}
+        if: ${{ github.ref != 'refs/heads/main' }}
         uses: Beakyn/gha-comment-pull-request@2167a7aee24f9e61ce76a23039f322e49a990409
         env:
           BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
