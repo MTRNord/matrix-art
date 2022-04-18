@@ -35,6 +35,10 @@ jobs:
       - name: Checkout 🛎️
         if: ${{ github.ref != 'refs/heads/main' }}
         uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        name: ${{ github.ref != 'refs/heads/main' }}
+        with:
+          node-version: "16"
       - name: Install and Build 🔧
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
