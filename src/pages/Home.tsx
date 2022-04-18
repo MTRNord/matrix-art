@@ -38,7 +38,6 @@ export class Home extends PureComponent<any, State> {
 
     componentWillUnmount() {
         window.removeEventListener('resize', () => this.setState({ columns: this.settingColumns() }));
-        this.state.lightbox?.destroy();
     }
 
     render() {
