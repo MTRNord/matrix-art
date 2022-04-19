@@ -1,4 +1,5 @@
 import { render } from 'preact';
+import { BrowserRouter } from 'react-router-dom';
 import { App } from './app';
 import './index.css';
 
@@ -10,4 +11,9 @@ if (import.meta.env.DEV) {
     import("preact/debug");
 }
 
-render(<App />, document.querySelector('#app')!);
+render(
+    <BrowserRouter basename={`${import.meta.env.BASE_URL}`}>
+        <App />
+    </BrowserRouter>,
+    document.querySelector('#app')!
+);

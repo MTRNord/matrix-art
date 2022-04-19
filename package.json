@@ -16,8 +16,8 @@
     "matrix-events-sdk": "^0.0.1-beta.7",
     "matrix-js-sdk": "^16.0.1",
     "preact": "^10.5.15",
-    "preact-router": "^4.0.1",
-    "react-plock": "^1.2.0"
+    "react-plock": "^1.2.0",
+    "react-router-dom": "^6.3.0"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.1.5",

@@ -2,7 +2,12 @@ import { PureComponent } from "preact/compat";
 import { Client } from "../context";
 import { Header } from "../components/header";
 import { MatrixClient } from "../matrix/client";
-import { route } from "preact-router";
+import { NavigateFunction } from "react-router-dom";
+import { withNavigateHOC } from "../components/hookHelpers";
+
+type Props = {
+    navigate: NavigateFunction;
+};
 
 type State = {
     homeserver: string;
@@ -15,9 +20,9 @@ type State = {
 const ACTIVE_TAB_CSS = "inline-block p-4 w-full text-gray-900 bg-gray-100 hover:ring-blue-300 hover:ring-1 focus:ring-transparent focus:outline-none dark:bg-gray-700 dark:text-white";
 const TAB_CSS = "inline-block p-4 w-full bg-white hover:text-gray-700 hover:bg-gray-50 hover:ring-blue-300 hover:ring-1 focus:ring-transparent focus:outline-none dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700";
 
-export default class Join extends PureComponent<any, State> {
-    constructor() {
-        super();
+class Join extends PureComponent<Props, State> {
+    constructor(props: Props) {
+        super(props);
         this.state = {
             homeserver: "https://art.midnightthoughts.space",
             username: "",
@@ -41,7 +46,7 @@ export default class Join extends PureComponent<any, State> {
         } else if (this.state.current_tab === "register" && !client.isLoggedIn()) {
             await client.register(this.state.homeserver, this.state.username, this.state.password, this.state.create_profile);
         }
-        route('/', true);
+        this.props.navigate('/', { replace: true });
     }
 
     onInput(e: Event) {
@@ -89,3 +94,4 @@ export default class Join extends PureComponent<any, State> {
 
 
 Join.contextType = Client;
+export default withNavigateHOC(Join);

@@ -1,4 +1,4 @@
-import { Link } from "preact-router";
+import { Link } from "react-router-dom";
 import { PureComponent } from "preact/compat";
 import { Client } from "../context";
 import { MatrixClient } from "../matrix/client";
@@ -8,7 +8,7 @@ export class Header extends PureComponent {
         const client: MatrixClient | undefined = this.context;
         return (
             <div class="m-12 flex flex-col lg:flex-row items-center justify-between">
-                <Link href="/"><img alt="Matrix Art" src="Logo_colored.svg" class="ease-in-out hover:scale-105 trandform transition-transform duration-300" /></Link>
+                <Link to="/"><img alt="Matrix Art" src="Logo_colored.svg" class="ease-in-out hover:scale-105 trandform transition-transform duration-300" /></Link>
                 <div class="flex items-center mt-8 lg:mt-0 flex-col sm:flex-row">
                     <div class="flex items-center justify-between w-80 max-w-80 mx-6 ease-in-out hover:scale-105 trandform transition-transform duration-300">
                         <div class="absolute ml-4">
@@ -21,8 +21,8 @@ export class Header extends PureComponent {
                     </div>
                     {
 
-                        !client?.isLoggedIn() ? <Link href={`${import.meta.env.BASE_URL}/join`} class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Join</Link> :
-                            <Link class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Post</Link>
+                        !client?.isLoggedIn() ? <Link to="/join" class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Join</Link> :
+                            <Link to="/" class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Post</Link>
                     }
 
                 </div>
