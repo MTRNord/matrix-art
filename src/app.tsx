@@ -1,4 +1,3 @@
-import Router from 'preact-router';
 import { lazy, PureComponent, Suspense } from 'preact/compat';
 import { Home } from './pages/Home';
 import { Client } from './context';
@@ -10,6 +9,7 @@ import { MatrixClient } from './matrix/client';
 import olmWasmPath from "@matrix-org/olm/olm.wasm?url";
 import OlmLegacy from '@matrix-org/olm/olm_legacy.js?url';
 import Olm from '@matrix-org/olm';
+import { Route, Routes } from 'react-router-dom';
 
 const Join = lazy(() => import("./pages/Join"));
 
@@ -73,26 +73,28 @@ export class App extends PureComponent<any, State> {
   render() {
     return (
 
-      <Suspense fallback={
-        <div class="flex flex-col">
-          <header>
-            <Header />
-          </header>
-          <main class="m-12 mt-6 flex items-center justify-center">
-            <p class="text-lg text-data font-bold">Loading...</p>
-          </main>
-        </div>
-      }>
 
-        <Client.Provider value={
-          this.state.client
-        }>
-          <Router>
-            <Home path={`${import.meta.env.BASE_URL}/`} />
-            <Join path={`${import.meta.env.BASE_URL}/join`} />
-          </Router>
-        </Client.Provider>
-      </Suspense>
+      <Client.Provider value={
+        this.state.client
+      }>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="join" element={
+            <Suspense fallback={
+              <div class="flex flex-col">
+                <header>
+                  <Header />
+                </header>
+                <main class="m-12 mt-6 flex items-center justify-center">
+                  <p class="text-lg text-data font-bold">Loading...</p>
+                </main>
+              </div>
+            }>
+              <Join />
+            </Suspense>
+          } />
+        </Routes>
+      </Client.Provider>
     );
   }
 }
