@@ -21,7 +21,7 @@ export class Header extends PureComponent {
                     </div>
                     {
 
-                        !client?.isLoggedIn() ? <Link href="/join" class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Join</Link> :
+                        !client?.isLoggedIn() ? <Link href={`${import.meta.env.BASE_URL}/join`} class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Join</Link> :
                             <Link class="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">Post</Link>
                     }
 
