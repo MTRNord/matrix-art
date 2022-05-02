@@ -45,7 +45,7 @@
     "@types/offscreencanvas": "2019.6.4",
     "@types/react": "17.0.41",
     "@types/validator": "13.7.2",
-    "autoprefixer": "10.4.4",
+    "autoprefixer": "10.4.6",
     "cross-env": "7.0.3",
     "eslint": "8.13.0",
     "eslint-config-next": "12.1.5",
