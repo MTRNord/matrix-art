@@ -38,7 +38,7 @@
     "sqlite3": "5.0.4"
   },
   "devDependencies": {
-    "@babel/plugin-transform-typescript": "7.16.8",
+    "@babel/plugin-transform-typescript": "7.18.1",
     "@playwright/test": "1.21.0",
     "@types/cors": "2.8.12",
     "@types/node": "17.0.24",
