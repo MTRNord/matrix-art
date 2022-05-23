@@ -22,7 +22,7 @@
     "feed": "yshrsmz/feed#c50d7a82c5b6141039830d615b19b760e173e231",
     "lightgallery": "2.4.0",
     "localforage": "1.10.0",
-    "meilisearch": "0.25.0",
+    "meilisearch": "0.25.1",
     "next": "12.1.6",
     "next-i18next": "11.0.0",
     "png-chunks-extract": "1.0.0",
