@@ -1,22 +1,20 @@
-import { PureComponent } from "react";
+import { Suspense } from "react";
 import { PostData } from "../data/post";
 import { UserData } from "../data/user";
+import { SuspenseImage } from "../utils/asyncImages";
+import { BounceLoader } from "react-spinners";
 
 type Props = {
     user: UserData;
     post: PostData;
 };
 
-export class Post extends PureComponent<Props> {
-    constructor(props: Props) {
-        super(props);
-    }
-    render() {
-        const { user, post }: Props = this.props;
-        return (
+export function Post({ user, post }: Props) {
+    return (
+        <Suspense fallback={<div className="flex flex-col w-full"><BounceLoader color="#FEA500" /></div>}>
             <div className="flex flex-col">
                 <a id="gallery_click" href={post.content.file.url} className="w-full" target="_blank" rel="noreferrer">
-                    <img decoding="async" loading="lazy" className="rounded-3xl shadow object-cover transform transition-transform ease-in-out duration-300 hover:scale-105" src={post.content.file.url} />
+                    <SuspenseImage className="rounded-3xl shadow object-cover transform transition-transform ease-in-out duration-300 hover:scale-105" src={post.content.file.url} />
                 </a>
                 <div className="flex items-center justify-between py-4">
                     <a className="flex items-center" href="#">
@@ -45,6 +43,6 @@ export class Post extends PureComponent<Props> {
                     </div>
                 </div>
             </div>
-        );
-    }
+        </Suspense>
+    );
 }

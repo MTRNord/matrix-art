@@ -11,6 +11,7 @@
     global = globalThis // fix for "global not defined" error
     globalThis.OLM_OPTIONS = undefined; // Fix missing var for olm
   </script>
+  <link rel="preconnect" href="<%= env.VITE_MATRIX_SERVER_URL %>">
 </head>
 
 <body>
