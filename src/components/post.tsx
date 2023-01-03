@@ -13,7 +13,7 @@ export function Post({ user, post }: Props) {
     return (
         <Suspense fallback={<div className="flex flex-col w-full"><BounceLoader color="#FEA500" /></div>}>
             <div className="flex flex-col">
-                <a id="gallery_click" href={post.content.file.url} className="w-full" target="_blank" rel="noreferrer">
+                <a aria-label={`Open post by ${user.display_name}`} href={post.content.file.url} className="w-full" target="_blank" rel="noreferrer">
                     <SuspenseImage className="rounded-3xl shadow object-cover transform transition-transform ease-in-out duration-300 hover:scale-105" src={post.content.file.url} />
                 </a>
                 <div className="flex items-center justify-between py-4">
