@@ -1,4 +1,4 @@
-import { lazy, PureComponent, Suspense } from 'react';
+import { lazy, useEffect, Suspense, useState } from 'react';
 import { Home } from './pages/Home';
 import { Client } from './context';
 import { Header } from './components/header';
@@ -13,19 +13,10 @@ import { Route, Routes } from 'react-router-dom';
 
 const Join = lazy(() => import("./pages/Join"));
 
-type State = {
-  client?: MatrixClient;
-};
+export function App() {
+  const [client, setClient] = useState<MatrixClient | undefined>(undefined);
 
-export class App extends PureComponent<any, State> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      client: undefined
-    };
-  }
-
-  loadOlm(): Promise<void> {
+  const loadOlm = (): Promise<void> => {
     /* Load Olm. We try the WebAssembly version first, and then the legacy */
     return Olm.init({
       locateFile: () => olmWasmPath,
@@ -51,48 +42,51 @@ export class App extends PureComponent<any, State> {
     });
   };
 
-  async loadMatrixClient() {
+  const loadMatrixClient = async () => {
     let client = await MatrixClient.new();
-    // @ts-ignore its fine...
-    this.setState({ client });
+    setClient(client);
     console.log("Client loaded");
-    await this.state.client?.start();
+    await client?.start();
     console.log("Client started");
   }
 
-  async componentDidMount() {
-    try {
-      await this.loadOlm();
-      console.log("Olm loaded");
-    } catch {
-      console.log("Olm not loaded");
+  useEffect(() => {
+    async function loadMatrix() {
+      try {
+        await loadOlm();
+        console.log("Olm loaded");
+      } catch {
+        console.log("Olm not loaded");
+      }
+      await loadMatrixClient();
     }
-    await this.loadMatrixClient();
-  }
 
-  render() {
-    return (
-      <Client.Provider value={
-        this.state.client
-      }>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="join" element={
-            <Suspense fallback={
-              <div className="flex flex-col">
-                <header>
-                  <Header />
-                </header>
-                <main className="m-12 mt-6 flex items-center justify-center">
-                  <p className="text-lg text-data font-bold">Loading...</p>
-                </main>
-              </div>
-            }>
-              <Join />
-            </Suspense>
-          } />
-        </Routes>
-      </Client.Provider>
-    );
-  }
+    if (client == undefined) {
+      loadMatrix();
+    }
+  }, []);
+
+  return (
+    <Client.Provider value={
+      client
+    }>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="join" element={
+          <Suspense fallback={
+            <div className="flex flex-col">
+              <header>
+                <Header />
+              </header>
+              <main className="m-12 mt-6 flex items-center justify-center">
+                <p className="text-lg text-data font-bold">Loading...</p>
+              </main>
+            </div>
+          }>
+            <Join />
+          </Suspense>
+        } />
+      </Routes>
+    </Client.Provider>
+  );
 }
