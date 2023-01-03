@@ -1,7 +1,6 @@
-import { PureComponent } from "preact/compat";
+import { PureComponent } from "react";
 import { Header } from "../components/header";
 import { Post } from "../components/post";
-// @ts-ignore no types
 import { Plock } from "react-plock";
 import { UserData } from "../data/user";
 import { PostData } from "../data/post";
@@ -13,16 +12,17 @@ const BREAKPOINTS = [
     { size: 1400, columns: 3 },
     { size: 1401, columns: 4 },
 ];
+
 export class Home extends PureComponent {
     render() {
         return (
-            <div class="flex flex-col">
+            <div className="flex flex-col">
                 <header>
                     <Header />
                 </header>
-                <main class="m-12 mt-6">
-                    <h1 class="text-3xl font-bold mb-4 text-white">Explore</h1>
-                    <div class="flex justify-center" id="gallery">
+                <main className="m-12 mt-6">
+                    <h1 className="text-3xl font-bold mb-4 text-white">Explore</h1>
+                    <div className="flex justify-center" id="gallery">
                         <Plock gap={"24px"} breakpoints={BREAKPOINTS}>
                             <Post user={new UserData("", "Person A", "https://unsplash.com/photos/_cvwXhGqG-o/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8OHx8ZmFjZXxlbnwwfDJ8fHwxNjQ4Nzc5NzYx")} post={new PostData("", { file: { url: "https://unsplash.com/photos/UWmrTAQ75iA/download?ixid=MnwxMjA3fDB8MXxhbGx8Mnx8fHx8fDJ8fDE2NDg4MzI0Njg" } })} />
                             <Post user={new UserData("", "Person B", "https://unsplash.com/photos/uJ8LNVCBjFQ/download?ixid=MnwxMjA3fDB8MXxzZWFyY2h8MTN8fGZhY2V8ZW58MHwyfHx8MTY0ODc3OTc2MQ")} post={new PostData("", { file: { url: "https://unsplash.com/photos/7ptbiEPxKMQ/download?ixid=MnwxMjA3fDB8MXxhbGx8OXx8fHx8fDJ8fDE2NDg4MzI0Njg" } })} />

@@ -1,4 +1,4 @@
-import { lazy, PureComponent, Suspense } from 'preact/compat';
+import { lazy, PureComponent, Suspense } from 'react';
 import { Home } from './pages/Home';
 import { Client } from './context';
 import { Header } from './components/header';
@@ -18,8 +18,8 @@ type State = {
 };
 
 export class App extends PureComponent<any, State> {
-  constructor() {
-    super();
+  constructor(props: any) {
+    super(props);
     this.state = {
       client: undefined
     };
@@ -72,8 +72,6 @@ export class App extends PureComponent<any, State> {
 
   render() {
     return (
-
-
       <Client.Provider value={
         this.state.client
       }>
@@ -81,12 +79,12 @@ export class App extends PureComponent<any, State> {
           <Route path="/" element={<Home />} />
           <Route path="join" element={
             <Suspense fallback={
-              <div class="flex flex-col">
+              <div className="flex flex-col">
                 <header>
                   <Header />
                 </header>
-                <main class="m-12 mt-6 flex items-center justify-center">
-                  <p class="text-lg text-data font-bold">Loading...</p>
+                <main className="m-12 mt-6 flex items-center justify-center">
+                  <p className="text-lg text-data font-bold">Loading...</p>
                 </main>
               </div>
             }>
