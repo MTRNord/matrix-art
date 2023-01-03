@@ -36,7 +36,6 @@ class Join extends PureComponent<Props, State> {
     }
 
     async onSubmit(e: React.FormEvent) {
-        e.preventDefault();
         const client: MatrixClient | undefined = this.context;
         if (!client) {
             return;
@@ -53,12 +52,12 @@ class Join extends PureComponent<Props, State> {
     }
 
     onInput(e: React.FormEvent) {
-        e.preventDefault();
         const target = (e.target as HTMLInputElement);
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
         this.setState({ [name]: value } as State);
     }
+
     render() {
         const { homeserver, username, password, create_profile: create_account, current_tab } = this.state;
         return (
@@ -83,11 +82,11 @@ class Join extends PureComponent<Props, State> {
                             <input className="search-bg shadow rounded-lg border-0 py-3 px-4 placeholder-data text-white mb-4 w-full" autoComplete="username" type="text" placeholder="Username" name="username" value={username} onInput={this.onInput.bind(this)} />
                             <input className="search-bg shadow rounded-lg border-0 py-3 px-4 placeholder-data text-white mb-4 w-full" autoComplete="current-password" type="password" placeholder="Password" name="password" value={password} onInput={this.onInput.bind(this)} />
                             <label className="mb-4 flex items-center">
-                                <input className="checked:bg-blue-600 checked:border-transparent checked:bg-no-repeat checked:bg-[url('/tick.svg')] outline-none focus:outline-offset-2  focus:ring-blue-600  focus:ring-offset-2  focus:ring-offset-white p-0 inline-block align-middle box-border select-none shrink-0 shadow h-5 w-5 appearance-none rounded bg-white border-none" type="checkbox" name="create_profile" checked={create_account} onInput={this.onInput.bind(this)} />
+                                <input className="checked:bg-blue-600 checked:border-transparent checked:bg-no-repeat checked:bg-[url('/tick.svg')] outline-none focus:outline-offset-2  focus:ring-blue-600  focus:ring-offset-2  focus:ring-offset-white p-0 inline-block align-middle box-border select-none shrink-0 shadow h-5 w-5 appearance-none rounded bg-white border-none" type="checkbox" name="create_profile" checked={create_account} onChange={this.onInput.bind(this)} />
                                 <span className="ml-4 text-data text-base font-medium">Create account</span>
                             </label>
 
-                            <button type="submit" className="text-white font-bold text-lg logo-bg rounded-xl py-2 px-10 shadow transform transition-transform ease-in-out duration-300 hover:scale-105 w-1/2 self-center">{current_tab === "login" ? "Login" : "Register"}</button>
+                            <button type="submit" className="text-white font-bold text-lg logo-bg rounded-xl py-2 px-10 shadow transform transition-transform ease-in-out duration-300 hover:scale-105 w-1/2 self-center justify-center flex">{current_tab === "login" ? "Login" : "Register"}</button>
                         </form>
                     </div>
                 </main >
