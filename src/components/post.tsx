@@ -19,7 +19,7 @@ export function Post({ user, post }: Props) {
                 <div className="flex items-center justify-between py-4">
                     <a className="flex items-center" href="#">
                         <img className="w-11 h-11 rounded-full mr-4 border-2 border-[#AAB3CF]" src={user.avatar_url} />
-                        <p className="text-data shadow text-lg font-medium">{user.display_name}</p>
+                        <p className="text-data text-lg font-medium">{user.display_name}</p>
                     </a>
                     <div className="flex text-data text-lg items-center">
                         <a className="mr-4 flex items-center" href="#">
