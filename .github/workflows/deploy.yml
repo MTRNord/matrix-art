@@ -22,6 +22,7 @@ jobs:
       - name: Install and Build 🔧
         run: |
           npm ci
+          rm -r node_modules/react-plock/node_modules
           npm run build
 
       - name: Deploy 🚀

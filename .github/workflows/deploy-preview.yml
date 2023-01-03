@@ -48,6 +48,7 @@ jobs:
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
           npm ci
+          rm -r node_modules/react-plock/node_modules
           npx tsc && npx vite build --base /pr-${{ github.event.pull_request.number }}/
       - name: Deploy to gh-pages
         if: ${{ github.ref != 'refs/heads/main' }}
