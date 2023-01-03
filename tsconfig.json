@@ -18,20 +18,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve",
-    "jsxFactory": "h",
-    "jsxFragmentFactory": "Fragment"
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
   },
-  "exclude": [
-    "./src/**/*",
-    "./scripts/**/*"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.browser.json"
-    }
-  ]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

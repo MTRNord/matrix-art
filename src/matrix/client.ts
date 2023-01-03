@@ -13,8 +13,6 @@ import {
     UNSTABLE_MSC3088_PURPOSE,
     UNSTABLE_MSC3089_TREE_SUBTYPE
 } from 'matrix-js-sdk';
-// @ts-ignore
-import { WebStorageSessionStore } from "matrix-js-sdk/lib/store/session/webstorage";
 import {
     MEGOLM_ALGORITHM
 } from 'matrix-js-sdk/lib/crypto/olmlib';
@@ -68,7 +66,6 @@ export class MatrixClient {
                 userId: mxid,
                 accessToken: token,
                 deviceId: device_id,
-                sessionStore: new WebStorageSessionStore(window.localStorage),
                 // @ts-ignore - The function currently comes with incorrect types
                 store: new IndexedDBStore({
                     indexedDB: window.indexedDB,
@@ -83,7 +80,7 @@ export class MatrixClient {
             guest_client.setGuest(true);
         } {
 
-            const tmpClient = createClient(import.meta.env.VITE_MATRIX_SERVER_URL);
+            const tmpClient = createClient({ baseUrl: import.meta.env.VITE_MATRIX_SERVER_URL });
             // @ts-ignore - The function currently comes with incorrect types
             const { user_id, device_id, access_token } = await tmpClient.registerGuest();
 
@@ -93,7 +90,6 @@ export class MatrixClient {
                 userId: user_id,
                 accessToken: access_token,
                 deviceId: device_id,
-                sessionStore: new WebStorageSessionStore(window.localStorage),
                 // @ts-ignore - The function currently comes with incorrect types
                 store: new IndexedDBStore({
                     indexedDB: window.indexedDB,
@@ -124,7 +120,6 @@ export class MatrixClient {
                 userId: mxid,
                 accessToken: token,
                 deviceId: device_id,
-                sessionStore: new WebStorageSessionStore(window.localStorage),
                 // @ts-ignore - The function currently comes with incorrect types
                 store: new IndexedDBStore({
                     indexedDB: window.indexedDB,
@@ -175,7 +170,6 @@ export class MatrixClient {
             baseUrl: homeserver,
             userId: username,
             deviceId: "Matrix Art",
-            sessionStore: new WebStorageSessionStore(window.localStorage),
             // @ts-ignore - The function currently comes with incorrect types
             store: new IndexedDBStore({
                 indexedDB: window.indexedDB,
@@ -192,12 +186,12 @@ export class MatrixClient {
 
         window.localStorage.setItem("server", homeserver);
         window.localStorage.setItem("mxid", username);
-        window.localStorage.setItem("access_token", this.client.getAccessToken());
+        window.localStorage.setItem("access_token", this.client.getAccessToken() ?? "unknown");
         window.localStorage.setItem("device_id", "Matrix Art");
         await this.start();
         if (createProfile) {
             const subdirs = this.rootDirectory?.getDirectories();
-            const id = this.client.getUserId().replace(":", "_");
+            const id = this.client.getUserId()?.replace(":", "_");
             if (subdirs?.some((directory) => directory.room.name === id)) {
                 this.rootDirectory = subdirs?.find((directory) => directory.room.name === id);
             } else {
@@ -214,7 +208,6 @@ export class MatrixClient {
             baseUrl: homeserver,
             userId: username,
             deviceId: "Matrix Art",
-            sessionStore: new WebStorageSessionStore(window.localStorage),
             // @ts-ignore - The function currently comes with incorrect types
             store: new IndexedDBStore({
                 indexedDB: window.indexedDB,
@@ -230,13 +223,13 @@ export class MatrixClient {
 
         window.localStorage.setItem("server", homeserver);
         window.localStorage.setItem("mxid", username);
-        window.localStorage.setItem("access_token", this.client.getAccessToken());
+        window.localStorage.setItem("access_token", this.client.getAccessToken() ?? "unknown");
         window.localStorage.setItem("device_id", "Matrix Art");
         await this.start();
         if (createProfile) {
             const subdirs = this.rootDirectory?.getDirectories();
             console.log(subdirs);
-            const id = this.client.getUserId().replace(":", "_");
+            const id = this.client.getUserId()?.replace(":", "_");
             if (subdirs?.some((directory) => directory.room.name === id)) {
                 this.rootDirectory = subdirs?.find((directory) => directory.room.name === id);
             } else {
@@ -255,8 +248,8 @@ export class MatrixClient {
         await delay(1000);
         this.rootDirectory = new MSC3089TreeSpace(this.client, room.roomId);
         // Create the user folder and add it to the top folder
-        const id = this.client.getUserId().replace(":", "_");
-        this.currentUserDirectory = await this.createPublicSubDirectory(this.rootDirectory, id);
+        const id = this.client.getUserId()?.replace(":", "_");
+        this.currentUserDirectory = await this.createPublicSubDirectory(this.rootDirectory, id ?? "unknown");
         // Create the public timeline for the user. We dont need it saved as we can get it again later using the users dir.
         await this.createPublicSubDirectory(this.currentUserDirectory, "Timeline");
     }
@@ -286,7 +279,7 @@ export class MatrixClient {
                     // We want to be able to moderate this as the instance admin for legal reasons
                     [import.meta.env.VITE_MATRIX_INSTANCE_ADMIN]: 100,
                     // We initially need to use 100 to be able to create the room...
-                    [this.client.getUserId()]: 100,
+                    [this.client.getUserId() ?? "broken"]: 100,
                 },
             },
             invite: [
@@ -328,11 +321,11 @@ export class MatrixClient {
         });
         // Demote ourself
         const room = this.client.getRoom(roomId);
-        const powerLevelEvent = room?.getLiveTimeline().getState(EventTimeline.FORWARDS).getStateEvents(EventType.RoomPowerLevels, "");
+        const powerLevelEvent = room?.getLiveTimeline().getState(EventTimeline.FORWARDS)?.getStateEvents(EventType.RoomPowerLevels, "");
         if (!powerLevelEvent) {
             throw new Error("Failed to find PL event");
         }
-        await this.client.setPowerLevel(roomId, this.client.getUserId(), 50, powerLevelEvent);
+        await this.client.setPowerLevel(roomId, this.client.getUserId() ?? "unknown", 50, powerLevelEvent);
         return new MSC3089TreeSpace(this.client, roomId);
     }
 
