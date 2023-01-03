@@ -14,9 +14,6 @@ permissions:
   security-events: none
   statuses: none
 on:
-  push:
-    branches:
-      - "main"
   pull_request:
 jobs:
   build-and-deploy:
