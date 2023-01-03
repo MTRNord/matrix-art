@@ -13,8 +13,12 @@ jobs:
       - uses: actions/setup-node@v3
         name: Setup node
         with:
-          node-version: "16"
-
+          node-version: "18"
+      - name: Create env file
+        run: |
+          echo "VITE_MATRIX_SERVER_URL=https://matrix.art.midnightthoughts.space" > .env.local
+          echo "VITE_MATRIX_INSTANCE_ADMIN=@administrator:art.midnightthoughts.space" >> .env.local
+          echo "VITE_MATRIX_ROOT_FOLDER=#Matrix_Art:art.midnightthoughts.space" >> .env.local
       - name: Install and Build 🔧
         run: |
           npm ci
