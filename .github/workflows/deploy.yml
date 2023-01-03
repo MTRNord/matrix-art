@@ -22,8 +22,8 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+        uses: actions/checkout@755da8c3cf115ac066823e79a1e1788f8940201b # v3.2.0
+      - uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # v3.5.1
         name: Setup node
         with:
           node-version: "18"
@@ -39,7 +39,7 @@ jobs:
           npm run build
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4.4.1
+        uses: JamesIves/github-pages-deploy-action@ba1486788b0490a235422264426c45848eac35c6 # v4.4.1
         env:
           BUILD_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
