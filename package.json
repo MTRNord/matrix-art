@@ -14,7 +14,7 @@
     "events": "^3.3.0",
     "inquirer": "^8.2.5",
     "matrix-events-sdk": "^0.0.1",
-    "matrix-js-sdk": "^16.0.1",
+    "matrix-js-sdk": "^19.7.0",
     "preact": "^10.11.3",
     "react-plock": "^1.2.1",
     "react-router-dom": "^6.6.1"
