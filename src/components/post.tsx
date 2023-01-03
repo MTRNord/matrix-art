@@ -3,6 +3,7 @@ import { PostData } from "../data/post";
 import { UserData } from "../data/user";
 import { SuspenseImage } from "../utils/asyncImages";
 import { BounceLoader } from "react-spinners";
+import { Link } from "react-router-dom";
 
 type Props = {
     user: UserData;
@@ -10,12 +11,13 @@ type Props = {
 };
 
 export function Post({ user, post }: Props) {
+
     return (
         <Suspense fallback={<div className="flex flex-col w-full"><BounceLoader color="#FEA500" /></div>}>
             <div className="flex flex-col">
-                <a aria-label={`Open post by ${user.display_name}`} href={post.content.file.url} className="w-full" target="_blank" rel="noreferrer">
+                <Link aria-label={`Open post by ${user.display_name}`} to={`/post/${post.event_id}`} className="w-full">
                     <SuspenseImage className="rounded-3xl shadow object-cover transform transition-transform ease-in-out duration-300 hover:scale-105" src={post.content.file.url} />
-                </a>
+                </Link>
                 <div className="flex items-center justify-between py-4">
                     <a className="flex items-center" href="#">
                         <img className="w-11 h-11 rounded-full mr-4 border-2 border-[#AAB3CF] hover:border-indigo-300 ease-in-out duration-150" src={user.avatar_url} />

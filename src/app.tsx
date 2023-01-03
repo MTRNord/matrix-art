@@ -12,6 +12,7 @@ import Olm from '@matrix-org/olm';
 import { Route, Routes } from 'react-router-dom';
 
 const Join = lazy(() => import("./pages/Join"));
+const Post = lazy(() => import("./pages/Post"));
 
 export function App() {
   const [client, setClient] = useState<MatrixClient | undefined>(undefined);
@@ -86,6 +87,18 @@ export function App() {
             <Join />
           </Suspense>
         } />
+        <Route path="/post/:postId" element={<Suspense fallback={
+          <div className="flex flex-col">
+            <header>
+              <Header />
+            </header>
+            <main className="m-12 mt-6 flex items-center justify-center">
+              <p className="text-lg text-data font-bold">Loading...</p>
+            </main>
+          </div>
+        }>
+          <Post />
+        </Suspense>} />
       </Routes>
     </Client.Provider>
   );

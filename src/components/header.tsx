@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
 import { Client } from "../context";
+import logo_url from "./Logo_colored.svg";
 
 export function Header() {
     const client = useContext(Client);
     return (
         <div className="m-12 flex flex-col lg:flex-row items-center justify-between">
-            <Link to="/"><img alt="Matrix Art" src="Logo_colored.svg" /></Link>
+            <Link to="/"><img alt="Matrix Art" src={logo_url} /></Link>
             <div className="flex items-center mt-8 lg:mt-0 flex-col sm:flex-row">
                 <div className="flex items-center lg:justify-between w-80 max-w-80 mx-6 ease-in-out hover:scale-105 transform transition-transform duration-300">
                     <div className="absolute ml-4">
