@@ -10,6 +10,7 @@ import olmWasmPath from "@matrix-org/olm/olm.wasm?url";
 import OlmLegacy from '@matrix-org/olm/olm_legacy.js?url';
 import Olm from '@matrix-org/olm';
 import { Route, Routes } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Join = lazy(() => import("./pages/Join"));
 const Post = lazy(() => import("./pages/Post"));
@@ -76,48 +77,36 @@ export function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="join" element={
-          <Suspense fallback={
-            <div className="flex flex-col">
-              <header>
-                <Header />
-              </header>
-              <main className="m-12 mt-6 flex items-center justify-center">
-                <p className="text-lg text-data font-bold">Loading...</p>
-              </main>
-            </div>
-          }>
+          <Suspense fallback={<LoadingPage />}>
             <Join />
           </Suspense>
         } />
         <Route path="/post/:postId" element={
-          <Suspense fallback={
-            <div className="flex flex-col">
-              <header>
-                <Header />
-              </header>
-              <main className="m-12 mt-6 flex items-center justify-center">
-                <p className="text-lg text-data font-bold">Loading...</p>
-              </main>
-            </div>
-          }>
+          <Suspense fallback={<LoadingPage />}>
             <Post />
           </Suspense>
         } />
         <Route path="/profile/:userId" element={
-          <Suspense fallback={
-            <div className="flex flex-col">
-              <header>
-                <Header />
-              </header>
-              <main className="m-12 mt-6 flex items-center justify-center">
-                <p className="text-lg text-data font-bold">Loading...</p>
-              </main>
-            </div>
-          }>
+          <Suspense fallback={<LoadingPage />}>
             <Profile />
           </Suspense>
         } />
       </Routes>
     </Client.Provider >
+  );
+}
+
+function LoadingPage() {
+  const { t } = useTranslation();
+
+  return (
+    <div className="flex flex-col">
+      <header>
+        <Header />
+      </header>
+      <main className="m-12 mt-6 flex items-center justify-center">
+        <p className="text-lg text-data font-bold">{t('Loading...')}</p>
+      </main>
+    </div>
   );
 }

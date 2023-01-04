@@ -3,6 +3,7 @@ import { Post } from "../components/post";
 import { Plock } from "react-plock";
 import { UserData } from "../data/user";
 import { PostData } from "../data/post";
+import { useTranslation } from "react-i18next";
 
 
 const BREAKPOINTS = [
@@ -13,13 +14,15 @@ const BREAKPOINTS = [
 ];
 
 export function Home() {
+    const { t } = useTranslation();
+
     return (
         <div className="flex flex-col">
             <header>
                 <Header />
             </header>
             <main className="m-12 mt-6">
-                <h1 className="text-3xl font-bold mb-4 text-white">Explore</h1>
+                <h1 className="text-3xl font-bold mb-4 text-white">{t('Explore')}</h1>
                 <div className="flex justify-center" id="gallery">
                     <Plock gap={"24px"} breakpoints={BREAKPOINTS}>
                         {/* 

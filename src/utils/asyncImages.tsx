@@ -1,6 +1,4 @@
 // First we need a type of cache to avoid creating resources for images
-
-import React from "react";
 import { ImgHTMLAttributes } from "react";
 import { createResource, Resource } from "./resources";
 
