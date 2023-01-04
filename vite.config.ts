@@ -13,7 +13,7 @@ export default defineConfig({
     })),
   ],
   resolve: {
-    browserField: false,
+    //browserField: false,
   },
   worker: {
     format: 'iife',

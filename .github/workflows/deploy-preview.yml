@@ -47,8 +47,13 @@ jobs:
       - name: Install and Build 🔧
         if: ${{ github.ref != 'refs/heads/main' }}
         run: |
+          apt-get update && apt-get install -y patch
           npm ci
           rm -r node_modules/react-plock/node_modules
+          mv .github/package.json.patch node_modules/matrix-js-sdk/package.json.patch
+          cd node_modules/matrix-js-sdk/
+          patch package.json < package.json.patch
+          cd .. && cd ..
           npx tsc && npx vite build --base /pr-${{ github.event.pull_request.number }}/
       - name: Deploy to gh-pages
         if: ${{ github.ref != 'refs/heads/main' }}

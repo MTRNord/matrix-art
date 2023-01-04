@@ -1,0 +1,4 @@
+36c36
+<     "browser": "./lib/browser-index.ts",
+---
+>     "browser": "./lib/browser-index.js",
