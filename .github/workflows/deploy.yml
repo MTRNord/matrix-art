@@ -36,7 +36,6 @@ jobs:
         run: |
           apt-get update && apt-get install -y patch
           npm ci
-          rm -r node_modules/react-plock/node_modules
           mv .github/package.json.patch node_modules/matrix-js-sdk/package.json.patch
           pushd node_modules/matrix-js-sdk/
           patch package.json < package.json.patch
