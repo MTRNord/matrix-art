@@ -182,7 +182,7 @@ export class MatrixClient {
             ),
         });
 
-        await this.client.register(username, password, undefined, { type: "m.login.dummy" });
+        await this.client.register(username, password, null, { type: "m.login.dummy" });
 
         window.localStorage.setItem("server", homeserver);
         window.localStorage.setItem("mxid", username);

@@ -30,10 +30,12 @@
     "react-spinners": "^0.13.7"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
     "@types/events": "^3.0.0",
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.10",
-    "@types/react-test-renderer": "^18.0.0",
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "@typescript-eslint/parser": "^5.48.0",
     "@vitejs/plugin-react-swc": "^3.0.1",
@@ -42,8 +44,8 @@
     "eslint": "^8.31.0",
     "eslint-plugin-tailwindcss": "^3.8.0",
     "eslint-plugin-unicorn": "^45.0.2",
+    "jsdom": "^20.0.3",
     "postcss": "^8.4.20",
-    "react-test-renderer": "^18.2.0",
     "tailwindcss": "^3.2.4",
     "typescript": "^4.9.4",
     "vite": "^4.0.4",
