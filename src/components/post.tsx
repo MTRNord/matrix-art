@@ -19,10 +19,10 @@ export function Post({ user, post }: Props) {
                     <SuspenseImage className="rounded-3xl shadow object-cover transform transition-transform ease-in-out duration-300 hover:scale-105" src={post.content.file.url} />
                 </Link>
                 <div className="flex items-center justify-between py-4">
-                    <a className="flex items-center" href="#">
+                    <Link className="flex items-center" to={`/profile/${user.mxid}`}>
                         <img className="w-11 h-11 rounded-full mr-4 border-2 border-[#AAB3CF] hover:border-indigo-300 ease-in-out duration-150" src={user.avatar_url} />
                         <p className="text-data text-lg font-medium">{user.display_name}</p>
-                    </a>
+                    </Link>
                     <div className="flex text-data text-lg items-center">
                         <a className="mr-4 flex items-center" href="#">
                             <span className="mr-2 hover:fill-red-600 fill-[#AAB3CF] ease-in-out duration-150">
