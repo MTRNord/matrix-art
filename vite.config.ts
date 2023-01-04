@@ -12,10 +12,11 @@ export default defineConfig({
       env: viteConfig.env,
     })),
   ],
-  resolve: {
-    //browserField: false,
-  },
   worker: {
     format: 'iife',
+  },
+  test: {
+    globals: true,
+    environment: 'happy-dom',
   }
 });

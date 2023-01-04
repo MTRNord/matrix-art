@@ -12,7 +12,7 @@ export function Header() {
         <div className="m-12 flex flex-col lg:flex-row items-center justify-between">
             <Link to="/"><img alt="Matrix Art" src={logo_url} /></Link>
             <div className="flex items-center mt-8 lg:mt-0 flex-col sm:flex-row">
-                <div className="flex items-center lg:justify-between w-80 max-w-80 mx-6 ease-in-out hover:scale-105 transform transition-transform duration-300">
+                <div className="flex items-center lg:justify-between w-80 mx-6 ease-in-out hover:scale-105 transition-transform duration-300">
                     <div className="absolute ml-4">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#AAB3CF">
                             <path d="M0 0h24v24H0V0z" fill="none" />
@@ -23,8 +23,8 @@ export function Header() {
                 </div>
                 {
 
-                    !client?.isLoggedIn() ? <Link to="/join" className="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">{t('Join')}</Link> :
-                        <Link to="/" className="text-white font-bold text-1xl logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transform transition-transform ease-in-out duration-300 hover:scale-105">{t('Post')}</Link>
+                    client?.isLoggedIn() ? <Link to="/" className="text-white font-bold logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transition-transform ease-in-out duration-300 hover:scale-105">{t('Post')}</Link> :
+                        <Link to="/join" className="text-white font-bold logo-bg rounded-2xl py-3 px-12 shadow mt-4 sm:mt-0 transition-transform ease-in-out duration-300 hover:scale-105">{t('Join')}</Link>
                 }
 
             </div>

@@ -14,7 +14,7 @@ export function createResource<Payload>(
     // we start defining our resource is on a pending status
     let status: status = "pending";
     // and we create a variable to store the result
-    let result: any;
+    let result: Payload | Error;
     // then we immediately start running the `asyncFn` function
     // and we store the resulting promise
     const promise = asyncFn().then(
@@ -24,11 +24,11 @@ export function createResource<Payload>(
             status = "success";
             result = r;
         },
-        (e: Error) => {
+        (error: Error) => {
             // once it's rejected we change the status to error
             // and we save the returned error as result
             status = "error";
-            result = e;
+            result = error;
         }
     );
     // lately we return an error object with the read method
@@ -36,16 +36,19 @@ export function createResource<Payload>(
         read(): Payload {
             // here we will check the status value
             switch (status) {
-                case "pending":
+                case "pending": {
                     // if it's still pending we throw the promise
                     // throwing a promise is how Suspense know our component is not ready
                     throw promise;
-                case "error":
+                }
+                case "error": {
                     // if it's error we throw the error
-                    throw result;
-                case "success":
+                    throw result as Error;
+                }
+                case "success": {
                     // if it's success we return the result
-                    return result;
+                    return result as Payload;
+                }
             }
         },
     };

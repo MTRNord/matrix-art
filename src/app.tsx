@@ -17,37 +17,39 @@ const Post = lazy(() => import("./pages/Post"));
 const Profile = lazy(() => import("./pages/Profile"));
 
 
+const loadOlm = (): Promise<void> => {
+  /* Load Olm. We try the WebAssembly version first, and then the legacy */
+  return Olm.init({
+    locateFile: () => olmWasmPath,
+  }).then(() => {
+    console.log("Using WebAssembly Olm");
+  }).catch((error) => {
+    console.log("Failed to load Olm: trying legacy version", error);
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = OlmLegacy; // XXX: This should be cache-busted too
+      s.addEventListener('load', resolve);
+      s.addEventListener('error', reject);
+      document.body.append(s);
+    }).then(() => {
+      // Init window.Olm, ie. the one just loaded by the script tag,
+      // not 'Olm' which is still the failed wasm version.
+      return window.Olm.init();
+    }).then(() => {
+      console.log("Using legacy Olm");
+    }).catch((error) => {
+      console.log("Both WebAssembly and asm.js Olm failed!", error);
+    });
+  });
+};
+
+
 export function App() {
+  // eslint-disable-next-line unicorn/no-useless-undefined
   const [client, setClient] = useState<MatrixClient | undefined>(undefined);
 
-  const loadOlm = (): Promise<void> => {
-    /* Load Olm. We try the WebAssembly version first, and then the legacy */
-    return Olm.init({
-      locateFile: () => olmWasmPath,
-    }).then(() => {
-      console.log("Using WebAssembly Olm");
-    }).catch((e) => {
-      console.log("Failed to load Olm: trying legacy version", e);
-      return new Promise((resolve, reject) => {
-        const s = document.createElement('script');
-        s.src = OlmLegacy; // XXX: This should be cache-busted too
-        s.onload = resolve;
-        s.onerror = reject;
-        document.body.appendChild(s);
-      }).then(() => {
-        // Init window.Olm, ie. the one just loaded by the script tag,
-        // not 'Olm' which is still the failed wasm version.
-        return window.Olm.init();
-      }).then(() => {
-        console.log("Using legacy Olm");
-      }).catch((e) => {
-        console.log("Both WebAssembly and asm.js Olm failed!", e);
-      });
-    });
-  };
-
   const loadMatrixClient = async () => {
-    let client = await MatrixClient.new();
+    const client = await MatrixClient.new();
     setClient(client);
     console.log("Client loaded");
     await client?.start();

@@ -42,10 +42,10 @@ export class MatrixClient {
         }
 
         let server;
-        if (window.localStorage.getItem("server") !== null) {
-            server = window.localStorage.getItem("server");
-        } else {
+        if (window.localStorage.getItem("server") === null) {
             server = import.meta.env.VITE_MATRIX_SERVER_URL;
+        } else {
+            server = window.localStorage.getItem("server");
         }
 
 
@@ -143,7 +143,7 @@ export class MatrixClient {
 
     public async start(): Promise<void> {
         //TODO Setup handlers
-        this.client.on(MatrixEventEvent.Decrypted, (event: MatrixEvent, err?: Error) => {
+        this.client.on(MatrixEventEvent.Decrypted, (event: MatrixEvent, _err?: Error) => {
             const ext_ev = event.unstableExtensibleEvent;
             if (ext_ev?.isEquivalentTo(M_IMAGE)) {
                 this.events.push(event);
@@ -163,7 +163,7 @@ export class MatrixClient {
         console.log("started");
     }
 
-    public async register(homeserver: string = import.meta.env.VITE_MATRIX_SERVER_URL, username: string, password: string, createProfile: boolean = false) {
+    public async register(homeserver: string = import.meta.env.VITE_MATRIX_SERVER_URL, username: string, password: string, createProfile = false) {
         this.client.stopClient();
         this.client = createClient({
             useAuthorizationHeader: true,
@@ -182,7 +182,7 @@ export class MatrixClient {
             ),
         });
 
-        await this.client.register(username, password, null, { type: "m.login.dummy" });
+        await this.client.register(username, password, undefined, { type: "m.login.dummy" });
 
         window.localStorage.setItem("server", homeserver);
         window.localStorage.setItem("mxid", username);
@@ -201,7 +201,7 @@ export class MatrixClient {
     }
 
     // Login and create the profile if wanted
-    public async login(homeserver: string, username: string, password: string, createProfile: boolean = false): Promise<void> {
+    public async login(homeserver: string, username: string, password: string, createProfile = false): Promise<void> {
         this.client.stopClient();
         this.client = createClient({
             useAuthorizationHeader: true,

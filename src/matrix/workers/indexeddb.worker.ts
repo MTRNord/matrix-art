@@ -12,8 +12,10 @@ limitations under the License.
 */
 import { IndexedDBStoreWorker } from "matrix-js-sdk/lib/indexeddb-worker";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ctx: Worker = self as any;
 
 const remoteWorker = new IndexedDBStoreWorker(ctx.postMessage);
 
+// eslint-disable-next-line unicorn/prefer-add-event-listener
 ctx.onmessage = remoteWorker.onMessage;

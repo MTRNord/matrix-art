@@ -3,7 +3,7 @@ import { ImgHTMLAttributes } from "react";
 import { createResource, Resource } from "./resources";
 
 // we have already fetched in the past
-export const cache = new Map<string, any>();
+export const cache = new Map<string, Resource<string>>();
 
 // then we create our loadImage function, this function receives the source
 // of the image and returns a resource
@@ -38,6 +38,6 @@ export function loadImage(source: string): Resource<string> {
 export function SuspenseImage(
     props: ImgHTMLAttributes<HTMLImageElement>
 ): JSX.Element {
-    loadImage(props.src!).read();
+    loadImage(props.src ?? "undefined").read();
     return <img {...props} />;
 }
