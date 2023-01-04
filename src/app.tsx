@@ -105,7 +105,7 @@ function LoadingPage() {
         <Header />
       </header>
       <main className="m-12 mt-6 flex items-center justify-center">
-        <p className="text-lg text-data font-bold">{t('Loading...')}</p>
+        <p className="text-lg text-data font-bold">{t('Loading…')}</p>
       </main>
     </div>
   );
