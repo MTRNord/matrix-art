@@ -39,7 +39,7 @@
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",
     "@vitejs/plugin-react-swc": "^3.0.1",
-    "@vitest/ui": "^0.27.1",
+    "@vitest/ui": "^0.27.2",
     "autoprefixer": "^10.4.13",
     "eslint": "^8.32.0",
     "eslint-plugin-tailwindcss": "^3.8.0",
