@@ -17,7 +17,7 @@ jobs:
       #       raw.githubusercontent.com:443"
       #   env:
       #     USER: runner
-      - uses: actions/checkout@629c2de402a417ea7690ca6ce3f33229e27606a5 # v2
+      - uses: actions/checkout@v3.5.3 # v2
       - uses: fossas/fossa-action@f61a4c0c263690f2ddb54b9822a719c25a7b608f # main
         with:
           api-key: ${{secrets.fossaApiKey}}
