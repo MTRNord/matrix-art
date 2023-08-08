@@ -36,7 +36,7 @@
     "@types/events": "^3.0.0",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^5.48.2",
     "@vitejs/plugin-react-swc": "^3.0.1",
     "@vitest/ui": "^0.27.3",
